@@ -7,6 +7,11 @@
     <string name="text_number_questions">Number of questions</string>
     <string name="multiple_choices">Multiple choices</string>
 
+    <string name="api_domain" translatable="false">http://192.168.0.41:3000/</string>
+    <string name="api_endpoint_getLastId" translatable="false">jojozquizz/questions/lastId/</string>
+    <string name="api_endpoint_getQuestion" translatable="false">jojozquizz/questions/question/</string>
+    <string name="api_endpoint_getCurrentVersion" translatable="false">jojozquizz/version/currentVersion/</string>
+
     <string name="error_start1">You requested too many questions (max. 75)</string>
 
     <string name="text_positive_welcome_dialog">Let\'s go !</string>

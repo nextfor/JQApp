@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,12 +26,16 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.dialogs.NiuDialog;
@@ -42,7 +47,9 @@ import com.jojo.jojozquizz.tools.QuestionsDatabase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private static final int SELECT_CATEGORIES_BUTTON_TAG = 2;
 	private static final int BONUS_BUTTON_TAG = 3;
 
-	private final String API_URL = "https://nextfor.studio/";
+	private String API_URL;
 
 	private final Context context = this;
 
@@ -72,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private boolean isFirstTime;
 	private Player mPlayer;
 
+	private RequestQueue requestQueue;
+	private Cache cache;
+	private BasicNetwork network;
+
 	private MutableLiveData<Integer> LAST_ID;
 
 	@Override
@@ -83,6 +94,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		setSupportActionBar(toolbar);
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
+		API_URL = getResources().getString(R.string.api_domain);
+
+		cache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+		network = new BasicNetwork(new HurlStack());
+		requestQueue = new RequestQueue(cache, network);
+		requestQueue.start();
 
 		mGreetingText = findViewById(R.id.activity_main_greeting_text);
 		mNameText = findViewById(R.id.text_display_name);
@@ -133,19 +150,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	}
 
 	private void getLastIdFromServer() {
-		String lastIdRoute = "questions/getLastId/";
+		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
 		String lang = mPreferences.getString("langage", "EN");
 
-		RequestQueue requestQueue = Volley.newRequestQueue(this);
-		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null, new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					LAST_ID.setValue(response.getInt("questionId"));
-				} catch (JSONException ignore) {
+		Log.d(TAG, "getLastIdFromServer: " + API_URL + lastIdRoute + lang);
+
+		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null,
+			new Response.Listener<JSONObject>() {
+				@Override
+				public void onResponse(JSONObject response) {
+					try {
+						LAST_ID.setValue(response.getInt("questionId"));
+					} catch (JSONException ignore) {
+					}
 				}
-			}
-		}, new Response.ErrorListener() {
+			}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				Snackbar.make(findViewById(R.id.constraint_layout_home), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), new View.OnClickListener() {
@@ -155,7 +174,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 					}
 				}).show();
 			}
-		});
+		}) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				HashMap<String, String> headers = new HashMap<String, String>();
+				headers.put("app-auth", "$2a$10$Wn3m7jKKdU8ObEoqK3YoieUtOOvNjwB6b3UkhYWEgVd2N7J2hm6dK");
+				return headers;
+			}
+		};
 		requestQueue.add(jsonObjectRequest);
 	}
 
@@ -200,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	}
 
 	public void addQuestions(int lastId) {
-
 		long lastIdInDatabase;
 		if (QuestionsDatabase.getInstance(this).QuestionDAO().getAllQuestions().isEmpty()) {
 			lastIdInDatabase = 0;
@@ -208,10 +233,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			lastIdInDatabase = QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion().getId() + 1;
 		}
 
-		String apiRoute = "questions/getQuestion/";
+		String apiRoute = getResources().getString(R.string.api_endpoint_getQuestion);
 		String lang = mPreferences.getString("langage", "EN");
 
-		RequestQueue requestQueue = Volley.newRequestQueue(this);
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
 			String fullRoute = API_URL + apiRoute + lang + "/" + i;
 
@@ -229,7 +253,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 					} catch (JSONException ignored) {
 					}
 				}
-			}, null);
+			}, new Response.ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					//TODO: Translate
+					Snackbar.make(findViewById(R.id.constraint_layout_home), "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
+				}
+			}) {
+				@Override
+				public Map<String, String> getHeaders() throws AuthFailureError {
+					HashMap<String, String> headers = new HashMap<String, String>();
+					headers.put("app-auth", "$2a$10$Wn3m7jKKdU8ObEoqK3YoieUtOOvNjwB6b3UkhYWEgVd2N7J2hm6dK");
+					return headers;
+				}
+			};
 			requestQueue.add(jsonObjectRequest);
 		}
 	}
@@ -272,9 +309,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private void checkForUpdates() {
 		int currentCode = BuildConfig.VERSION_CODE;
 
-		String url = "https://nextfor.studio/version/getLastVersion";
+		String url = getResources().getString(R.string.api_endpoint_getCurrentVersion);
 
-		RequestQueue requestQueue = Volley.newRequestQueue(this);
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
@@ -287,11 +323,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 						builder.setPositiveButton(R.string.update, new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								final String appPackageName = getPackageName();
 								try {
-									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
 								} catch (android.content.ActivityNotFoundException activityNotFoundException) {
-									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
 								}
 							}
 						});
