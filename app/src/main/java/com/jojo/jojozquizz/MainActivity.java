@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
@@ -41,6 +40,9 @@ import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.dialogs.NiuDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
+import com.jojo.jojozquizz.tools.BCrypt;
+import com.jojo.jojozquizz.tools.CombineKeys;
+import com.jojo.jojozquizz.tools.Global;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
 
@@ -84,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private BasicNetwork network;
 
 	private MutableLiveData<Integer> LAST_ID;
+	private String authKey;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -138,29 +141,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		checkForUpdates();
 
 		LAST_ID = new MutableLiveData<>();
-		getLastIdFromServer();
-		LAST_ID.observe((LifecycleOwner) this, new Observer<Integer>() {
-			@Override
-			public void onChanged(Integer integer) {
+		if (((Global) this.getApplication()).getProcessedKey() == null) {
+			Log.d(TAG, "onCreate: ouais ouais c'est bien nul");
+			String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
+
+			JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
+				new Response.Listener<JSONObject>() {
+					@Override
+					public void onResponse(JSONObject response) {
+						try {
+							String serverKey = response.getString("key");
+							String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
+							((Global) context.getApplicationContext()).setProcessedKey(combinedKey);
+							Log.d(TAG, "onResponse: " + serverKey);
+							getLastIdFromServer();
+						} catch (JSONException ignore) {}
+					}
+				}, new Response.ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					Log.d(TAG, "onErrorResponse: " + error.getMessage());
+				}
+			});
+			requestQueue.add(serverKeyRequest);
+		} else {
+			getLastIdFromServer();
+			LAST_ID.observe((LifecycleOwner) this, integer -> {
 				if (QuestionsDatabase.getInstance(context).QuestionDAO().getAllQuestions().isEmpty() || integer > QuestionsDatabase.getInstance(context).QuestionDAO().getLastQuestion().getId()) {
 					addQuestions(integer);
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private void getLastIdFromServer() {
 		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
 		String lang = mPreferences.getString("langage", "EN");
-
-		Log.d(TAG, "getLastIdFromServer: " + API_URL + lastIdRoute + lang);
-
+		Log.d(TAG, "getLastIdFromServer: ");
+		
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null,
 			new Response.Listener<JSONObject>() {
 				@Override
-				public void onResponse(JSONObject response) {
+				public void onResponse(JSONObject response) {;
 					try {
 						LAST_ID.setValue(response.getInt("questionId"));
+						Log.d(TAG, "onResponse: " + response.getInt("questionId"));
 					} catch (JSONException ignore) {
 					}
 				}
@@ -178,7 +203,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
 				HashMap<String, String> headers = new HashMap<String, String>();
-				headers.put("app-auth", "$2a$10$Wn3m7jKKdU8ObEoqK3YoieUtOOvNjwB6b3UkhYWEgVd2N7J2hm6dK");
+				String key = ((Global) context.getApplicationContext()).getAuthKey();
+				String salt = BCrypt.gensalt();
+				headers.put("app-auth", BCrypt.hashpw(key, salt));
 				return headers;
 			}
 		};
@@ -263,7 +290,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				@Override
 				public Map<String, String> getHeaders() throws AuthFailureError {
 					HashMap<String, String> headers = new HashMap<String, String>();
-					headers.put("app-auth", "$2a$10$Wn3m7jKKdU8ObEoqK3YoieUtOOvNjwB6b3UkhYWEgVd2N7J2hm6dK");
+					String key = ((Global) context.getApplicationContext()).getAuthKey();
+					String salt = BCrypt.gensalt();
+					headers.put("app-auth", BCrypt.hashpw(key, salt));
 					return headers;
 				}
 			};
@@ -311,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 		String url = getResources().getString(R.string.api_endpoint_getCurrentVersion);
 
-		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,API_URL + url, null, new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
 				try {

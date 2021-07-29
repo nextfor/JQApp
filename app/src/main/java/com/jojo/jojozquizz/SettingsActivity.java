@@ -15,10 +15,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.BasicNetwork;
+import com.android.volley.toolbox.DiskBasedCache;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,6 +32,9 @@ import com.jojo.jojozquizz.tools.QuestionsDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,7 +46,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 	private Button mReloadButton, mPrivacyButton, mTermsButton;
 	private RadioButton mFrButton, mEnButton;
 
-	private final String API_URL = "https://nextfor.studio/";
+	private String API_URL;
+
+	private RequestQueue mRequestQueue;
+	private Cache mCache;
+	private BasicNetwork mNetwork;
 
 	private MutableLiveData<Integer> LAST_ID;
 
@@ -50,6 +62,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 		mContext = this;
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
+		API_URL = getResources().getString(R.string.api_domain);
+
+		mCache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
+		mNetwork = new BasicNetwork(new HurlStack());
+		mRequestQueue = new RequestQueue(mCache, mNetwork);
+		mRequestQueue.start();
 
 		mReloadButton = findViewById(R.id.settings_reload_questions);
 		mFrButton = findViewById(R.id.settings_radio_fr);
@@ -103,10 +121,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 	}
 
 	private void getLastIdFromServer() {
-		String lastIdRoute = "questions/getLastId/";
+		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
 		String lang = mPreferences.getString("langage", "EN");
 
-		RequestQueue requestQueue = Volley.newRequestQueue(this);
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null, new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
@@ -126,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 				}).show();
 			}
 		});
-		requestQueue.add(jsonObjectRequest);
+		mRequestQueue.add(jsonObjectRequest);
 	}
 
 	public void addQuestions(int lastId) {
@@ -138,10 +155,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 			lastIdInDatabase = QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion().getId() + 1;
 		}
 
-		String apiRoute = "questions/getQuestion/";
+		String apiRoute = getResources().getString(R.string.api_endpoint_getQuestion);
 		String lang = mPreferences.getString("langage", "EN");
 
-		RequestQueue requestQueue = Volley.newRequestQueue(this);
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
 			String fullRoute = API_URL + apiRoute + lang + "/" + i;
 
@@ -159,8 +175,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 					} catch (JSONException ignored) {
 					}
 				}
-			}, null);
-			requestQueue.add(jsonObjectRequest);
+			}, new Response.ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					//TODO: Translate
+					Snackbar.make(findViewById(R.id.constraint_layout_home), "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
+				}
+			}) {
+				@Override
+				public Map<String, String> getHeaders() throws AuthFailureError {
+					HashMap<String, String> headers = new HashMap<String, String>();
+					headers.put("app-auth", "$2a$10$Wn3m7jKKdU8ObEoqK3YoieUtOOvNjwB6b3UkhYWEgVd2N7J2hm6dK");
+					return headers;
+				}
+			};
+			mRequestQueue.add(jsonObjectRequest);
 		}
 	}
 
