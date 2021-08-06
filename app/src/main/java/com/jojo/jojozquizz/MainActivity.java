@@ -31,6 +31,7 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
+import com.jojo.jojozquizz.databinding.ContentHomeBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.dialogs.NiuDialog;
 import com.jojo.jojozquizz.model.Player;
@@ -81,10 +82,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private MutableLiveData<Integer> LAST_ID;
 
+	private ContentHomeBinding mHomeBinding;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+
 
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
@@ -96,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		mNetwork = new BasicNetwork(new HurlStack());
 		mRequestQueue = new RequestQueue(mCache, mNetwork);
 		mRequestQueue.start();
-
 
 
 		mGreetingText = findViewById(R.id.activity_main_greeting_text);
