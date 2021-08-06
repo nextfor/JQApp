@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -25,9 +26,11 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.model.Question;
+import com.jojo.jojozquizz.tools.BCrypt;
+import com.jojo.jojozquizz.tools.CombineKeys;
+import com.jojo.jojozquizz.tools.Global;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
 
 import org.json.JSONException;
@@ -93,6 +96,25 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 		}
 
 		LAST_ID = new MutableLiveData<>();
+		if (((Global) this.getApplication()).getProcessedKey() == null) {
+			Log.d(TAG, "onCreate: ouais ouais c'est bien nul");
+			String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
+
+			JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
+				response -> {
+					try {
+						String serverKey = response.getString("key");
+						String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
+						((Global) mContext.getApplicationContext()).setProcessedKey(combinedKey);
+						Log.d(TAG, "onResponse: " + serverKey);
+						getLastIdFromServer();
+					} catch (JSONException ignore) {
+					}
+				}, error -> Log.d(TAG, "onErrorResponse: " + error.getMessage()));
+			mRequestQueue.add(serverKeyRequest);
+		} else {
+			getLastIdFromServer();
+		}
 		LAST_ID.observe(this, new Observer<Integer>() {
 			@Override
 			public void onChanged(Integer integer) {
@@ -101,6 +123,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 				}
 			}
 		});
+
 	}
 
 	@Override
@@ -185,7 +208,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 				@Override
 				public Map<String, String> getHeaders() throws AuthFailureError {
 					HashMap<String, String> headers = new HashMap<String, String>();
-					headers.put("app-auth", "$2a$10$Wn3m7jKKdU8ObEoqK3YoieUtOOvNjwB6b3UkhYWEgVd2N7J2hm6dK");
+					String key = ((Global) mContext.getApplicationContext()).getAuthKey();
+					String salt = BCrypt.gensalt();
+					headers.put("app-auth", BCrypt.hashpw(key, salt));
 					return headers;
 				}
 			};
@@ -202,12 +227,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 			builder.setTitle(getResources().getString(R.string.settings_rewrite_database))
 				.setMessage(getResources().getString(R.string.settings_rewrite_database_confirmation))
 				.setNegativeButton(getResources().getString(R.string.all_cancel), null)
-				.setPositiveButton(getString(R.string.rewrite), new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						QuestionsDatabase.getInstance(mContext).QuestionDAO().deleteTable();
-						getLastIdFromServer();
-					}
+				.setPositiveButton(getString(R.string.rewrite), (dialog, which) -> {
+					QuestionsDatabase.getInstance(mContext).QuestionDAO().deleteTable();
+					getLastIdFromServer();
 				});
 			builder.show();
 

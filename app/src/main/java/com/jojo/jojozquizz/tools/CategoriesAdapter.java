@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.jojo.jojozquizz.R;
 
 import java.util.List;
@@ -48,10 +49,10 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 
 	@Override
 	public void onBindViewHolder(@NonNull CategoriesViewHolder holder, int position) {
-		CheckBox currentCheckbox = holder.mCheckBox;
+		MaterialCheckBox currentCheckbox = holder.mCheckBox;
 
 		currentCheckbox.setText(mCategories[position]);
-		currentCheckbox.setButtonTintList(ContextCompat.getColorStateList(mContext, position % 2 == 0 ? R.color.colorPrimary : R.color.colorPrimaryDark));
+		currentCheckbox.setButtonTintList(ContextCompat.getColorStateList(mContext, position % 2 == 0 ? R.color.colorSecondary : R.color.colorSecondaryDark));
 		currentCheckbox.setChecked(mCategoriesSelected.contains(currentCheckbox.getText().toString()));
 
 		holder.mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -66,7 +67,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 	}
 
 	public static class CategoriesViewHolder extends RecyclerView.ViewHolder {
-		CheckBox mCheckBox;
+		MaterialCheckBox mCheckBox;
 		ConstraintLayout mConstraintLayout;
 
 		public CategoriesViewHolder(@NonNull View v) {

@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 	private int mNumberOfQuestions, trueIndex;
 	private boolean mEnableTouchEvents;
 	private Bonus mBonus1, mBonus2, mBonus3;
-	private List<String> categoriesSelectedProcessed, difficultiesSelectedProcessed;
+	private List<String> mCategoriesSelectedProcessed, mDifficultiesSelectedProcessed;
 
 	private int mTotalQuestions; // Number of questions to reach
 	private int mQuestionsAnswered = 0; // Number of questions answered by the player
@@ -113,15 +113,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 		String categoriesSelected = mPlayer.getCategoriesSelected(); // Categories selected by the player, non processed (100110)
 		String difficultiesSelected = mPlayer.getDifficultiesSelected(); // Difficulties selected by the player, non processed
 
-		categoriesSelectedProcessed = mCategoriesHelper.getProcessedCategories(categoriesSelected); // Categories selected processed, so tranformed to String list
+		mCategoriesSelectedProcessed = mCategoriesHelper.getProcessedCategories(categoriesSelected); // Categories selected processed, so tranformed to String list
 		List<Integer> categoriesIndex = new ArrayList<>(); // List of categories selected into string
-		for (String c : categoriesSelectedProcessed) {
+		for (String c : mCategoriesSelectedProcessed) {
 			categoriesIndex.add(categories.indexOf(c));
 		}
 
-		difficultiesSelectedProcessed = mCategoriesHelper.getProcessedDifficulties(difficultiesSelected);
+		mDifficultiesSelectedProcessed = mCategoriesHelper.getProcessedDifficulties(difficultiesSelected);
 		List<Integer> difficultiesIndex = new ArrayList<>();
-		for (String d : difficultiesSelectedProcessed) {
+		for (String d : mDifficultiesSelectedProcessed) {
 			difficultiesIndex.add(difficulties.indexOf(d));
 		}
 

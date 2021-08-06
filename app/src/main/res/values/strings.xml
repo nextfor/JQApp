@@ -28,7 +28,7 @@
         <item quantity="one">Hi %1$s ! During you last game, you answered %2$d question correctly out of %3$d</item>
         <item quantity="other">Hi %1$s ! During you last game, you answered %2$d questions correctly out of %3$d</item>
     </plurals>
-    
+
     <plurals name="score_to_send">
         <item quantity="one">I answered %1$d questions correctly out of %2$d by playing %3$d game on Jojoz Quizz\n Try to do better !\nDownload it here : https://play.google.com/store/apps/details?id=com.jojo.jojozquizz</item>
         <item quantity="other">I answered %1$d questions correctly out of %2$d by playing %3$d games on Jojoz Quizz\n Try to do better !\nDownload it here : https://play.google.com/store/apps/details?id=com.jojo.jojozquizz</item>
@@ -171,5 +171,7 @@
     <string name="delete_user_message">Do you really want to erase this user ?</string>
     <string name="delete_user_error">There is just one user left, you can\'t remove it</string>
     <string name="user_stats">Stats :\n- Total score : %1$d\n- High score : %2$d\n- Number of games played : %3$d\n- Number of questions answered correctly / number of questions asked : %4$d/%5$d</string>
+<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -16,14 +16,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/switchSelectAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:checked="true"
         android:text="@string/deselect_all"
-        android:textColorLink="?attr/colorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,50 +42,50 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
         android:text="@string/difficulty"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.20"
         app:layout_constraintTop_toBottomOf="@+id/recycler_categories" />
 
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/activity_select_categories_checkbox_facile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/colorPrimaryDark"
+        android:buttonTint="@color/colorSecondary"
         android:text="@string/easy"
         app:layout_constraintEnd_toStartOf="@+id/activity_select_categories_checkbox_moyen"
         app:layout_constraintHorizontal_bias="0.70"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/activity_select_categories_checkbox_moyen" />
 
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/activity_select_categories_checkbox_moyen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:buttonTint="@color/colorPrimary"
+        android:buttonTint="@color/colorSecondaryDark"
         android:text="@string/medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/activity_select_categories_checkbox_difficile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/colorPrimaryDark"
+        android:buttonTint="@color/colorSecondary"
         android:text="@string/hard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.30"
         app:layout_constraintStart_toEndOf="@+id/activity_select_categories_checkbox_moyen"
         app:layout_constraintTop_toTopOf="@+id/activity_select_categories_checkbox_moyen" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_select_categories_button_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_corners_pattern"
         android:text="@string/all_ok"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
