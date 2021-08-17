@@ -1,7 +1,6 @@
 package com.jojo.jojozquizz;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -202,12 +201,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 				@Override
 				public void onErrorResponse(VolleyError error) {
 					//TODO: Translate
-					Snackbar.make(findViewById(R.id.constraint_layout_home), "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
+					Snackbar.make(findViewById(R.id.drawer_layout), "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
 				}
 			}) {
 				@Override
 				public Map<String, String> getHeaders() throws AuthFailureError {
-					HashMap<String, String> headers = new HashMap<String, String>();
+					HashMap<String, String> headers = new HashMap<>();
 					String key = ((Global) mContext.getApplicationContext()).getAuthKey();
 					String salt = BCrypt.gensalt();
 					headers.put("app-auth", BCrypt.hashpw(key, salt));

@@ -154,4 +154,24 @@ public class Player {
 	public void setBonus(String bonus) {
 		this.bonus = bonus;
 	}
+
+	public int getBonus1() {
+		return Integer.parseInt(bonus.split("-/-")[0]);
+	}
+
+	public int getBonus2() {
+		return Integer.parseInt(bonus.split("-/-")[1]);
+	}
+
+	public int getBonus3() {
+		return Integer.parseInt(bonus.split("-/-")[2]);
+	}
+
+	public int getLastGameValidated() {
+		return Integer.parseInt(this.lastGame.split("-/-")[0]);
+	}
+
+	public int getLastGameLength() {
+		return Integer.parseInt(this.lastGame.split("-/-")[1]);
+	}
 }

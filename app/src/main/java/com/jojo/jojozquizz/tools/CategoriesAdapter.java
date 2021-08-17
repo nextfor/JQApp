@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -18,11 +17,11 @@ import java.util.List;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder> {
 
-	private Context mContext;
-	private String[] mCategories;
+	private final Context mContext;
+	private final String[] mCategories;
 	private List<String> mCategoriesSelected;
 
-	private String[] mCategoriesChecked;
+	private final String[] mCategoriesChecked;
 
 	private CategoriesCheckListener mCheckListener;
 

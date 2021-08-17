@@ -21,7 +21,7 @@
     <string name="link_thanks">Remerciements</string>
     <string name="bonus_skip">Passe</string>
     <string name="content_description_plus">Bouton +</string>
-    <string name="thanks_text">Merci aux personnes listées ci-dessous<br/>A leur petite ou grande contribution pour l\'application :<br/><br/>Questions writers :<br/>- leversplat<br/>- Julie<br/>- Piayral<br/><br/>Design masters : Nokolas (Logo original, et autres petites images)<br/><br/>Beta testers :<br/>- leversplat<br/>- Alexouu<br/>- ODDIN Cyril<br/>- Nokolas<br/>- lo<br/><br/>Leversplat et Wolzinix pour leur immense implication<br/>Et surtout un très grand merci à Alexouu, pour ses conseils et son soutien<br/><br/>Bravo à tous très sincèrement</string>
+    <string name="thanks_text">Merci aux personnes listées ci-dessous\n<br/>A leur petite ou grande contribution pour l\'application :\n\n<br/><br/>Questions writers :\n<br/>- leversplat\n<br/>- Julie\n<br/>- Piayral\n<br/>\n<br/>Design masters : Nokolas (Logo original, et autres petites images)\n<br/>\n<br/>Beta testers :\n<br/>- leversplat\n<br/>- Alexouu\n<br/>- ODDIN Cyril\n<br/>- Nokolas\n<br/>- lo\n<br/>\n<br/>Leversplat et Wolzinix pour leur immense implication\n<br/>Et surtout un très grand merci à Alexouu, pour ses conseils et son soutien\n<br/>\n<br/>Bravo à tous très sincèrement</string>
     <string name="bonus_2">Une réponse en moins</string>
     <string name="bonus_easier">Plus facile svp</string>
     <string name="bonus_help">Aide</string>
@@ -62,7 +62,7 @@
 
     <string name="niu_text">Toutes les fonctionnalités prévues pour les prochaines versions :\n- Nouveau mode de jeu\n- Nouveaux jeux prédéfinis\n- Des sons et musiques (normalement^^)\n\n\tEt bien sûr plus de questions et de catégories</string>
 
-    <string name="bonus_of">Bonus du joueur</string>
+    <string name="bonus_of">Bonus du joueur\n%1$s</string>
     <string name="bonus1_description">Le premier bonus permet de sauter la question sur laquelle vous êtes (bien pratique si vous êtes coincé !)</string>
     <string name="bonus2_description">Ce deuxième bonus est aussi bien pratique puisque si, pour une quelconque raison, vous avez un doute entre les propositions faites vous pouvez enlever une d\'elles pour y voir un peu plus clair</string>
     <string name="bonus3_description">Vous trouvez la question actuelle trop dûre ? Avec ce dernier bonus pas de panique ! Il va, comme par magie redescendre le niveau d\'un cran (Difficile -> Moyen ; Moyen -> Facile) et voilà c\'est tout de suite plus facile non ?</string>
@@ -143,4 +143,8 @@
     <string name="delete_user_message">Voulez-vous vraiment supprimer cet utilisateur ?</string>
     <string name="delete_user_error">Il n\'y a plus qu\'un seul utilisateur vous ne pouvez pas enlever le dernier</string>
     <string name="user_stats">Statistiques :\n- Score total : %1$d\n- Meilleur score : %2$d\n- Nombre de parties jouées : %3$d\n- Nombre de bonnes réponses / nombres de questions posées : %4$d/%5$d</string>
+    <string name="leave_game">Terminer la partie</string>
+    <string name="lives_text">Vies : %d</string>
+	<string name="game_information_title">Informations sur la partie</string>
+	<string name="content_desc_arrow_up">Arrow up to open information window</string>
 </resources>

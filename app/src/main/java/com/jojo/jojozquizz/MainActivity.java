@@ -11,16 +11,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.Cache;
@@ -31,12 +29,13 @@ import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
-import com.jojo.jojozquizz.databinding.ContentHomeBinding;
+import com.jojo.jojozquizz.databinding.ActivityMainBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.dialogs.NiuDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
 import com.jojo.jojozquizz.tools.BCrypt;
+import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
 import com.jojo.jojozquizz.tools.Global;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
@@ -50,49 +49,43 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, NameDialog.NameDialogListener {
+public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler {
 
-	private static final String TAG = "MainActivity";
+	static final String TAG = "MainActivity";
 
-	private static final int GAME_ACTIVITY_REQUEST_CODE = 30;
-	private static final int USERS_ACTIVITY_REQUEST_CODE = 40;
+	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
+	static final int USERS_ACTIVITY_REQUEST_CODE = 40;
 
-	private static final int START_BUTTON_TAG = 0;
-	private static final int USERS_BUTTON_TAG = 1;
-	private static final int SELECT_CATEGORIES_BUTTON_TAG = 2;
-	private static final int BONUS_BUTTON_TAG = 3;
+	String API_URL;
 
-	private String API_URL;
+	final Context mContext = this;
 
-	private final Context mContext = this;
+	EditText mNumberOfQuestionsInput;
 
-	private TextView mGreetingText, mNameText;
-	private EditText mNumberOfQuestionsInput;
-	private Button mStartButton;
-	private ImageButton mUsersButton;
+	Toolbar mToolbar;
 
-	private SharedPreferences mPreferences;
+	SharedPreferences mPreferences;
 
-	private boolean isFirstTime;
-	private Player mPlayer;
+	boolean isFirstTime;
+	Player mPlayer;
 
-	private RequestQueue mRequestQueue;
-	private Cache mCache;
-	private BasicNetwork mNetwork;
+	RequestQueue mRequestQueue;
+	Cache mCache;
+	BasicNetwork mNetwork;
 
-	private MutableLiveData<Integer> LAST_ID;
+	MutableLiveData<Integer> LAST_ID;
 
-	private ContentHomeBinding mHomeBinding;
+	ActivityMainBinding mBinding;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+		mBinding.setHandler(this);
 
-
-
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		mToolbar = mBinding.toolbar;
+		setSupportActionBar(mToolbar);
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
 		API_URL = getResources().getString(R.string.api_domain);
@@ -102,24 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		mRequestQueue = new RequestQueue(mCache, mNetwork);
 		mRequestQueue.start();
 
-
-		mGreetingText = findViewById(R.id.activity_main_greeting_text);
-		mNameText = findViewById(R.id.text_display_name);
-		mUsersButton = findViewById(R.id.button_users);
-		mNumberOfQuestionsInput = findViewById(R.id.activity_main_number_questions_input);
-		mStartButton = findViewById(R.id.activity_main_start_button);
-		Button mSelectCategoriesButton = findViewById(R.id.activity_main_select_categories_button);
-		Button mBonusButton = findViewById(R.id.activity_main_bonus_button);
-
-		mStartButton.setTag(START_BUTTON_TAG);
-		mUsersButton.setTag(USERS_BUTTON_TAG);
-		mSelectCategoriesButton.setTag(SELECT_CATEGORIES_BUTTON_TAG);
-		mBonusButton.setTag(BONUS_BUTTON_TAG);
-
-		mUsersButton.setOnClickListener(this);
-		mStartButton.setOnClickListener(this);
-		mSelectCategoriesButton.setOnClickListener(this);
-		mBonusButton.setOnClickListener(this);
+		mNumberOfQuestionsInput = mBinding.activityMainNumberQuestionsInput;
 
 		isFirstTime = PlayersDatabase.getInstance(this).PlayersDAO().getAllPlayers().isEmpty();
 
@@ -134,14 +110,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			askUsernameDialog();
 		} else {
 			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
-			updateUI(mPlayer);
+			mBinding.setPlayer(mPlayer);
 		}
 
 		checkForUpdates();
 
 		LAST_ID = new MutableLiveData<>();
 		if (((Global) this.getApplication()).getProcessedKey() == null) {
-			Log.d(TAG, "onCreate: ouais ouais c'est bien nul");
 			String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
 
 			JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
@@ -150,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 						String serverKey = response.getString("key");
 						String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
 						((Global) mContext.getApplicationContext()).setProcessedKey(combinedKey);
-						Log.d(TAG, "onResponse: " + serverKey);
 						getLastIdFromServer();
 					} catch (JSONException ignore) {
 					}
@@ -169,17 +143,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	private void getLastIdFromServer() {
 		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
 		String lang = mPreferences.getString("langage", "EN");
-		Log.d(TAG, "getLastIdFromServer: ");
 
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null,
 			response -> {
-				;
 				try {
 					LAST_ID.setValue(response.getInt("questionId"));
-					Log.d(TAG, "onResponse: " + response.getInt("questionId"));
 				} catch (JSONException ignore) {
 				}
-			}, error -> Snackbar.make(findViewById(R.id.constraint_layout_home), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), new View.OnClickListener() {
+			}, error -> Snackbar.make(findViewById(R.id.drawer_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				getLastIdFromServer();
@@ -202,34 +173,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == GAME_ACTIVITY_REQUEST_CODE) {
-			updateUI(mPlayer);
+			mBinding.setPlayer(mPlayer);
 		} else if (requestCode == USERS_ACTIVITY_REQUEST_CODE) {
 			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
-			updateUI(mPlayer);
-		}
-	}
-
-	@Override
-	public void onClick(View v) {
-		int buttonTag = (int) v.getTag();
-
-		if (buttonTag == START_BUTTON_TAG && !mNumberOfQuestionsInput.getText().toString().isEmpty()) {
-			int mNumberOfQuestionsAsk = Integer.parseInt(mNumberOfQuestionsInput.getText().toString());
-			if (mNumberOfQuestionsAsk <= 0) {
-				Toast.makeText(mContext, R.string.error_start0, Toast.LENGTH_LONG).show();
-			} else if (mNumberOfQuestionsAsk > 75) {
-				Toast.makeText(mContext, R.string.error_start1, Toast.LENGTH_LONG).show();
-			} else if (QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion() == null) {
-				Snackbar.make(findViewById(R.id.constraint_layout_home), getString(R.string.no_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v1 -> getLastIdFromServer()).show();
-			} else {
-				startActivityForResult(new Intent(mContext, GameActivity.class).putExtra("userId", mPlayer.getId()).putExtra("numberOfQuestions", mNumberOfQuestionsAsk), GAME_ACTIVITY_REQUEST_CODE);
-			}
-		} else if (buttonTag == USERS_BUTTON_TAG) {
-			startActivityForResult(new Intent(mContext, PlayersActivity.class), USERS_ACTIVITY_REQUEST_CODE);
-		} else if (buttonTag == SELECT_CATEGORIES_BUTTON_TAG) {
-			startActivity(new Intent(mContext, SelectCategoriesActivity.class));
-		} else if (buttonTag == BONUS_BUTTON_TAG) {
-			startActivity(new Intent(mContext, BonusActivity.class));
+			mBinding.setPlayer(mPlayer);
 		}
 	}
 
@@ -260,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				}
 			}, error -> {
 				//TODO: Translate
-				Snackbar.make(findViewById(R.id.constraint_layout_home), "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
+				Snackbar.make(findViewById(R.id.drawer_layout), "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
 			}) {
 				@Override
 				public Map<String, String> getHeaders() {
@@ -277,24 +224,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater menuInflater = getMenuInflater();
-		menuInflater.inflate(R.menu.menu, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.menu,menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		switch (item.getItemId()) {
+		int itemId = item.getItemId();
+		switch (itemId) {
 			case R.id.menu_niu:
 				new NiuDialog().showDialog(this);
-				break;
+				return true;
 			case R.id.menu_links:
 				startActivity(new Intent(mContext, LinksActivity.class));
-				break;
+				return true;
 			case R.id.menu_settings:
 				startActivity(new Intent(mContext, SettingsActivity.class));
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
+
 	}
 
 	@Override
@@ -339,27 +289,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		mRequestQueue.add(jsonObjectRequest);
 	}
 
-	private void updateUI(Player player) {
-		mNameText.setText(player.getName());
-
-		String[] lastGame = player.getLastGame().split("-/-");
-		int lastGameValidatedQuestions = Integer.parseInt(lastGame[0]);
-		int lastGameTotalQuestions = Integer.parseInt(lastGame[1]);
-
-		String textToShow;
-
-		if (lastGameTotalQuestions > 0) {
-			textToShow = getResources().getQuantityString(R.plurals.string_welcome_again, lastGameValidatedQuestions, player.getName(), lastGameValidatedQuestions, lastGameTotalQuestions);
-			mNumberOfQuestionsInput.setText(String.valueOf(lastGameTotalQuestions));
-		} else {
-			textToShow = getString(R.string.string_welcome);
-			mNumberOfQuestionsInput.setText(String.valueOf(20));
-		}
-		mGreetingText.setText(textToShow);
-
-		mStartButton.setEnabled(true);
-	}
-
 	@Override
 	public void applyText(String name) {
 		Pattern pattern = Pattern.compile(NameDialog.REGEX);
@@ -373,7 +302,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
 
 			isFirstTime = false;
-			updateUI(player);
+			mBinding.setPlayer(player);
 		}
+	}
+
+	@Override
+	public void onButtonClick(View v) {
+		int id = v.getId();
+
+		if (id == R.id.activity_main_start_button) {
+			if (!mNumberOfQuestionsInput.getText().toString().isEmpty()) {
+				int mNumberOfQuestionsAsk = Integer.parseInt(mNumberOfQuestionsInput.getText().toString());
+				if (mNumberOfQuestionsAsk <= 0) {
+					Toast.makeText(mContext, R.string.error_start0, Toast.LENGTH_LONG).show();
+				} else if (mNumberOfQuestionsAsk > 75) {
+					Toast.makeText(mContext, R.string.error_start1, Toast.LENGTH_LONG).show();
+				} else if (QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion() == null) {
+					Snackbar.make(findViewById(R.id.drawer_layout), getString(R.string.no_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v1 -> getLastIdFromServer()).show();
+				} else {
+					startActivityForResult(new Intent(mContext, GameActivity.class).putExtra("userId", mPlayer.getId()).putExtra("numberOfQuestions", mNumberOfQuestionsAsk), GAME_ACTIVITY_REQUEST_CODE);
+				}
+			}
+		} else if (id == R.id.button_users || id == R.id.text_display_name) {
+			startActivityForResult(new Intent(mContext, PlayersActivity.class), USERS_ACTIVITY_REQUEST_CODE);
+		} else if (id == R.id.activity_main_select_categories_button) {
+			startActivity(new Intent(mContext, SelectCategoriesActivity.class));
+		} else if (id == R.id.activity_main_bonus_button) {
+			startActivity(new Intent(mContext, BonusActivity.class));
+		}
+	}
+
+	@Override
+	public boolean onLongButtonClick(View v) {
+		return false;
 	}
 }
