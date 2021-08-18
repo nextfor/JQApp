@@ -19,7 +19,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginTop="20dp"
 			android:layout_marginEnd="50dp"
-			android:text="@{player.name, default=@string/string_title}"
+			android:text="@string/app_name"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,7 +40,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="20dp"
-			android:text="@string/app_name"
+			android:text="@{player.name}"
 			android:textColor="?attr/colorSecondary"
 			android:textSize="28sp"
 			android:textStyle="bold"
@@ -106,7 +106,7 @@
 			android:layout_marginStart="5dp"
 			android:layout_marginTop="20dp"
 			android:text="@string/bonus"
-			android:textColor="@color/colorSecondary"
+			android:textColor="?attr/colorSecondary"
 			app:layout_constraintEnd_toStartOf="@+id/guideline13"
 			app:layout_constraintStart_toStartOf="@+id/guideline10"
 			app:layout_constraintTop_toBottomOf="@+id/number_of_questions_layout" />

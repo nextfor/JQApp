@@ -51,7 +51,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 		MaterialCheckBox currentCheckbox = holder.mCheckBox;
 
 		currentCheckbox.setText(mCategories[position]);
-		currentCheckbox.setButtonTintList(ContextCompat.getColorStateList(mContext, position % 2 == 0 ? R.color.colorSecondary : R.color.colorSecondaryDark));
+		currentCheckbox.setButtonTintList(ContextCompat.getColorStateList(mContext, position % 2 == 0 ? R.color.brand_blue : R.color.brand_blue_dark));
 		currentCheckbox.setChecked(mCategoriesSelected.contains(currentCheckbox.getText().toString()));
 
 		holder.mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {

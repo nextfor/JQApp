@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F44336</color>
-    <color name="colorPrimaryLight">#ff7961</color>
-    <color name="colorPrimaryDark">#ba000d</color>
+	<color name="brand_red">#F44336</color>
+	<color name="brand_red_light">#ff7961</color>
+	<color name="brand_red_dark">#ba000d</color>
 
-    <color name="colorSecondary">#2196f3</color>
-    <color name="colorSecondaryLight">#6ec6ff</color>
-    <color name="colorSecondaryDark">#0069c0</color>
+	<color name="brand_blue">#2196f3</color>
+	<color name="brand_blue_light">#6ec6ff</color>
+	<color name="brand_blue_dark">#0069c0</color>
 
-    <color name="colorLightPrimary">#FFCDD2</color>
-    <color name="colorText">#FFFFFF</color>
-    <color name="colorPrimaryText">#212121</color>
-    <color name="secondaryText">#757575</color>
-    <color name="black">#000000</color>
-    <color name="green_true">#4CAF50</color>
+	<color name="background_light">#EDEDED</color>
+	<color name="background_night">#191919</color>
+	<color name="background_night_lighter">#393939</color>
 
-    <color name="background_night">#191919</color>
-    <color name="background_night_lighter">#3E3D3D</color>
-    <color name="background_light">#EDEDED</color>
+	<color name="white">#ffffff</color>
+	<color name="black">#000000</color>
 
-    <color name="colorLightPrimaryInDark">#B6888C</color>
-    <color name="colorPrimaryTextInDark">#6C6C6C</color>
-    <color name="secondaryTextInDark">#A5A5A5</color>
+	<color name="colorLightPrimary">#FFCDD2</color>
+	<color name="colorText">#FFFFFF</color>
+	<color name="colorPrimaryText">#212121</color>
+	<color name="secondaryText">#757575</color>
+	<color name="green_true">#4CAF50</color>
+
+	<color name="colorLightPrimaryInDark">#B6888C</color>
+	<color name="colorPrimaryTextInDark">#6C6C6C</color>
+	<color name="secondaryTextInDark">#A5A5A5</color>
 </resources>

@@ -37,6 +37,7 @@
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:id="@+id/drawer_layout"
+			android:layout_marginTop="?attr/actionBarSize"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">
 
@@ -55,7 +56,7 @@
 				android:id="@+id/activity_main_greeting_text"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="20dp"
+				android:layout_marginTop="32dp"
 				android:padding="15dp"
 				android:text="@{player.lastGameLength > 0 ? @plurals/string_welcome_again(player.lastGameValidated, player.name, player.lastGameValidated, player.lastGameLength) : @string/string_welcome }"
 				android:textSize="18sp"
@@ -67,7 +68,7 @@
 				android:id="@+id/text_display_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="20dp"
+				android:layout_marginTop="48dp"
 				android:text="@{player.name}"
 				android:textColor="?attr/colorSecondary"
 				android:onClick="@{handler::onButtonClick}"
@@ -79,9 +80,9 @@
 
 			<ImageButton
 				android:id="@+id/button_users"
-				android:layout_width="36dp"
-				android:layout_height="36dp"
-				android:layout_marginStart="32dp"
+				android:layout_width="48dp"
+				android:layout_height="48dp"
+				android:layout_marginStart="48dp"
 				android:background="#00FFFFFF"
 				android:contentDescription="@string/users_icon"
 				android:onClick="@{handler::onButtonClick}"
@@ -120,7 +121,7 @@
 				style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="20dp"
+				android:layout_marginTop="32dp"
 				android:layout_marginEnd="5dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:text="@string/cats"
@@ -135,10 +136,10 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="5dp"
-				android:layout_marginTop="20dp"
+				android:layout_marginTop="32dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:text="@string/bonus"
-				android:textColor="@color/brand_blue"
+				android:textColor="?attr/colorSecondary"
 				app:layout_constraintEnd_toStartOf="@+id/guideline13"
 				app:layout_constraintStart_toStartOf="@+id/guideline10"
 				app:layout_constraintTop_toBottomOf="@+id/number_of_questions_layout" />
@@ -148,11 +149,11 @@
 				style="@style/Widget.MaterialComponents.Button"
 				android:layout_width="300dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="25dp"
+				android:layout_marginTop="32dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:padding="15dp"
 				android:text="@string/string_start"
-				android:textSize="18sp"
+				android:textSize="22sp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/activity_main_select_categories_button" />

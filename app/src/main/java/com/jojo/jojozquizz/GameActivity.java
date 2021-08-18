@@ -423,21 +423,21 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 		mQuestionTextView.setText(R.string.suspense);
 		for (Button button : mAllAnswerButton) {
 			button.setBackgroundColor(R.drawable.rounded_corners_white_border_dark);
-			button.setTextColor(getResources().getColor(R.color.colorPrimary));
+			button.setTextColor(getResources().getColor(R.color.brand_red));
 		}
 	}
 
 	private void displayResult(Button goodButton, Button buttonClicked) {
 		for (Button b : mAllAnswerButton) {
 			b.setBackgroundColor(getResources().getColor(R.color.colorLightPrimary));
-			b.setTextColor(getResources().getColor(R.color.colorPrimary));
+			b.setTextColor(getResources().getColor(R.color.brand_red));
 		}
 
 		buttonClicked.setBackgroundColor(R.drawable.rounded_corners_white_border_dark);
-		buttonClicked.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+		buttonClicked.setTextColor(getResources().getColor(R.color.brand_blue_dark));
 
 		goodButton.setBackgroundColor(getResources().getColor(R.color.green_true));
-		goodButton.setTextColor(getResources().getColor(R.color.colorSecondary));
+		goodButton.setTextColor(getResources().getColor(R.color.brand_blue));
 	}
 
 	private void checkAnswerValidity(int idClicked) {
@@ -474,12 +474,12 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 			button.setVisibility(View.VISIBLE);
 		}
 		mAnswerButton1.setBackgroundColor(getResources().getColor(R.color.colorLightPrimary));
-		mAnswerButton1.setTextColor(getResources().getColor(R.color.colorSecondary));
-		mAnswerButton2.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+		mAnswerButton1.setTextColor(getResources().getColor(R.color.brand_blue));
+		mAnswerButton2.setBackgroundColor(getResources().getColor(R.color.brand_red));
 		mAnswerButton2.setTextColor(getResources().getColor(R.color.colorText));
-		mAnswerButton3.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+		mAnswerButton3.setBackgroundColor(getResources().getColor(R.color.brand_red_dark));
 		mAnswerButton3.setTextColor(getResources().getColor(R.color.colorText));
-		mAnswerButton4.setBackgroundColor(getResources().getColor(R.color.colorSecondary));
+		mAnswerButton4.setBackgroundColor(getResources().getColor(R.color.brand_blue));
 		mAnswerButton4.setTextColor(getResources().getColor(R.color.colorPrimaryText));
 	}
 
