@@ -1,5 +1,6 @@
 package com.jojo.jojozquizz;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -150,15 +150,10 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					LAST_ID.setValue(response.getInt("questionId"));
 				} catch (JSONException ignore) {
 				}
-			}, error -> Snackbar.make(findViewById(R.id.drawer_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				getLastIdFromServer();
-			}
-		}).show()) {
+			}, error -> Snackbar.make(findViewById(R.id.drawer_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show()) {
 			@Override
 			public Map<String, String> getHeaders() {
-				HashMap<String, String> headers = new HashMap<String, String>();
+				HashMap<String, String> headers = new HashMap<>();
 				String key = ((Global) mContext.getApplicationContext()).getAuthKey();
 				String salt = BCrypt.gensalt();
 				headers.put("app-auth", BCrypt.hashpw(key, salt));
@@ -211,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			}) {
 				@Override
 				public Map<String, String> getHeaders() {
-					HashMap<String, String> headers = new HashMap<String, String>();
+					HashMap<String, String> headers = new HashMap<>();
 					String key = ((Global) mContext.getApplicationContext()).getAuthKey();
 					String salt = BCrypt.gensalt();
 					headers.put("app-auth", BCrypt.hashpw(key, salt));
@@ -228,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	@SuppressLint("NonConstantResourceId")
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		int itemId = item.getItemId();
