@@ -244,7 +244,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			default:
 				return super.onOptionsItemSelected(item);
 		}
-
 	}
 
 	@Override

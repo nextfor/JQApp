@@ -30,7 +30,6 @@
 				style="@style/Widget.MaterialComponents.Toolbar.Primary"
 				android:layout_width="match_parent"
 				android:layout_height="?attr/actionBarSize"
-				android:background="@color/colorPrimary"
 				app:menu="@menu/menu"
 				app:title="@string/string_title" />
 		</com.google.android.material.appbar.AppBarLayout>
