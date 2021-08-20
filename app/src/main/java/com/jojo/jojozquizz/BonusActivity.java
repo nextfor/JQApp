@@ -204,7 +204,7 @@ public class BonusActivity extends AppCompatActivity implements ClickHandler {
 					mBinding.textNumberBonus3.setText(String.valueOf(mPlayerBonuses.get(2)));
 				});
 				break;
-			case R.id.button_help:
+			case R.id.floatingActionButtonBonus:
 				ViewGroup viewGroup = findViewById(android.R.id.content);
 				View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_bonus, viewGroup, false);
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
