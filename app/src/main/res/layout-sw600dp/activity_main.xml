@@ -37,9 +37,9 @@
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:id="@+id/drawer_layout"
-			android:layout_marginTop="?attr/actionBarSize"
 			android:layout_width="match_parent"
-			android:layout_height="match_parent">
+			android:layout_height="match_parent"
+			android:layout_marginTop="?attr/actionBarSize">
 
 			<TextView
 				android:id="@+id/activity_main_text_title"
@@ -49,6 +49,7 @@
 				android:layout_marginTop="?attr/actionBarSize"
 				android:layout_marginEnd="50dp"
 				android:text="@string/string_title"
+				android:textSize="48sp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,7 +60,7 @@
 				android:layout_marginTop="32dp"
 				android:padding="15dp"
 				android:text="@{player.lastGameLength > 0 ? @plurals/string_welcome_again(player.lastGameValidated, player.name, player.lastGameValidated, player.lastGameLength) : @string/string_welcome }"
-				android:textSize="18sp"
+				android:textSize="22sp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/activity_main_text_title" />
@@ -69,10 +70,10 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="48dp"
+				android:onClick="@{handler::onButtonClick}"
 				android:text="@{player.name}"
 				android:textColor="?attr/colorSecondary"
-				android:onClick="@{handler::onButtonClick}"
-				android:textSize="28sp"
+				android:textSize="32sp"
 				android:textStyle="bold"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
@@ -80,8 +81,8 @@
 
 			<ImageButton
 				android:id="@+id/button_users"
-				android:layout_width="48dp"
-				android:layout_height="48dp"
+				android:layout_width="56dp"
+				android:layout_height="56dp"
 				android:layout_marginStart="48dp"
 				android:background="#00FFFFFF"
 				android:contentDescription="@string/users_icon"
@@ -112,7 +113,8 @@
 					android:inputType="number"
 					android:maxLength="2"
 					android:singleLine="true"
-					android:text="@{`` + (player.lastGameLength > 0 ? player.lastGameLength : 20)}" />
+					android:text="@{`` + (player.lastGameLength > 0 ? player.lastGameLength : 20)}"
+					android:textSize="22sp" />
 
 			</com.google.android.material.textfield.TextInputLayout>
 
@@ -125,6 +127,7 @@
 				android:layout_marginEnd="5dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:text="@string/cats"
+				android:textSize="18sp"
 				app:layout_constraintEnd_toStartOf="@+id/guideline10"
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="@+id/guideline12"
@@ -140,6 +143,7 @@
 				android:onClick="@{handler::onButtonClick}"
 				android:text="@string/bonus"
 				android:textColor="?attr/colorSecondary"
+				android:textSize="18sp"
 				app:layout_constraintEnd_toStartOf="@+id/guideline13"
 				app:layout_constraintStart_toStartOf="@+id/guideline10"
 				app:layout_constraintTop_toBottomOf="@+id/number_of_questions_layout" />
@@ -147,15 +151,15 @@
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/activity_main_start_button"
 				style="@style/Widget.MaterialComponents.Button"
-				android:layout_width="300dp"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="32dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:padding="15dp"
 				android:text="@string/string_start"
-				android:textSize="22sp"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
+				android:textSize="28sp"
+				app:layout_constraintEnd_toStartOf="@+id/guideline13"
+				app:layout_constraintStart_toStartOf="@+id/guideline12"
 				app:layout_constraintTop_toBottomOf="@+id/activity_main_select_categories_button" />
 
 			<androidx.constraintlayout.widget.Guideline

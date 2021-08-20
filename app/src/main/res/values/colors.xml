@@ -10,7 +10,7 @@
 
 	<color name="background_light">#EDEDED</color>
 	<color name="background_night">#191919</color>
-	<color name="background_night_lighter">#393939</color>
+	<color name="background_night_lighter">#2B2B2B</color>
 
 	<color name="white">#ffffff</color>
 	<color name="black">#000000</color>

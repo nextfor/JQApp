@@ -38,6 +38,7 @@
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:id="@+id/drawer_layout"
 			android:layout_width="match_parent"
+			android:layout_marginTop="?attr/actionBarSize"
 			android:layout_height="match_parent">
 
 			<TextView
@@ -53,11 +54,13 @@
 
 			<TextView
 				android:id="@+id/activity_main_greeting_text"
-				android:layout_width="wrap_content"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="20dp"
 				android:padding="15dp"
-				android:text="@{player.lastGameLength > 0 ? @plurals/string_welcome_again(player.lastGameValidated, player.name, player.lastGameValidated, player.lastGameLength) : @string/string_welcome }"
+				android:layout_margin="30dp"
+				android:layout_marginTop="20dp"
+				android:textAlignment="gravity"
+				android:text="@{player.lastGameLength > 0 ? @plurals/string_welcome_again(player.lastGameValidated, player.name, player.lastGameValidated, player.lastGameLength) : @string/string_welcome, default = flblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblbl}"
 				android:textSize="18sp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
@@ -146,15 +149,15 @@
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/activity_main_start_button"
 				style="@style/Widget.MaterialComponents.Button"
-				android:layout_width="300dp"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="25dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:padding="15dp"
 				android:text="@string/string_start"
 				android:textSize="18sp"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintEnd_toStartOf="@+id/guideline13"
+				app:layout_constraintStart_toStartOf="@+id/guideline12"
 				app:layout_constraintTop_toBottomOf="@+id/activity_main_select_categories_button" />
 
 			<androidx.constraintlayout.widget.Guideline
