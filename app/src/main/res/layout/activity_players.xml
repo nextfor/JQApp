@@ -54,6 +54,7 @@
 			android:layout_height="wrap_content"
 			android:layout_margin="16dp"
 			android:gravity="end"
+			android:layout_gravity="bottom|end"
 			android:orientation="vertical"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent">
@@ -95,8 +96,8 @@
 				android:id="@+id/floatingActionButtonUsers"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="8dp"
 				android:contentDescription="create user"
+				android:layout_gravity="center"
 				android:onClick="@{handler::onButtonClick}"
 				android:text="Options"
 				app:icon="@drawable/ic_baseline_add_24" />
