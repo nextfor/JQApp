@@ -64,7 +64,6 @@ public class NameDialog extends AppCompatDialogFragment {
 				String name = mNewName.getText().toString();
 				mainListener.applyText(name);
 			})
-			.setIcon(R.drawable.plus_icon)
 			.setCancelable(isCancelable);
 
 		mNewName = view.findViewById(R.id.dialog_name_input);
