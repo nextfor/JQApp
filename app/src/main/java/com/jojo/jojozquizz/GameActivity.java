@@ -205,7 +205,6 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 			@Override
 			public void onStateChanged(@NonNull View bottomSheet, int newState) {
 				if (newState != mCurrentBottomSheetState) {
-					mCurrentBottomSheetState = newState;
 					switch (newState) {
 						case BottomSheetBehavior.STATE_HIDDEN:
 							FabAnimation.fadeAndRotateYIn(mFloatingActionButton, 1);
@@ -214,6 +213,7 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 							FabAnimation.fadeAndRotateYOut(mFloatingActionButton, 1);
 							break;
 					}
+					mCurrentBottomSheetState = newState;
 				}
 			}
 

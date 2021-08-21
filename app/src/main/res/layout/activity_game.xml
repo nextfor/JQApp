@@ -271,13 +271,13 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_margin="16dp"
-				tools:visibility="visible"
-				android:onClick="@{handler::onButtonClick}"
 				android:contentDescription="@string/content_desc_arrow_up"
+				android:onClick="@{handler::onButtonClick}"
 				android:src="@drawable/ic_baseline_arrow_up_24"
 				android:visibility="gone"
 				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintEnd_toEndOf="parent" />
+				app:layout_constraintEnd_toEndOf="parent"
+				tools:visibility="visible" />
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<androidx.constraintlayout.widget.ConstraintLayout
