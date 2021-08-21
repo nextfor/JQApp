@@ -99,7 +99,7 @@
 				android:contentDescription="create user"
 				android:layout_gravity="center"
 				android:onClick="@{handler::onButtonClick}"
-				android:text=""
+				android:text="Options"
 				app:icon="@drawable/ic_baseline_add_24" />
 		</LinearLayout>
 	</androidx.constraintlayout.widget.ConstraintLayout>
