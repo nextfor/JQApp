@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	String API_URL;
 
 	final Context mContext = this;
+	View mContextView;
 
 	EditText mNumberOfQuestionsInput;
 
@@ -83,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		setContentView(R.layout.activity_main);
 		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 		mBinding.setHandler(this);
+
+		mContextView = mBinding.mainCoordinatorLayout;
 
 		mToolbar = mBinding.toolbar;
 		setSupportActionBar(mToolbar);
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 						getLastIdFromServer();
 					} catch (JSONException ignore) {
 					}
-				}, error -> Log.d(TAG, "onErrorResponse: " + error.getMessage()));
+				}, error -> Snackbar.make(mContextView, "hé ça marche ap", Snackbar.LENGTH_LONG).show());
 			mRequestQueue.add(serverKeyRequest);
 		} else {
 			getLastIdFromServer();
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					LAST_ID.setValue(response.getInt("questionId"));
 				} catch (JSONException ignore) {
 				}
-			}, error -> Snackbar.make(findViewById(R.id.drawer_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show()) {
+			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show()) {
 			@Override
 			public Map<String, String> getHeaders() {
 				HashMap<String, String> headers = new HashMap<>();
@@ -190,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			String fullRoute = API_URL + apiRoute + lang + "/" + i;
 
 			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute, null, response -> {
+				Log.d(TAG, "addQuestions: ");
 				try {
 					int id = response.getInt("questionId");
 					String q = response.getString("question");
@@ -202,7 +206,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				}
 			}, error -> {
 				//TODO: Translate
-				Snackbar.make(findViewById(R.id.drawer_layout), "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
+				Log.d(TAG, "addQuestions: ça marche ap");
+				Snackbar.make(mContextView, "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
 			}) {
 				@Override
 				public Map<String, String> getHeaders() {
@@ -313,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				} else if (mNumberOfQuestionsAsk > 75) {
 					Toast.makeText(mContext, R.string.error_start1, Toast.LENGTH_LONG).show();
 				} else if (QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion() == null) {
-					Snackbar.make(findViewById(R.id.drawer_layout), getString(R.string.no_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v1 -> getLastIdFromServer()).show();
+					Snackbar.make(mContextView, getString(R.string.no_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v1 -> getLastIdFromServer()).show();
 				} else {
 					startActivityForResult(new Intent(mContext, GameActivity.class).putExtra("userId", mPlayer.getId()).putExtra("numberOfQuestions", mNumberOfQuestionsAsk), GAME_ACTIVITY_REQUEST_CODE);
 				}
