@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	Cache mCache;
 	BasicNetwork mNetwork;
 
-	MutableLiveData<Integer> LAST_ID;
+	MutableLiveData<Long> LAST_ID;
 
 	ActivityMainBinding mBinding;
 
@@ -103,14 +103,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		isFirstTime = PlayersDatabase.getInstance(this).PlayersDAO().getAllPlayers().isEmpty();
 
 		if (isFirstTime) {
-			String lang;
-			switch (Locale.getDefault().getCountry()) {
-				default:
-					lang = "FR";
-					break;
-			}
-			mPreferences.edit().putString("langage", lang).apply();
-			askUsernameDialog();
+			firstTime();
 		} else {
 			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
 			mBinding.setPlayer(mPlayer);
@@ -118,29 +111,43 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 		checkForUpdates();
 
-		LAST_ID = new MutableLiveData<>();
 		if (((Global) this.getApplication()).getProcessedKey() == null) {
-			String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
-
-			JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
-				response -> {
-					try {
-						String serverKey = response.getString("key");
-						String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
-						((Global) mContext.getApplicationContext()).setProcessedKey(combinedKey);
-						getLastIdFromServer();
-					} catch (JSONException ignore) {
-					}
-				}, error -> Snackbar.make(mContextView, "hé ça marche ap", Snackbar.LENGTH_LONG).show());
-			mRequestQueue.add(serverKeyRequest);
-		} else {
-			getLastIdFromServer();
+			getServerKey();
 		}
-		LAST_ID.observe(this, integer -> {
-			if (QuestionsDatabase.getInstance(mContext).QuestionDAO().getAllQuestions().isEmpty() || integer > QuestionsDatabase.getInstance(mContext).QuestionDAO().getLastQuestion().getId()) {
-				addQuestions(integer);
+		getLastIdFromServer();
+
+		LAST_ID = new MutableLiveData<>();
+		LAST_ID.observe(this, long_number -> {
+			if (QuestionsDatabase.getInstance(mContext).QuestionDAO().getAllQuestions().isEmpty() || long_number > QuestionsDatabase.getInstance(mContext).QuestionDAO().getLastQuestion().getId()) {
+				addQuestions(long_number);
 			}
 		});
+	}
+
+	private void getServerKey() {
+		String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
+		JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
+			response -> {
+				try {
+					String serverKey = response.getString("key");
+					String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
+					String salt = BCrypt.gensalt();
+					((Global) mContext.getApplicationContext()).setProcessedKey(BCrypt.hashpw(combinedKey, salt));
+				} catch (JSONException ignore) {
+				}
+			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show());
+		mRequestQueue.add(serverKeyRequest);
+	}
+
+	private void firstTime() {
+		String lang;
+		switch (Locale.getDefault().getCountry()) {
+			default:
+				lang = "FR";
+				break;
+		}
+		mPreferences.edit().putString("langage", lang).apply();
+		askUsernameDialog();
 	}
 
 	private void getLastIdFromServer() {
@@ -150,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null,
 			response -> {
 				try {
-					LAST_ID.setValue(response.getInt("questionId"));
+					LAST_ID.setValue(response.getLong("questionId"));
 				} catch (JSONException ignore) {
 				}
 			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show()) {
@@ -158,8 +165,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			public Map<String, String> getHeaders() {
 				HashMap<String, String> headers = new HashMap<>();
 				String key = ((Global) mContext.getApplicationContext()).getAuthKey();
-				String salt = BCrypt.gensalt();
-				headers.put("app-auth", BCrypt.hashpw(key, salt));
+				headers.put("app-auth", key);
 				return headers;
 			}
 		};
@@ -178,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		}
 	}
 
-	public void addQuestions(int lastId) {
+	private void addQuestions(long lastId) {
 		long lastIdInDatabase;
 		if (QuestionsDatabase.getInstance(this).QuestionDAO().getAllQuestions().isEmpty()) {
 			lastIdInDatabase = 0;
@@ -205,16 +211,13 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				} catch (JSONException ignored) {
 				}
 			}, error -> {
-				//TODO: Translate
-				Log.d(TAG, "addQuestions: ça marche ap");
-				Snackbar.make(mContextView, "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
+				Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
 			}) {
 				@Override
 				public Map<String, String> getHeaders() {
 					HashMap<String, String> headers = new HashMap<>();
 					String key = ((Global) mContext.getApplicationContext()).getAuthKey();
-					String salt = BCrypt.gensalt();
-					headers.put("app-auth", BCrypt.hashpw(key, salt));
+					headers.put("app-auth", key);
 					return headers;
 				}
 			};
@@ -224,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu,menu);
+		getMenuInflater().inflate(R.menu.menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 
