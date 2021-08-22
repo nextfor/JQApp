@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,8 +49,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler {
-
-	static final String TAG = "MainActivity";
 
 	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
 	static final int USERS_ACTIVITY_REQUEST_CODE = 40;
@@ -195,11 +192,10 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		String apiRoute = getResources().getString(R.string.api_endpoint_getQuestion);
 		String lang = mPreferences.getString("langage", "EN");
 
+		String fullRoute = API_URL + apiRoute + lang + "/";
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
-			String fullRoute = API_URL + apiRoute + lang + "/" + i;
 
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute, null, response -> {
-				Log.d(TAG, "addQuestions: ");
+			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute + i, null, response -> {
 				try {
 					int id = response.getInt("questionId");
 					String q = response.getString("question");
@@ -210,9 +206,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
 				} catch (JSONException ignored) {
 				}
-			}, error -> {
-				Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
-			}) {
+			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show()) {
 				@Override
 				public Map<String, String> getHeaders() {
 					HashMap<String, String> headers = new HashMap<>();
