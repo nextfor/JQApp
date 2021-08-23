@@ -34,5 +34,4 @@
 		<item name="android:background">@drawable/rounded_corners_pattern</item>
 		<item name="android:scaleType">centerInside</item>
 	</style>
-
 </resources>

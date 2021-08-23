@@ -111,7 +111,7 @@
 	<string name="invalid_name">Invalid name</string>
 	<string name="reload_questions">Reload questions</string>
 	<string name="game_cant_use_bonus_last_question">You can\'t use this bonus on last question</string>
-	<string name="settings_rewrite_database">Rewrite database ?</string>
+	<string name="settings_rewrite_database">Rewrite database</string>
 	<string name="settings_rewrite_database_confirmation">Do you really want to rewrite every questions ?</string>
 	<string name="all_cancel">Cancel</string>
 	<string name="settings_questions_langage">Questions language</string>

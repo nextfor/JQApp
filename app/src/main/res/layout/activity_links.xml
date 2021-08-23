@@ -15,6 +15,16 @@
 		android:layout_height="match_parent"
 		tools:context=".LinksActivity">
 
+		<ImageButton
+			android:id="@+id/linksReturnButton"
+			style="@style/ReturnButton"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:contentDescription="@string/back_arrow"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:srcCompat="@drawable/ic_arrow_back" />
+
 		<TextView
 			android:id="@+id/activity_links_text_title"
 			style="@style/ActivityTitle"

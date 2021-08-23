@@ -273,7 +273,7 @@
 				android:layout_margin="16dp"
 				android:contentDescription="@string/content_desc_arrow_up"
 				android:onClick="@{handler::onButtonClick}"
-				android:src="@drawable/ic_baseline_arrow_up_24"
+				android:src="@drawable/ic_arrow_up"
 				android:visibility="gone"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
