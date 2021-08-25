@@ -124,30 +124,26 @@ public class PlayersActivity extends AppCompatActivity implements NameDialog.Nam
 	public void onButtonClick(View v) {
 		int id = v.getId();
 
-		switch (id) {
-			case R.id.floatingActionButtonUsers:
-				mFloatingActionButton.shrink();
-				isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
-				if (isMainFabRotate) {
-					FabAnimation.showIn(mFloatingActionButtonAdd, 1);
-					FabAnimation.showIn(mFloatingActionButtonAddFromServer, 2);
-					FabAnimation.showIn(mFloatingActionButtonRemove, 3);
-				} else {
-					FabAnimation.showOut(mFloatingActionButtonAdd, 3);
-					FabAnimation.showOut(mFloatingActionButtonAddFromServer, 2);
-					FabAnimation.showOut(mFloatingActionButtonRemove, 1);
-					mFloatingActionButton.extend();
-				}
-				break;
-			case R.id.floatingActionButtonChildAdd:
-				NameDialog nameDialog = new NameDialog();
-				nameDialog.setIsNewUser(true);
-				nameDialog.setIsCancelable(true);
-				nameDialog.show(getSupportFragmentManager(), "name dialog usersactivity");
-				break;
-			case R.id.button_back_users_activity:
-				finish();
-				break;
+		if (id == R.id.floatingActionButtonUsers) {
+			mFloatingActionButton.shrink();
+			isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
+			if (isMainFabRotate) {
+				FabAnimation.showIn(mFloatingActionButtonAdd, 1);
+				FabAnimation.showIn(mFloatingActionButtonAddFromServer, 2);
+				FabAnimation.showIn(mFloatingActionButtonRemove, 3);
+			} else {
+				FabAnimation.showOut(mFloatingActionButtonAdd, 3);
+				FabAnimation.showOut(mFloatingActionButtonAddFromServer, 2);
+				FabAnimation.showOut(mFloatingActionButtonRemove, 1);
+				mFloatingActionButton.extend();
+			}
+		} else if (id == R.id.floatingActionButtonChildAdd) {
+			NameDialog nameDialog = new NameDialog();
+			nameDialog.setIsNewUser(true);
+			nameDialog.setIsCancelable(true);
+			nameDialog.show(getSupportFragmentManager(), "name dialog usersactivity");
+		} else if (id == R.id.button_back_users_activity) {
+			finish();
 		}
 	}
 
