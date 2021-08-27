@@ -59,6 +59,8 @@ public class LinksActivity extends AppCompatActivity implements ClickHandler {
 			mFragmentManager.beginTransaction()
 				.replace(R.id.frame_layout_links, mThanksFragment)
 				.commit();
+		} else if (id == R.id.linksReturnButton) {
+			finish();
 		}
 	}
 

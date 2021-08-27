@@ -20,6 +20,7 @@
 			style="@style/ReturnButton"
 			android:layout_width="48dp"
 			android:layout_height="48dp"
+			android:onClick="@{handler::onButtonClick}"
 			android:contentDescription="@string/back_arrow"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
