@@ -5,46 +5,58 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
+import com.jojo.jojozquizz.databinding.ActivitySelectCategoriesBinding;
+import com.jojo.jojozquizz.databinding.ActivitySelectCategoriesBindingImpl;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.tools.CategoriesAdapter;
 import com.jojo.jojozquizz.tools.CategoriesHelper;
+import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
+import com.jojo.jojozquizz.tools.SwitchHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectCategoriesActivity extends AppCompatActivity implements View.OnClickListener, CategoriesAdapter.CategoriesCheckListener {
+public class SelectCategoriesActivity extends AppCompatActivity implements CategoriesAdapter.CategoriesCheckListener, ClickHandler, SwitchHandler {
 
-	private SwitchCompat mSelectAllSwitch;
-	private MaterialCheckBox mCheckboxEasy, mCheckboxMedium, mCheckboxHard;
-	private MaterialCheckBox[] mCheckBoxes = new MaterialCheckBox[3];
+	SwitchCompat mSelectAllSwitch;
+	MaterialCheckBox mCheckboxEasy, mCheckboxMedium, mCheckboxHard;
+	MaterialCheckBox[] mCheckBoxes = new MaterialCheckBox[3];
 
-	private RecyclerView mRecyclerView;
-	private CategoriesAdapter mCategoriesAdapter; // Adapter for RecyclerView
+	RecyclerView mRecyclerView;
+	CategoriesAdapter mCategoriesAdapter; // Adapter for RecyclerView
 
-	private List<String> mOldCategoriesSelected; // What the mPlayer choose
-	private List<String> mNewCategoriesSelected; // What the mPlayer chooses
+	List<String> mOldCategoriesSelected; // What the mPlayer choose
+	List<String> mNewCategoriesSelected; // What the mPlayer chooses
 
-	private List<String> mDifficultiesSelected;
+	List<String> mDifficultiesSelected;
 
-	private CategoriesHelper mCategoriesHelper; //Helper to process categories and more
+	CategoriesHelper mCategoriesHelper; //Helper to process categories and more
 
-	private SharedPreferences mPreferences;
+	SharedPreferences mPreferences;
 
-	private Player mPlayer;
+	Player mPlayer;
+
+	ActivitySelectCategoriesBinding mBinding;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_select_categories);
+
+		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_select_categories);
+		mBinding.setHandler(this);
+		mBinding.setSwitchHandler(this);
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
 		int userId = mPreferences.getInt("currentUserId", 0);
@@ -55,14 +67,14 @@ public class SelectCategoriesActivity extends AppCompatActivity implements View.
 		mOldCategoriesSelected = mCategoriesHelper.getProcessedCategories(mPlayer.getCategoriesSelected());
 		mNewCategoriesSelected = mOldCategoriesSelected;
 
-		mSelectAllSwitch = findViewById(R.id.switchSelectAll);
-		mCheckboxEasy = findViewById(R.id.activity_select_categories_checkbox_facile);
-		mCheckboxMedium = findViewById(R.id.activity_select_categories_checkbox_moyen);
-		mCheckboxHard = findViewById(R.id.activity_select_categories_checkbox_difficile);
+		mSelectAllSwitch = mBinding.switchSelectAll;
+		mCheckboxEasy = mBinding.activitySelectCategoriesCheckboxFacile;
+		mCheckboxMedium = mBinding.activitySelectCategoriesCheckboxMoyen;
+		mCheckboxHard = mBinding.activitySelectCategoriesCheckboxDifficile;
 		mCheckBoxes = new MaterialCheckBox[]{mCheckboxEasy, mCheckboxMedium, mCheckboxHard};
 
 		mCategoriesAdapter = new CategoriesAdapter(this, mCategoriesHelper.getCategories(), mOldCategoriesSelected);
-		mRecyclerView = findViewById(R.id.recycler_categories);
+		mRecyclerView = mBinding.recyclerCategories;
 		mRecyclerView.setAdapter(mCategoriesAdapter);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -73,30 +85,6 @@ public class SelectCategoriesActivity extends AppCompatActivity implements View.
 			checkBox.setText(mCategoriesHelper.getDifficulties()[i]);
 			checkBox.setChecked(mDifficultiesSelected.contains(checkBox.getText().toString()));
 			i++;
-		}
-
-		Button mButtonOk = findViewById(R.id.activity_select_categories_button_ok);
-		mButtonOk.setTag(0);
-		mButtonOk.setOnClickListener(this);
-
-		mSelectAllSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-			mSelectAllSwitch.setText(isChecked ? R.string.deselect_all : R.string.select_all);
-			if (isChecked) {
-				mNewCategoriesSelected = mCategoriesHelper.getProcessedCategories(mCategoriesHelper.getAllCategoriesProcessed());
-			} else {
-				mNewCategoriesSelected = mCategoriesHelper.getProcessedCategories(mCategoriesHelper.getNoneCategoriesProcessed());
-			}
-			mCategoriesAdapter.changeCategoriesChecked(mNewCategoriesSelected);
-			mCategoriesAdapter.notifyDataSetChanged();
-		});
-	}
-
-	@Override
-	public void onClick(View v) {
-		int buttonTag = (int) v.getTag();
-
-		if (buttonTag == 0) {
-			quitActivity();
 		}
 	}
 
@@ -137,5 +125,34 @@ public class SelectCategoriesActivity extends AppCompatActivity implements View.
 			}
 		}
 		return valuesToReturn;
+	}
+
+	@Override
+	public void onButtonClick(View v) {
+
+		int id = v.getId();
+
+		if (id == R.id.categoriesBackButton) {
+			finish();
+		} else if (id == R.id.activity_select_categories_button_ok) {
+			quitActivity();
+		}
+	}
+
+	@Override
+	public boolean onLongButtonClick(View v) {
+		return false;
+	}
+
+	@Override
+	public void onCheckChanged(CompoundButton buttonView, boolean isChecked) {
+		mSelectAllSwitch.setText(isChecked ? R.string.deselect_all : R.string.select_all);
+		if (isChecked) {
+			mNewCategoriesSelected = mCategoriesHelper.getProcessedCategories(mCategoriesHelper.getAllCategoriesProcessed());
+		} else {
+			mNewCategoriesSelected = mCategoriesHelper.getProcessedCategories(mCategoriesHelper.getNoneCategoriesProcessed());
+		}
+		mCategoriesAdapter.changeCategoriesChecked(mNewCategoriesSelected);
+		mCategoriesAdapter.notifyDataSetChanged();
 	}
 }
