@@ -43,40 +43,45 @@
 
 			<TextView
 				android:id="@+id/activity_main_text_title"
-				style="@style/ActivityTitle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/string_title"
+				android:text="Le saviez-vous : l'application est sortie le 7 juin 2021 !"
+				android:textSize="14sp"
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintVertical_bias="0.06" />
 
 			<TextView
 				android:id="@+id/activity_main_greeting_text"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:padding="15dp"
 				android:layout_margin="30dp"
-				android:layout_marginTop="20dp"
-				android:textAlignment="gravity"
+				android:padding="15dp"
 				android:text="@{player.lastGameLength > 0 ? @plurals/string_welcome_again(player.lastGameValidated, player.name, player.lastGameValidated, player.lastGameLength) : @string/string_welcome, default = flblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblblbl}"
+				android:textAlignment="gravity"
 				android:textSize="18sp"
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/activity_main_text_title" />
+				app:layout_constraintTop_toBottomOf="@+id/activity_main_text_title"
+				app:layout_constraintVertical_bias="0.03" />
 
 			<TextView
 				android:id="@+id/text_display_name"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="20dp"
+				android:onClick="@{handler::onButtonClick}"
 				android:text="@{player.name}"
 				android:textColor="?attr/colorSecondary"
-				android:onClick="@{handler::onButtonClick}"
 				android:textSize="28sp"
 				android:textStyle="bold"
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/activity_main_greeting_text" />
+				app:layout_constraintTop_toBottomOf="@+id/activity_main_greeting_text"
+				app:layout_constraintVertical_bias="0.05" />
 
 			<ImageButton
 				android:id="@+id/button_users"
@@ -88,6 +93,8 @@
 				android:onClick="@{handler::onButtonClick}"
 				android:scaleType="centerInside"
 				app:layout_constraintBottom_toBottomOf="@+id/text_display_name"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toEndOf="@+id/text_display_name"
 				app:layout_constraintTop_toTopOf="@+id/text_display_name"
 				app:srcCompat="@drawable/users_icon" />
@@ -97,13 +104,14 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginStart="20dp"
-				android:layout_marginTop="25dp"
 				android:layout_marginEnd="20dp"
 				android:hint="@string/hint_number_questions"
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="@id/guideline13"
 				app:layout_constraintHorizontal_bias="0.5"
 				app:layout_constraintStart_toStartOf="@id/guideline12"
-				app:layout_constraintTop_toBottomOf="@+id/button_users">
+				app:layout_constraintTop_toBottomOf="@+id/button_users"
+				app:layout_constraintVertical_bias="0.05">
 
 				<com.google.android.material.textfield.TextInputEditText
 					android:id="@+id/activity_main_number_questions_input"
@@ -121,42 +129,43 @@
 				style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="20dp"
-				android:layout_marginEnd="5dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:text="@string/cats"
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toStartOf="@+id/guideline10"
 				app:layout_constraintHorizontal_bias="0.0"
 				app:layout_constraintStart_toStartOf="@+id/guideline12"
-				app:layout_constraintTop_toBottomOf="@+id/number_of_questions_layout" />
+				app:layout_constraintTop_toBottomOf="@+id/number_of_questions_layout"
+				app:layout_constraintVertical_bias="0.13" />
 
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/activity_main_bonus_button"
 				style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginStart="5dp"
-				android:layout_marginTop="20dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:text="@string/bonus"
 				android:textColor="@color/brand_blue"
+				app:layout_constraintBottom_toBottomOf="@+id/activity_main_select_categories_button"
 				app:layout_constraintEnd_toStartOf="@+id/guideline13"
 				app:layout_constraintStart_toStartOf="@+id/guideline10"
-				app:layout_constraintTop_toBottomOf="@+id/number_of_questions_layout" />
+				app:layout_constraintTop_toTopOf="@+id/activity_main_select_categories_button" />
 
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/activity_main_start_button"
 				style="@style/Widget.MaterialComponents.Button"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="25dp"
+				android:layout_marginTop="24dp"
 				android:onClick="@{handler::onButtonClick}"
 				android:padding="15dp"
 				android:text="@string/string_start"
 				android:textSize="18sp"
+				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toStartOf="@+id/guideline13"
 				app:layout_constraintStart_toStartOf="@+id/guideline12"
-				app:layout_constraintTop_toBottomOf="@+id/activity_main_select_categories_button" />
+				app:layout_constraintTop_toBottomOf="@+id/activity_main_select_categories_button"
+				app:layout_constraintVertical_bias="0.05" />
 
 			<androidx.constraintlayout.widget.Guideline
 				android:id="@+id/guideline10"
@@ -170,14 +179,14 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				app:layout_constraintGuide_percent="0.16" />
+				app:layout_constraintGuide_percent="0.15" />
 
 			<androidx.constraintlayout.widget.Guideline
 				android:id="@+id/guideline13"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:orientation="vertical"
-				app:layout_constraintGuide_percent="0.84" />
+				app:layout_constraintGuide_percent="0.85" />
 
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
