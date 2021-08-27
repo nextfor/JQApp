@@ -125,7 +125,7 @@ public class FabAnimation {
 					super.onAnimationEnd(animation);
 				}
 			})
-			.rotation(rotate ? 45f : 0);
+			.rotation(rotate ? 135f : 0);
 		return rotate;
 	}
 }
