@@ -147,4 +147,9 @@
     <string name="lives_text">Vies : %d</string>
 	<string name="game_information_title">Informations sur la partie</string>
 	<string name="content_desc_arrow_up">Arrow up to open information window</string>
+    <string name="remove_player">Supprimer un utilisateur</string>
+    <string name="get_player_from_server">Récupérer un utilisateur depuis le serveur</string>
+    <string name="links_button">Liens</string>
+    <string name="thanks_button">Remerciements</string>
+    <string name="create_player">Ajouter un utilisateur</string>
 </resources>

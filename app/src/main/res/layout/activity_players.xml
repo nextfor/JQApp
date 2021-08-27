@@ -1,106 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-	<data>
+    <data>
 
-		<variable
-			name="handler"
-			type="com.jojo.jojozquizz.tools.ClickHandler" />
-	</data>
+        <variable
+            name="handler"
+            type="com.jojo.jojozquizz.tools.ClickHandler" />
+    </data>
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		tools:context=".PlayersActivity">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PlayersActivity">
 
-		<ImageButton
-			android:id="@+id/button_back_users_activity"
-			android:layout_width="48dp"
-			android:layout_height="48dp"
-			android:layout_marginStart="10dp"
-			android:layout_marginTop="10dp"
-			android:background="#00FFFFFF"
-			android:contentDescription="@string/back_arrow"
-			android:onClick="@{handler::onButtonClick}"
-			android:scaleType="centerInside"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			app:srcCompat="@drawable/ic_arrow_back" />
+        <ImageButton
+            android:id="@+id/button_back_users_activity"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#00FFFFFF"
+            android:contentDescription="@string/back_arrow"
+            android:onClick="@{handler::onButtonClick}"
+            android:scaleType="centerInside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_back" />
 
-		<TextView
-			android:id="@+id/text_utilisateurs"
-			style="@style/ActivityTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/players"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/text_utilisateurs"
+            style="@style/ActivityTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/players"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-		<androidx.recyclerview.widget.RecyclerView
-			android:id="@+id/recycler_users"
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_marginTop="50dp"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/text_utilisateurs"
-			tools:listitem="@layout/users_recycler_layout" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_users"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="50dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_utilisateurs"
+            tools:listitem="@layout/users_recycler_layout" />
 
-		<LinearLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_margin="16dp"
-			android:gravity="end"
-			android:layout_gravity="bottom|end"
-			android:orientation="vertical"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:gravity="end"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-			<com.google.android.material.floatingactionbutton.FloatingActionButton
-				android:id="@+id/floatingActionButtonChildRemove"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_margin="8dp"
-				android:contentDescription="TODO"
-				android:onClick="@{handler::onButtonClick}"
-				android:src="@drawable/ic_person_remove"
-				app:backgroundTint="?attr/colorPrimary"
-				app:fabSize="mini" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButtonChildRemove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/remove_player"
+                android:enabled="false"
+                android:onClick="@{handler::onButtonClick}"
+                android:onLongClick="@{handler::onLongButtonClick}"
+                android:src="@drawable/ic_person_remove"
+                app:backgroundTint="?attr/colorPrimary"
+                app:fabSize="mini" />
 
-			<com.google.android.material.floatingactionbutton.FloatingActionButton
-				android:id="@+id/floatingActionButtonChildAddFromServer"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_margin="8dp"
-				android:contentDescription="TODO"
-				android:onClick="@{handler::onButtonClick}"
-				android:src="@drawable/ic_server"
-				app:backgroundTint="?attr/colorPrimary"
-				app:fabSize="mini" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButtonChildAddFromServer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/get_player_from_server"
+                android:enabled="false"
+                android:onClick="@{handler::onButtonClick}"
+                android:onLongClick="@{handler::onLongButtonClick}"
+                android:src="@drawable/ic_server"
+                app:backgroundTint="?attr/colorPrimary"
+                app:fabSize="mini" />
 
-			<com.google.android.material.floatingactionbutton.FloatingActionButton
-				android:id="@+id/floatingActionButtonChildAdd"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_margin="8dp"
-				android:contentDescription="TODO"
-				android:onClick="@{handler::onButtonClick}"
-				android:src="@drawable/ic_person_add"
-				app:backgroundTint="?attr/colorPrimary"
-				app:fabSize="mini" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButtonChildAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/create_player"
+                android:onClick="@{handler::onButtonClick}"
+                android:onLongClick="@{handler::onLongButtonClick}"
+                android:src="@drawable/ic_person_add"
+                app:backgroundTint="?attr/colorPrimary"
+                app:fabSize="mini" />
 
-			<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-				android:id="@+id/floatingActionButtonUsers"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:contentDescription="create user"
-				android:layout_gravity="center"
-				android:onClick="@{handler::onButtonClick}"
-				android:text="Options"
-				app:icon="@drawable/ic_add" />
-		</LinearLayout>
-	</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButtonUsers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/settings"
+                android:onClick="@{handler::onButtonClick}"
+                android:src="@drawable/ic_add" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
