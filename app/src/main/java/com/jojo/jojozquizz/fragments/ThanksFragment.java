@@ -1,4 +1,4 @@
-package com.jojo.jojozquizz;
+package com.jojo.jojozquizz.fragments;
 
 import android.os.Bundle;
 
@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.jojo.jojozquizz.R;
 
 public class ThanksFragment extends Fragment {
 	@Nullable

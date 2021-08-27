@@ -1,9 +1,10 @@
-package com.jojo.jojozquizz;
+package com.jojo.jojozquizz.fragments;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
@@ -13,17 +14,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jojo.jojozquizz.R;
+import com.jojo.jojozquizz.databinding.FragmentLinksBinding;
+
 public class LinksFragment extends Fragment {
+
+	View mView;
+	FragmentLinksBinding mBinding;
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.fragment_links, container, false);
+		mBinding = FragmentLinksBinding.inflate(inflater, container, false);
+		mView = mBinding.getRoot();
 
-		TextView mTextDiscord = view.findViewById(R.id.activity_links_discord_text);
-		TextView mTextInstagram = view.findViewById(R.id.activity_links_instagram_text);
-		TextView mTextYoutube = view.findViewById(R.id.activity_links_youtube_text);
-		TextView mTextTwitter = view.findViewById(R.id.activity_links_twitter_text);
-		TextView mTextReddit = view.findViewById(R.id.activity_links_reddit_text);
+		TextView mTextDiscord = mBinding.activityLinksDiscordText;
+		TextView mTextInstagram = mBinding.activityLinksInstagramText;
+		TextView mTextYoutube = mBinding.activityLinksYoutubeText;
+		TextView mTextTwitter = mBinding.activityLinksTwitterText;
+		TextView mTextReddit = mBinding.activityLinksRedditText;
 
 		mTextDiscord.setClickable(true);
 		mTextInstagram.setClickable(true);
@@ -43,6 +52,12 @@ public class LinksFragment extends Fragment {
 		mTextTwitter.setText(Html.fromHtml("<a href='https://twitter.com/nextfordev'>Twitter</a>"));
 		mTextReddit.setText(Html.fromHtml("<a href='https://reddit.com/r/jojoz'>Reddit</a>"));
 
-		return view;
+		return mView;
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mBinding = null;
 	}
 }

@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.jojo.jojozquizz.databinding.ActivityLinksBinding;
+import com.jojo.jojozquizz.fragments.LinksFragment;
+import com.jojo.jojozquizz.fragments.ThanksFragment;
 import com.jojo.jojozquizz.tools.ClickHandler;
 
 public class LinksActivity extends AppCompatActivity implements ClickHandler {
