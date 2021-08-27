@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
@@ -27,8 +28,10 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.jojo.jojozquizz.databinding.ActivitySettingsBinding;
 import com.jojo.jojozquizz.model.Question;
 import com.jojo.jojozquizz.tools.BCrypt;
+import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
 import com.jojo.jojozquizz.tools.Global;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
@@ -39,7 +42,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
+public class SettingsActivity extends AppCompatActivity implements ClickHandler {
 
 	private static final String TAG = "SettingsActivity";
 
@@ -57,10 +60,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
 	private MutableLiveData<Integer> LAST_ID;
 
+	ActivitySettingsBinding mBinding;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
+
+		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_settings);
+		mBinding.setHandler(this);
 
 		mContext = this;
 
@@ -72,18 +80,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 		mRequestQueue = new RequestQueue(mCache, mNetwork);
 		mRequestQueue.start();
 
-		mReloadButton = findViewById(R.id.settings_reload_questions);
-		mFrButton = findViewById(R.id.settings_radio_fr);
-		mEnButton = findViewById(R.id.settings_radio_en);
-		mPrivacyButton = findViewById(R.id.privacy_policy);
-		mTermsButton = findViewById(R.id.terms_of_service);
-
-		mReloadButton.setTag(1);
-		mPrivacyButton.setTag(2);
-		mTermsButton.setTag(3);
-		mReloadButton.setOnClickListener(this);
-		mPrivacyButton.setOnClickListener(this);
-		mTermsButton.setOnClickListener(this);
+		mReloadButton = mBinding.settingsReloadQuestions;
+		mFrButton = mBinding.settingsRadioFr;
+		mEnButton = mBinding.settingsRadioEn;
+		mPrivacyButton = mBinding.privacyPolicy;
+		mTermsButton = mBinding.termsOfService;
 
 		String langage = mPreferences.getString("langage", "EN");
 		switch (langage) {
@@ -97,7 +98,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
 		LAST_ID = new MutableLiveData<>();
 		if (((Global) this.getApplication()).getProcessedKey() == null) {
-			Log.d(TAG, "onCreate: ouais ouais c'est bien nul");
 			String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
 
 			JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
@@ -106,11 +106,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 						String serverKey = response.getString("key");
 						String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
 						((Global) mContext.getApplicationContext()).setProcessedKey(combinedKey);
-						Log.d(TAG, "onResponse: " + serverKey);
 						getLastIdFromServer();
 					} catch (JSONException ignore) {
 					}
-				}, error -> Log.d(TAG, "onErrorResponse: " + error.getMessage()));
+				}, error -> {});
 			mRequestQueue.add(serverKeyRequest);
 		} else {
 			getLastIdFromServer();
@@ -217,12 +216,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 			mRequestQueue.add(jsonObjectRequest);
 		}
 	}
-
 	@Override
-	public void onClick(View v) {
-		int buttonTag = (int) v.getTag();
+	public void onButtonClick(View v) {
+		int id = v.getId();
 
-		if (buttonTag == 1) {
+		if (id == R.id.settings_reload_questions) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getResources().getString(R.string.settings_rewrite_database))
 				.setMessage(getResources().getString(R.string.settings_rewrite_database_confirmation))
@@ -232,13 +230,19 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 					getLastIdFromServer();
 				});
 			builder.show();
-
-		} else if (buttonTag == 2) {
+		} else if (id == R.id.privacy_policy) {
 			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/privacy_policy/" + mPreferences.getString("langage", "EN")));
 			startActivity(launchBrowser);
-		} else if (buttonTag == 3) {
+		} else if (id == R.id.terms_of_service) {
 			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/terms_of_service/" + mPreferences.getString("langage", "EN")));
 			startActivity(launchBrowser);
+		} else if (id == R.id.settingsBackButton) {
+			finish();
 		}
+	}
+
+	@Override
+	public boolean onLongButtonClick(View v) {
+		return false;
 	}
 }
