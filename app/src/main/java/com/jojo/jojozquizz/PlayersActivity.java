@@ -32,8 +32,7 @@ public class PlayersActivity extends AppCompatActivity implements NameDialog.Nam
 	private ImageButton mBackButton;
 	private RecyclerView mRecyclerView;
 
-	FloatingActionButton mFloatingActionButtonRemove, mFloatingActionButtonAdd, mFloatingActionButtonAddFromServer;
-	ExtendedFloatingActionButton mFloatingActionButton;
+	FloatingActionButton mFloatingActionButton, mFloatingActionButtonRemove, mFloatingActionButtonAdd, mFloatingActionButtonAddFromServer;
 
 	ActivityPlayersBinding mBinding;
 
@@ -126,7 +125,6 @@ public class PlayersActivity extends AppCompatActivity implements NameDialog.Nam
 
 		switch (id) {
 			case R.id.floatingActionButtonUsers:
-				mFloatingActionButton.shrink();
 				isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
 				if (isMainFabRotate) {
 					FabAnimation.showIn(mFloatingActionButtonAdd, 1);
@@ -136,7 +134,6 @@ public class PlayersActivity extends AppCompatActivity implements NameDialog.Nam
 					FabAnimation.showOut(mFloatingActionButtonAdd, 3);
 					FabAnimation.showOut(mFloatingActionButtonAddFromServer, 2);
 					FabAnimation.showOut(mFloatingActionButtonRemove, 1);
-					mFloatingActionButton.extend();
 				}
 				break;
 			case R.id.floatingActionButtonChildAdd:
@@ -153,8 +150,12 @@ public class PlayersActivity extends AppCompatActivity implements NameDialog.Nam
 
 	@Override
 	public boolean onLongButtonClick(View v) {
+		int id = v.getId();
 
-		return false;
+		if (id == R.id.floatingActionButtonChildAdd || id == R.id.floatingActionButtonChildAddFromServer || id == R.id.floatingActionButtonChildRemove) {
+			Toast.makeText(this, v.getContentDescription(), Toast.LENGTH_SHORT).show();
+		}
+			return false;
 	}
 
 }
