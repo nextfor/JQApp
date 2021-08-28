@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jojo.jojozquizz.databinding.ActivityPlayersBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
@@ -155,7 +154,7 @@ public class PlayersActivity extends AppCompatActivity implements NameDialog.Nam
 		if (id == R.id.floatingActionButtonChildAdd || id == R.id.floatingActionButtonChildAddFromServer || id == R.id.floatingActionButtonChildRemove) {
 			Toast.makeText(this, v.getContentDescription(), Toast.LENGTH_SHORT).show();
 		}
-			return false;
+		return false;
 	}
 
 }

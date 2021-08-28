@@ -3,7 +3,6 @@ package com.jojo.jojozquizz;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.jojo.jojozquizz.databinding.ActivitySelectCategoriesBinding;
-import com.jojo.jojozquizz.databinding.ActivitySelectCategoriesBindingImpl;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.tools.CategoriesAdapter;
 import com.jojo.jojozquizz.tools.CategoriesHelper;

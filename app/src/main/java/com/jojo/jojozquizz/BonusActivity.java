@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,6 @@ import com.jojo.jojozquizz.databinding.ActivityBonusBinding;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
-import com.jojo.jojozquizz.ui.FabAnimation;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -26,7 +25,6 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.databinding.ActivitySettingsBinding;
 import com.jojo.jojozquizz.model.Question;
@@ -109,7 +107,8 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler 
 						getLastIdFromServer();
 					} catch (JSONException ignore) {
 					}
-				}, error -> {});
+				}, error -> {
+			});
 			mRequestQueue.add(serverKeyRequest);
 		} else {
 			getLastIdFromServer();
@@ -216,6 +215,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler 
 			mRequestQueue.add(jsonObjectRequest);
 		}
 	}
+
 	@Override
 	public void onButtonClick(View v) {
 		int id = v.getId();
