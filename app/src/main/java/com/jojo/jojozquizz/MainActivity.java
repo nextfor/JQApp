@@ -255,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		NameDialog nameDialog = new NameDialog();
 		nameDialog.setIsNewUser(true);
 		nameDialog.setIsCancelable(false);
+		nameDialog.setListener(this);
 		nameDialog.show(getSupportFragmentManager(), "name dialog");
 	}
 
