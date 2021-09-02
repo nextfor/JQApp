@@ -19,9 +19,6 @@
 			android:name=".SettingsActivity"
 			android:screenOrientation="portrait" />
 		<activity
-			android:name=".PlayersInformationActivity"
-			android:screenOrientation="portrait" />
-		<activity
 			android:name=".PlayersActivity"
 			android:screenOrientation="portrait" />
 		<activity
