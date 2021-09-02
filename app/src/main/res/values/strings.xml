@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 	<string name="app_name" translatable="false">Jojoz quizz</string>
 	<string name="string_title" translatable="false">Jojoz Quizz</string>
 	<string name="string_hint_ask_name">Your nickname</string>
@@ -7,7 +7,7 @@
 	<string name="text_number_questions">Number of questions</string>
 	<string name="multiple_choices">Multiple choices</string>
 
-	<string name="application_key" translatable="false">f4u6HBG1W3bd87u0468j</string>
+	<string name="application_key" translatable="false" tools:ignore="Typos">f4u6HBG1W3bd87u0468j</string>
 	<string name="ad_id_bonus1" translatable="false">ca-app-pub-5050054249389989/9324639067</string>
 	<string name="ad_id_bonus2" translatable="false">ca-app-pub-5050054249389989/9211204402</string>
 	<string name="ad_id_bonus3" translatable="false">ca-app-pub-5050054249389989/6686582029</string>
