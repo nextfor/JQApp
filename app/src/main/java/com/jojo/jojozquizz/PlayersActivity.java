@@ -1,41 +1,37 @@
 package com.jojo.jojozquizz;
 
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jojo.jojozquizz.databinding.ActivityPlayersBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
+import com.jojo.jojozquizz.fragments.PlayerInformationFragment;
+import com.jojo.jojozquizz.fragments.PlayersFragment;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.tools.ClickHandler;
-import com.jojo.jojozquizz.tools.PlayersAdapter;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
-import com.jojo.jojozquizz.ui.FabAnimation;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayersActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler {
 
-	private SharedPreferences mPreferences;
+	private static final String TAG = "PlayersActivity";
 
 	private ImageButton mBackButton;
-	private RecyclerView mRecyclerView;
-
-	FloatingActionButton mFloatingActionButton, mFloatingActionButtonRemove, mFloatingActionButtonAdd, mFloatingActionButtonAddFromServer;
 
 	ActivityPlayersBinding mBinding;
 
-	boolean isMainFabRotate = false;
+	PlayersFragment mPlayersFragment;
+	PlayerInformationFragment mPlayerInformationFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,51 +41,26 @@ public class PlayersActivity extends AppCompatActivity implements NameDialog.Nam
 		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_players);
 		mBinding.setHandler(this);
 
-		mFloatingActionButton = mBinding.floatingActionButtonUsers;
-		mFloatingActionButtonAdd = mBinding.floatingActionButtonChildAdd;
-		mFloatingActionButtonAddFromServer = mBinding.floatingActionButtonChildAddFromServer;
-		mFloatingActionButtonRemove = mBinding.floatingActionButtonChildRemove;
-
-		FabAnimation.init(mFloatingActionButtonRemove);
-		FabAnimation.init(mFloatingActionButtonAdd);
-		FabAnimation.init(mFloatingActionButtonAddFromServer);
-
-		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
-
 		mBackButton = findViewById(R.id.button_back_users_activity);
-		mRecyclerView = findViewById(R.id.recycler_users);
 
-		mBackButton.setTag(1);
+		mPlayersFragment = new PlayersFragment();
+		mPlayerInformationFragment = new PlayerInformationFragment();
 
-		updateUI();
+		getSupportFragmentManager().beginTransaction().add(R.id.frameLayoutPlayers, mPlayersFragment).commit();
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		updateUI();
+	public void onButtonClick(View v) {
+		int id = v.getId();
+
+		if (id == R.id.button_back_users_activity) {
+			finish();
+		}
 	}
 
-	protected void updateUI() {
-		List<Player> players = PlayersDatabase.getInstance(this).PlayersDAO().getAllPlayers();
-		Player[] usersArray = new Player[players.size()];
-		usersArray = players.toArray(usersArray);
-
-		int[] usersIds = new int[players.size()];
-		String[] usersNames = new String[players.size()];
-		long[] usersScore = new long[players.size()];
-
-		int i = 0;
-		for (Player u : usersArray) {
-			usersIds[i] = u.getId();
-			usersNames[i] = u.getName();
-			usersScore[i] = u.getScore();
-			i++;
-		}
-
-		PlayersAdapter playersAdapter = new PlayersAdapter(this, usersIds, usersNames, usersScore);
-		mRecyclerView.setAdapter(playersAdapter);
-		mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+	@Override
+	public boolean onLongButtonClick(View v) {
+		return false;
 	}
 
 	@Override
@@ -106,55 +77,7 @@ public class PlayersActivity extends AppCompatActivity implements NameDialog.Nam
 			PlayersDatabase.getInstance(this).PlayersDAO().addPlayer(player);
 
 			Player newPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayerFromName(player.getName());
-			mPreferences.edit().putInt("currentUserId", newPlayer.getId()).apply();
-
-			updateUI();
+			this.getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", newPlayer.getId()).apply();
 		}
 	}
-
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-		finish();
-	}
-
-	@Override
-	public void onButtonClick(View v) {
-		int id = v.getId();
-
-		switch (id) {
-			case R.id.floatingActionButtonUsers:
-				isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
-				if (isMainFabRotate) {
-					FabAnimation.showIn(mFloatingActionButtonAdd, 1);
-					FabAnimation.showIn(mFloatingActionButtonAddFromServer, 2);
-					FabAnimation.showIn(mFloatingActionButtonRemove, 3);
-				} else {
-					FabAnimation.showOut(mFloatingActionButtonAdd, 3);
-					FabAnimation.showOut(mFloatingActionButtonAddFromServer, 2);
-					FabAnimation.showOut(mFloatingActionButtonRemove, 1);
-				}
-				break;
-			case R.id.floatingActionButtonChildAdd:
-				NameDialog nameDialog = new NameDialog();
-				nameDialog.setIsNewUser(true);
-				nameDialog.setIsCancelable(true);
-				nameDialog.show(getSupportFragmentManager(), "name dialog usersactivity");
-				break;
-			case R.id.button_back_users_activity:
-				finish();
-				break;
-		}
-	}
-
-	@Override
-	public boolean onLongButtonClick(View v) {
-		int id = v.getId();
-
-		if (id == R.id.floatingActionButtonChildAdd || id == R.id.floatingActionButtonChildAddFromServer || id == R.id.floatingActionButtonChildRemove) {
-			Toast.makeText(this, v.getContentDescription(), Toast.LENGTH_SHORT).show();
-		}
-		return false;
-	}
-
 }

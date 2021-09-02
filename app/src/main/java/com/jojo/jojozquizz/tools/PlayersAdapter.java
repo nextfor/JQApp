@@ -9,10 +9,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jojo.jojozquizz.PlayersInformationActivity;
 import com.jojo.jojozquizz.R;
+import com.jojo.jojozquizz.model.Player;
+
+import java.util.List;
 
 public class PlayersAdapter extends RecyclerView.Adapter<PlayersAdapter.UsersViewHolder> {
 
@@ -21,34 +25,36 @@ public class PlayersAdapter extends RecyclerView.Adapter<PlayersAdapter.UsersVie
 	private String[] mName;
 	private long[] mScore;
 
-	public PlayersAdapter(Context ct, int[] usersIds, String[] usersNames, long[] usersScores) {
+	private List<Player> mPlayers;
+
+	public PlayersAdapter(Context ct, List<Player> players) {
 		this.context = ct;
-		this.mIds = usersIds;
-		this.mName = usersNames;
-		this.mScore = usersScores;
+		this.mPlayers = players;
 	}
 
 	@NonNull
 	@Override
 	public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		LayoutInflater inflater = LayoutInflater.from(context);
+		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 		View view = inflater.inflate(R.layout.users_recycler_layout, parent, false);
 		return new UsersViewHolder(view);
 	}
 
 	@Override
 	public void onBindViewHolder(@NonNull UsersViewHolder holder, int position) {
-		holder.textName.setText(mName[position]);
-		holder.textScore.setText(String.valueOf(mScore[position]));
-		holder.mConstraintLayout.setOnClickListener(v -> context.startActivity(new Intent(context, PlayersInformationActivity.class).putExtra("id", mIds[position])));
+		holder.updateWithPlayer(this.mPlayers.get(position));
+	}
+
+	public Player getUser(int position) {
+		return this.mPlayers.get(position);
 	}
 
 	@Override
 	public int getItemCount() {
-		return mName.length;
+		return this.mPlayers.size();
 	}
 
-	public static class UsersViewHolder extends RecyclerView.ViewHolder {
+	public class UsersViewHolder extends RecyclerView.ViewHolder {
 
 		TextView textId, textName, textScore;
 		ConstraintLayout mConstraintLayout;
@@ -60,6 +66,11 @@ public class PlayersAdapter extends RecyclerView.Adapter<PlayersAdapter.UsersVie
 
 			textName = v.findViewById(R.id.user_name);
 			textScore = v.findViewById(R.id.user_score);
+		}
+
+		public void updateWithPlayer(Player player) {
+			this.textName.setText(player.getName());
+			this.textScore.setText(String.valueOf(player.getScore()));
 		}
 	}
 }

@@ -33,7 +33,7 @@ public class NameDialog extends AppCompatDialogFragment {
 		try {
 			mainListener = (NameDialogListener) context;
 		} catch (Exception e) {
-			throw new ClassCastException(context.toString() + " you should implement NameDialogListener");
+			throw new ClassCastException(e.getMessage());
 		}
 	}
 
