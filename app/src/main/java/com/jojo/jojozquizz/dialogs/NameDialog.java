@@ -26,17 +26,6 @@ public class NameDialog extends AppCompatDialogFragment {
 
 	private NameDialogListener mainListener;
 
-	@Override
-	public void onAttach(@NonNull Context context) {
-		super.onAttach(context);
-
-		try {
-			mainListener = (NameDialogListener) context;
-		} catch (Exception e) {
-			throw new ClassCastException(e.getMessage());
-		}
-	}
-
 	public void setIsNewUser(boolean is) {
 		isNewUser = is;
 	}
@@ -69,6 +58,10 @@ public class NameDialog extends AppCompatDialogFragment {
 		mNewName = view.findViewById(R.id.dialog_name_input);
 
 		return builder.create();
+	}
+
+	public void setListener(NameDialogListener mainListener) {
+		this.mainListener = mainListener;
 	}
 
 	public interface NameDialogListener {
