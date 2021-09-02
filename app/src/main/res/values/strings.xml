@@ -181,7 +181,7 @@
 	<string name="links_button">Links</string>
 	<string name="thanks_button">Thanks</string>
 	<string name="content_desc_arrow_up">Arrow up to open information window</string>
-    <string name="remove_player">Delete user</string>
+	<string name="remove_player">Delete user</string>
 	<string name="get_player_from_server">Get user from server</string>
 	<string name="create_player">Add player</string>
 
