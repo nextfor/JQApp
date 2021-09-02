@@ -1,5 +1,6 @@
 package com.jojo.jojozquizz.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +26,10 @@ import com.jojo.jojozquizz.tools.RecyclerItemClickSupport;
 import com.jojo.jojozquizz.ui.FabAnimation;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class PlayersFragment extends Fragment implements ClickHandler {
+public class PlayersFragment extends Fragment implements ClickHandler, NameDialog.NameDialogListener {
 
 	private static final String TAG = "PlayersFragment";
 
@@ -97,7 +100,9 @@ public class PlayersFragment extends Fragment implements ClickHandler {
 	public void onButtonClick(View v) {
 		int id = v.getId();
 
-		if (id == R.id.floatingActionButtonUsers) {
+		if (id == R.id.returnButtonPlayersFragment) {
+			getActivity().finish();
+		} else if (id == R.id.floatingActionButtonUsers) {
 			isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
 			if (isMainFabRotate) {
 				FabAnimation.showIn(mFloatingActionButtonAdd, 1);
@@ -112,6 +117,7 @@ public class PlayersFragment extends Fragment implements ClickHandler {
 			NameDialog nameDialog = new NameDialog();
 			nameDialog.setIsNewUser(true);
 			nameDialog.setIsCancelable(true);
+			nameDialog.setListener(this);
 			nameDialog.show(getParentFragmentManager(), "name dialog usersactivity");
 		}
 	}
@@ -124,5 +130,24 @@ public class PlayersFragment extends Fragment implements ClickHandler {
 			Toast.makeText(getContext(), v.getContentDescription(), Toast.LENGTH_SHORT).show();
 		}
 		return false;
+	}
+
+	@Override
+	public void applyText(String name) {
+		Pattern pattern = Pattern.compile(NameDialog.REGEX);
+		Matcher matcher = pattern.matcher(name);
+
+		if (!matcher.find()) {
+			NameDialog nameDialog = new NameDialog();
+			nameDialog.setIsNewUser(true);
+			nameDialog.show(getParentFragmentManager(), "name dialog usersactivity");
+			Toast.makeText(getContext(), getResources().getString(R.string.invalid_name), Toast.LENGTH_SHORT).show();
+		} else {
+			Player player = new Player(name, getContext());
+			PlayersDatabase.getInstance(getContext()).PlayersDAO().addPlayer(player);
+
+			Player newPlayer = PlayersDatabase.getInstance(getContext()).PlayersDAO().getPlayerFromName(player.getName());
+			getContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", newPlayer.getId()).apply();
+		}
 	}
 }

@@ -15,6 +15,18 @@
 		android:layout_height="match_parent"
 		tools:context=".PlayersActivity">
 
+		<ImageButton
+			android:id="@+id/returnButtonPlayersFragment"
+			style="@style/ReturnButton"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:contentDescription="@string/back_arrow"
+			android:elevation="5dp"
+			android:onClick="@{handler::onButtonClick}"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:srcCompat="@drawable/ic_arrow_back" />
+
 		<TextView
 			android:id="@+id/title_players"
 			style="@style/ActivityTitle"
