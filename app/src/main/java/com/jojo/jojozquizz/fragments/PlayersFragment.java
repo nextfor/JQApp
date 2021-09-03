@@ -83,6 +83,7 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 					args.putInt("userId", player.getId());
 					fragment.setArguments(args);
 					getActivity().getSupportFragmentManager().beginTransaction()
+						.setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
 						.replace(R.id.frameLayoutPlayers, fragment)
 						.addToBackStack(null)
 						.commit();

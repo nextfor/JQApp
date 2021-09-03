@@ -24,6 +24,7 @@ import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,17 +75,17 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 			if (PlayersDatabase.getInstance(getContext()).PlayersDAO().getAllPlayers().size() <= 1) {
 				Toast.makeText(getContext(), getString(R.string.delete_user_error), Toast.LENGTH_SHORT).show();
 			} else {
-				AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+				AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 				builder.setTitle(getString(R.string.delete_user))
 					.setCancelable(true)
-					.setIcon(getContext().getResources().getDrawable(R.drawable.trash_icon))
+					.setIcon(requireContext().getResources().getDrawable(R.drawable.trash_icon))
 					.setMessage(R.string.delete_user_message)
 					.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							PlayersDatabase.getInstance(getContext()).PlayersDAO().deletePlayerWithId(mPlayer.getId());
-							getContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
-							getParentFragmentManager().beginTransaction().replace(R.id.frameLayoutPlayers, new PlayersFragment()).commit();
+							requireContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
+							getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out).replace(R.id.frameLayoutPlayers, new PlayersFragment()).commit();
 						}
 					}).setNegativeButton(getString(R.string.all_cancel), null);
 				builder.show();
