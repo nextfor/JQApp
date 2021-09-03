@@ -78,7 +78,7 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 				AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 				builder.setTitle(getString(R.string.delete_user))
 					.setCancelable(true)
-					.setIcon(requireContext().getResources().getDrawable(R.drawable.trash_icon))
+					.setIcon(requireContext().getResources().getDrawable(R.drawable.ic_delete))
 					.setMessage(R.string.delete_user_message)
 					.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
 						@Override
