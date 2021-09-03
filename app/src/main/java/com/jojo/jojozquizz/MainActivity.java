@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setTheme(R.style.Theme_JojozQuizz);
 		setContentView(R.layout.activity_main);
 
 		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
