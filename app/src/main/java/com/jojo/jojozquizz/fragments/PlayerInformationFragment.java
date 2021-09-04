@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import com.jojo.jojozquizz.PlayersActivity;
 import com.jojo.jojozquizz.R;
 import com.jojo.jojozquizz.databinding.FragmentPlayerInformationBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
@@ -24,7 +22,6 @@ import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,14 +75,16 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 				AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 				builder.setTitle(getString(R.string.delete_user))
 					.setCancelable(true)
-					.setIcon(requireContext().getResources().getDrawable(R.drawable.ic_delete))
+					.setIcon(requireContext().getDrawable(R.drawable.ic_delete))
 					.setMessage(R.string.delete_user_message)
 					.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							PlayersDatabase.getInstance(getContext()).PlayersDAO().deletePlayerWithId(mPlayer.getId());
 							requireContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
-							getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out).replace(R.id.frameLayoutPlayers, new PlayersFragment()).commit();
+							getParentFragmentManager().beginTransaction()
+								.replace(R.id.frameLayoutPlayers, new PlayersFragment())
+								.commit();
 						}
 					}).setNegativeButton(getString(R.string.all_cancel), null);
 				builder.show();
