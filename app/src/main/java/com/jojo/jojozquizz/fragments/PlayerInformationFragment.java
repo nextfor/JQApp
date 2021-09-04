@@ -61,7 +61,9 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 	public void onButtonClick(View v) {
 		int id = v.getId();
 
-		if (id == R.id.information_button_edit_user) {
+		if (id == R.id.information_back_arrow) {
+			getParentFragmentManager().popBackStack();
+		} else if (id == R.id.information_button_edit_user) {
 			NameDialog nameDialog = new NameDialog();
 			nameDialog.setIsCancelable(true);
 			nameDialog.setListener(this);
