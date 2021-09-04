@@ -23,6 +23,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
@@ -36,11 +37,12 @@ import com.jojo.jojozquizz.model.Question;
 import com.jojo.jojozquizz.tools.BCrypt;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
-import com.jojo.jojozquizz.tools.Global;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
+import com.jojo.jojozquizz.tools.SecurityKey;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -49,6 +51,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler {
+
+	private static final String TAG = "MainActivity";
 
 	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
 	static final int USERS_ACTIVITY_REQUEST_CODE = 40;
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 		checkForUpdates();
 
-		if (((Global) this.getApplication()).getProcessedKey() == null) {
+		if (SecurityKey.getInstance().getKey() == null) {
 			getServerKey();
 		}
 		getLastIdFromServer();
@@ -131,10 +135,12 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					String serverKey = response.getString("key");
 					String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
 					String salt = BCrypt.gensalt();
-					((Global) mContext.getApplicationContext()).setProcessedKey(BCrypt.hashpw(combinedKey, salt));
+					SecurityKey.getInstance().setKey(BCrypt.hashpw(combinedKey, salt));
 				} catch (JSONException ignore) {
 				}
-			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show());
+			}, error -> {
+			Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
+		});
 		mRequestQueue.add(serverKeyRequest);
 	}
 
@@ -159,11 +165,13 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					LAST_ID.setValue(response.getLong("questionId"));
 				} catch (JSONException ignore) {
 				}
-			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show()) {
+			}, error -> {
+			Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show();
+		}) {
 			@Override
 			public Map<String, String> getHeaders() {
 				HashMap<String, String> headers = new HashMap<>();
-				String key = ((Global) mContext.getApplicationContext()).getAuthKey();
+				String key = SecurityKey.getInstance().getKey();
 				headers.put("app-auth", key);
 				return headers;
 			}
@@ -196,23 +204,27 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 		String fullRoute = API_URL + apiRoute + lang + "/";
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
-
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute + i, null, response -> {
-				try {
-					int id = response.getInt("questionId");
-					String q = response.getString("question");
-					String choices = response.getString("choices");
-					int category = response.getInt("category");
-					int difficulty = response.getInt("difficulty");
-					Question question = new Question(id, q, choices, category, difficulty);
-					QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
-				} catch (JSONException ignored) {
+			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute + i, null, new Response.Listener<JSONObject>() {
+				@Override
+				public void onResponse(JSONObject response) {
+					try {
+						int id = response.getInt("questionId");
+						String q = response.getString("question");
+						String choices = response.getString("choices");
+						int category = response.getInt("category");
+						int difficulty = response.getInt("difficulty");
+						Question question = new Question(id, q, choices, category, difficulty);
+						QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
+					} catch (JSONException exception) {
+					}
 				}
-			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show()) {
+			}, error -> {
+				Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
+			}) {
 				@Override
 				public Map<String, String> getHeaders() {
 					HashMap<String, String> headers = new HashMap<>();
-					String key = ((Global) mContext.getApplicationContext()).getAuthKey();
+					String key = SecurityKey.getInstance().getKey();
 					headers.put("app-auth", key);
 					return headers;
 				}
