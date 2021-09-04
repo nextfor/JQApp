@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -31,8 +32,8 @@ import com.jojo.jojozquizz.model.Question;
 import com.jojo.jojozquizz.tools.BCrypt;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
-import com.jojo.jojozquizz.tools.Global;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
+import com.jojo.jojozquizz.tools.SecurityKey;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +41,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SettingsActivity extends AppCompatActivity implements ClickHandler {
+public class SettingsActivity extends AppCompatActivity implements ClickHandler, Observer<Integer> {
 
 	private static final String TAG = "SettingsActivity";
 
@@ -95,33 +96,29 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler 
 		}
 
 		LAST_ID = new MutableLiveData<>();
-		if (((Global) this.getApplication()).getProcessedKey() == null) {
-			String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
-
-			JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
-				response -> {
-					try {
-						String serverKey = response.getString("key");
-						String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
-						((Global) mContext.getApplicationContext()).setProcessedKey(combinedKey);
-						getLastIdFromServer();
-					} catch (JSONException ignore) {
-					}
-				}, error -> {
-			});
-			mRequestQueue.add(serverKeyRequest);
-		} else {
-			getLastIdFromServer();
+		Log.d(TAG, "onCreate: " + SecurityKey.getInstance().getKey());
+		if (SecurityKey.getInstance().getKey() == null) {
+			getServerKey();
 		}
-		LAST_ID.observe(this, new Observer<Integer>() {
-			@Override
-			public void onChanged(Integer integer) {
-				if (QuestionsDatabase.getInstance(mContext).QuestionDAO().getAllQuestions().isEmpty() || integer > QuestionsDatabase.getInstance(mContext).QuestionDAO().getLastQuestion().getId()) {
-					addQuestions(integer);
-				}
-			}
-		});
+		getLastIdFromServer();
+		LAST_ID.observe(this, this);
+	}
 
+	private void getServerKey() {
+		String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
+		JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
+			response -> {
+				try {
+					String serverKey = response.getString("key");
+					String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
+					String salt = BCrypt.gensalt();
+					SecurityKey.getInstance().setKey(BCrypt.hashpw(combinedKey, salt));
+				} catch (JSONException ignore) {
+				}
+			}, error -> {
+			Snackbar.make(mBinding.getRoot(), R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
+		});
+		mRequestQueue.add(serverKeyRequest);
 	}
 
 	@Override
@@ -156,6 +153,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler 
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
+				Log.d(TAG, "onErrorResponse: " + error.getMessage());
 				Snackbar.make(findViewById(R.id.settings_constraint_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -206,9 +204,9 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler 
 				@Override
 				public Map<String, String> getHeaders() throws AuthFailureError {
 					HashMap<String, String> headers = new HashMap<>();
-					String key = ((Global) mContext.getApplicationContext()).getAuthKey();
-					String salt = BCrypt.gensalt();
-					headers.put("app-auth", BCrypt.hashpw(key, salt));
+					String key = SecurityKey.getInstance().getKey();
+					;
+					headers.put("app-auth", key);
 					return headers;
 				}
 			};
@@ -244,5 +242,12 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler 
 	@Override
 	public boolean onLongButtonClick(View v) {
 		return false;
+	}
+
+	@Override
+	public void onChanged(Integer integer) {
+		if (QuestionsDatabase.getInstance(mContext).QuestionDAO().getAllQuestions().isEmpty() || integer > QuestionsDatabase.getInstance(mContext).QuestionDAO().getLastQuestion().getId()) {
+			addQuestions(integer);
+		}
 	}
 }

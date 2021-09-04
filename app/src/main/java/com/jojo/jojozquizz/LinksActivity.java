@@ -6,7 +6,6 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -20,8 +19,6 @@ public class LinksActivity extends AppCompatActivity implements ClickHandler {
 	ActivityLinksBinding mBinding;
 
 	Fragment mLinksFragment, mThanksFragment;
-	FragmentManager mFragmentManager;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,12 +31,11 @@ public class LinksActivity extends AppCompatActivity implements ClickHandler {
 		AdRequest adRequest = new AdRequest.Builder().build();
 		mAdView.loadAd(adRequest);
 
-		mFragmentManager = getSupportFragmentManager();
-
 		mLinksFragment = new LinksFragment();
 		mThanksFragment = new ThanksFragment();
-		mFragmentManager.beginTransaction()
-			.replace(R.id.frame_layout_links, mLinksFragment)
+		getSupportFragmentManager().beginTransaction()
+			.add(R.id.frame_layout_links, mLinksFragment)
+			.addToBackStack(null)
 			.commit();
 	}
 
@@ -51,14 +47,16 @@ public class LinksActivity extends AppCompatActivity implements ClickHandler {
 			if (mLinksFragment == null) {
 				mLinksFragment = new LinksFragment();
 			}
-			mFragmentManager.beginTransaction()
+			getSupportFragmentManager().beginTransaction()
+				.setCustomAnimations(R.anim.slide_in_from_left, R.anim.fade_out)
 				.replace(R.id.frame_layout_links, mLinksFragment)
 				.commit();
 		} else if (id == R.id.links_activity_show_thanks) {
 			if (mThanksFragment == null) {
 				mThanksFragment = new ThanksFragment();
 			}
-			mFragmentManager.beginTransaction()
+			getSupportFragmentManager().beginTransaction()
+				.setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
 				.replace(R.id.frame_layout_links, mThanksFragment)
 				.commit();
 		} else if (id == R.id.linksReturnButton) {
