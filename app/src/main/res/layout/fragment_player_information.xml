@@ -112,6 +112,30 @@
 				app:tint="?attr/colorPrimary" />
 		</LinearLayout>
 
+		<com.google.android.material.floatingactionbutton.FloatingActionButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="16dp"
+			android:contentDescription="@string/share_fab_content_desc"
+			android:onClick="@{handler::onButtonClick}"
+			android:src="@drawable/ic_share"
+			android:theme="@style/SecondaryFAB"
+			app:borderWidth="0dp"
+			app:layout_constraintBottom_toTopOf="@+id/editPlayerFab"
+			app:layout_constraintEnd_toEndOf="parent" />
+
+		<com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+			android:id="@+id/editPlayerFab"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="16dp"
+			android:contentDescription="@string/edit_fab_content_desc"
+			android:onClick="@{handler::onButtonClick}"
+			android:text="@string/edit_fab_text"
+			app:icon="@drawable/ic_edit"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent" />
+
 		<androidx.constraintlayout.widget.Guideline
 			android:id="@+id/guideline15"
 			android:layout_width="wrap_content"

@@ -152,4 +152,7 @@
 	<string name="links_button">Liens</string>
 	<string name="thanks_button">Remerciements</string>
 	<string name="create_player">Ajouter un utilisateur</string>
+	<string name="edit_fab_text">Edit name</string>
+	<string name="edit_fab_content_desc">Pencil to change user nickname</string>
+	<string name="share_fab_content_desc">Share logo</string>
 </resources>

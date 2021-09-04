@@ -184,5 +184,8 @@
 	<string name="remove_player">Delete user</string>
 	<string name="get_player_from_server">Get user from server</string>
 	<string name="create_player">Add player</string>
+	<string name="edit_fab_text">Edit name</string>
+	<string name="edit_fab_content_desc">Pencil to change user nickname</string>
+	<string name="share_fab_content_desc">Share logo</string>
 
 </resources>

@@ -30,7 +30,6 @@ public class PlayersActivity extends AppCompatActivity {
 
 		getSupportFragmentManager().beginTransaction()
 			.add(R.id.frameLayoutPlayers, mPlayersFragment)
-			.addToBackStack("main")
 			.commit();
 	}
 }
