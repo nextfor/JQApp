@@ -12,7 +12,7 @@
 		<item name="colorSurface">@color/background_night_lighter</item>
 		<item name="colorOnSurface">@color/white</item>
 
-		<item name="android:statusBarColor" tools:targetApi="1">@color/brand_red_dark</item>
+		<item name="android:statusBarColor" tools:targetApi="1">@color/brand_red</item>
 
 		<item name="android:fontFamily">@font/caviar_font</item>
 
@@ -20,7 +20,7 @@
 
 	<style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
 		<item name="android:windowBackground">@drawable/splash_background</item>
-		<item name="android:statusBarColor">@color/brand_blue_dark</item>
+		<item name="android:statusBarColor">@color/brand_red_dark</item>
 		<item name="android:colorBackground">@color/background_night</item>
 	</style>
 

@@ -19,7 +19,7 @@
 
 	<style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
 		<item name="android:windowBackground">@drawable/splash_background</item>
-		<item name="android:statusBarColor">@color/brand_blue_light</item>
+		<item name="android:statusBarColor">@color/brand_red</item>
 		<item name="android:colorBackground">@color/background_light</item>
 	</style>
 
