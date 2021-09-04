@@ -2,7 +2,6 @@ package com.jojo.jojozquizz.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +40,8 @@ public class NameDialog extends AppCompatDialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View view = inflater.inflate(R.layout.dialog_name, null);
 
+		mNewName = view.findViewById(R.id.dialog_name_input);
+
 		setCancelable(isCancelable);
 
 		TextView title = view.findViewById(R.id.dialog_progress_title);
@@ -54,8 +55,6 @@ public class NameDialog extends AppCompatDialogFragment {
 				mainListener.applyText(name);
 			})
 			.setCancelable(isCancelable);
-
-		mNewName = view.findViewById(R.id.dialog_name_input);
 
 		return builder.create();
 	}

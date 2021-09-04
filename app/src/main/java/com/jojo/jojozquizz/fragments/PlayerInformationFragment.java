@@ -1,7 +1,6 @@
 package com.jojo.jojozquizz.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +10,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.R;
 import com.jojo.jojozquizz.databinding.FragmentPlayerInformationBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
@@ -63,35 +63,35 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 
 		if (id == R.id.information_back_arrow) {
 			getParentFragmentManager().popBackStack();
-		} else if (id == R.id.information_button_edit_user) {
-			NameDialog nameDialog = new NameDialog();
-			nameDialog.setIsCancelable(true);
-			nameDialog.setListener(this);
-			nameDialog.show(getParentFragmentManager(), "information name dialog");
-		} else if (id == R.id.information_share_button) {
+		} else if (id == R.id.editPlayerFab) {
+			mBinding.editPlayerFab.shrink();
+			askUsernameDialog();
+		} else if (id == R.id.sharePlayerFab) {
 			share();
 		} else if (id == R.id.information_button_delete_user) {
 			if (PlayersDatabase.getInstance(getContext()).PlayersDAO().getAllPlayers().size() <= 1) {
 				Toast.makeText(getContext(), getString(R.string.delete_user_error), Toast.LENGTH_SHORT).show();
 			} else {
-				AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-				builder.setTitle(getString(R.string.delete_user))
+				MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+				builder.setTitle(R.string.delete_user)
 					.setCancelable(true)
-					.setIcon(requireContext().getDrawable(R.drawable.ic_delete))
 					.setMessage(R.string.delete_user_message)
-					.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							PlayersDatabase.getInstance(getContext()).PlayersDAO().deletePlayerWithId(mPlayer.getId());
-							requireContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
-							getParentFragmentManager().beginTransaction()
-								.replace(R.id.frameLayoutPlayers, new PlayersFragment())
-								.commit();
-						}
-					}).setNegativeButton(getString(R.string.all_cancel), null);
-				builder.show();
+					.setPositiveButton(R.string.delete, ((dialog, which) -> {
+						PlayersDatabase.getInstance(getContext()).PlayersDAO().deletePlayerWithId(mPlayer.getId());
+						requireContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
+						getParentFragmentManager().beginTransaction()
+							.replace(R.id.frameLayoutPlayers, new PlayersFragment())
+							.commit();
+					})).setNegativeButton(R.string.all_cancel, null).show();
 			}
 		}
+	}
+
+	private void askUsernameDialog() {
+		NameDialog nameDialog = new NameDialog();
+		nameDialog.setIsCancelable(true);
+		nameDialog.setListener(this);
+		nameDialog.show(getParentFragmentManager(), "information name dialog");
 	}
 
 	@Override
@@ -105,12 +105,12 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 		Matcher matcher = pattern.matcher(name);
 
 		if (!matcher.find()) {
-			NameDialog nameDialog = new NameDialog();
-			nameDialog.show(getParentFragmentManager(), "information name dialog");
-			Toast.makeText(getContext(), getResources().getString(R.string.invalid_name), Toast.LENGTH_SHORT).show();
+			Snackbar.make(mBinding.getRoot(), R.string.invalid_name, Snackbar.LENGTH_SHORT).show();
+			askUsernameDialog();
 		} else {
 			PlayersDatabase.getInstance(getContext()).PlayersDAO().changeName(mPlayer.getId(), name);
 			mBinding.informationUserName.setText(name);
+			mBinding.editPlayerFab.extend();
 		}
 	}
 }

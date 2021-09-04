@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.R;
 import com.jojo.jojozquizz.databinding.FragmentPlayersBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
@@ -115,12 +116,16 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 				FabAnimation.showOut(mFloatingActionButtonRemove, 1);
 			}
 		} else if (id == R.id.floatingActionButtonChildAdd) {
-			NameDialog nameDialog = new NameDialog();
-			nameDialog.setIsNewUser(true);
-			nameDialog.setIsCancelable(true);
-			nameDialog.setListener(this);
-			nameDialog.show(getParentFragmentManager(), "name dialog usersactivity");
+			askUsernameDialog();
 		}
+	}
+
+	private void askUsernameDialog() {
+		NameDialog nameDialog = new NameDialog();
+		nameDialog.setIsNewUser(true);
+		nameDialog.setIsCancelable(true);
+		nameDialog.setListener(this);
+		nameDialog.show(getParentFragmentManager(), "name dialog usersactivity");
 	}
 
 	@Override
@@ -139,16 +144,15 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 		Matcher matcher = pattern.matcher(name);
 
 		if (!matcher.find()) {
-			NameDialog nameDialog = new NameDialog();
-			nameDialog.setIsNewUser(true);
-			nameDialog.show(getParentFragmentManager(), "name dialog usersactivity");
-			Toast.makeText(getContext(), getResources().getString(R.string.invalid_name), Toast.LENGTH_SHORT).show();
+			Snackbar.make(mBinding.getRoot(), R.string.invalid_name, Snackbar.LENGTH_SHORT).show();
+			askUsernameDialog();
 		} else {
 			Player player = new Player(name, getContext());
 			PlayersDatabase.getInstance(getContext()).PlayersDAO().addPlayer(player);
-
 			Player newPlayer = PlayersDatabase.getInstance(getContext()).PlayersDAO().getPlayerFromName(player.getName());
 			getContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", newPlayer.getId()).apply();
+			mPlayers.add(player);
+			mAdapter.notifyItemChanged(mPlayers.size() - 1);
 		}
 	}
 }

@@ -306,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		Pattern pattern = Pattern.compile(NameDialog.REGEX);
 		Matcher matcher = pattern.matcher(name);
 		if (!matcher.find()) {
+			Snackbar.make(mBinding.getRoot(), R.string.invalid_name, Snackbar.LENGTH_SHORT).show();
 			askUsernameDialog();
 		} else {
 			Player player = new Player(name, this);
