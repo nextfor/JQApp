@@ -85,7 +85,7 @@ public class FabAnimation {
 	public static void fadeAndRotateYIn(final View v, int position) {
 		v.setVisibility(View.VISIBLE);
 		v.setAlpha(0f);
-		v.setRotationY(360f);
+		v.setRotationY(90f);
 		v.animate()
 			.setStartDelay((100L * position) - 100)
 			.setDuration(200)
@@ -95,7 +95,7 @@ public class FabAnimation {
 					super.onAnimationEnd(animation);
 				}
 			}).alpha(1f)
-			.rotationY(180f)
+			.rotationY(0f)
 			.start();
 	}
 
@@ -113,7 +113,7 @@ public class FabAnimation {
 					super.onAnimationEnd(animation);
 				}
 			}).alpha(0f)
-			.rotationY(180f)
+			.rotationY(90f)
 			.start();
 	}
 
