@@ -16,7 +16,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -201,10 +200,9 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 				}
 			}) {
 				@Override
-				public Map<String, String> getHeaders() throws AuthFailureError {
+				public Map<String, String> getHeaders() {
 					HashMap<String, String> headers = new HashMap<>();
 					String key = SecurityKey.getInstance().getKey();
-					;
 					headers.put("app-auth", key);
 					return headers;
 				}
