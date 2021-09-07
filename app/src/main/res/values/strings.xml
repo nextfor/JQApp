@@ -169,7 +169,7 @@
 	<string name="later">Later</string>
 	<string name="rewrite">Rewrite</string>
 	<string name="select_nothing_checked">You have to choose at least one difficulty and one category</string>
-	<string name="delete_user">Delete this user ?</string>
+	<string name="delete_user">Delete this user</string>
 	<string name="delete">Delete</string>
 	<string name="delete_user_message">Do you really want to delete this user ?</string>
 	<string name="delete_user_error">There is just one user left, you can\'t remove it</string>
@@ -187,10 +187,14 @@
 	<string name="edit_fab_text">Edit name</string>
 	<string name="edit_fab_content_desc">Pencil to change user nickname</string>
 	<string name="share_fab_content_desc">Share logo</string>
-    <string name="rate_app">Rate Jojoz Quizz !</string>
+	<string name="rate_app">Rate Jojoz Quizz !</string>
 	<string name="rate_app_message">Apparently you are enjoying the app ! Please rate it on the store to support us !</string>
 	<string name="never_ask_again">Never assk again</string>
-    <string name="ask_later">Ask later</string>
+	<string name="ask_later">Ask later</string>
 	<string name="rate_it">Rate it !</string>
+	<string name="total_score">Score total :</string>
+	<string name="best_score">Meilleur score :</string>
+	<string name="games_played">Nombre de parties jouées :</string>
+	<string name="answers_ratio">Bonnes réponses / questions posées :</string>
 
 </resources>

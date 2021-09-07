@@ -139,7 +139,7 @@
 	<string name="rewrite">Réécrire</string>
 	<string name="select_nothing_checked">Il faut choisir au moins une catégorie et une difficulté</string>
 	<string name="delete">Supprimer</string>
-	<string name="delete_user">Supprimer l\'utilisateur ?</string>
+	<string name="delete_user">Supprimer l\'utilisateur</string>
 	<string name="delete_user_message">Voulez-vous vraiment supprimer cet utilisateur ?</string>
 	<string name="delete_user_error">Il n\'y a plus qu\'un seul utilisateur vous ne pouvez pas enlever le dernier</string>
 	<string name="user_stats">Statistiques :\n- Score total : %1$d\n- Meilleur score : %2$d\n- Nombre de parties jouées : %3$d\n- Nombre de bonnes réponses / nombres de questions posées : %4$d/%5$d</string>
@@ -155,9 +155,13 @@
 	<string name="edit_fab_text">Edit name</string>
 	<string name="edit_fab_content_desc">Pencil to change user nickname</string>
 	<string name="share_fab_content_desc">Share logo</string>
-    <string name="rate_app">Rate Jojoz Quizz !</string>
+	<string name="rate_app">Rate Jojoz Quizz !</string>
 	<string name="rate_app_message">Apparently you are enjoying the app ! Please rate it on the store to support us !</string>
 	<string name="never_ask_again">Never assk again</string>
-    <string name="ask_later">Ask later</string>
+	<string name="ask_later">Ask later</string>
 	<string name="rate_it">Rate it !</string>
+	<string name="total_score">Score total :</string>
+	<string name="best_score">Meilleur score :</string>
+	<string name="games_played">Nombre de parties jouées :</string>
+	<string name="answers_ratio">Bonnes réponses / questions posées :</string>
 </resources>
