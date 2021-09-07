@@ -3,6 +3,7 @@ package com.jojo.jojozquizz;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -28,6 +29,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.databinding.ActivityMainBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
@@ -185,6 +187,25 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == GAME_ACTIVITY_REQUEST_CODE) {
 			mBinding.setPlayer(mPlayer);
+			if (mPlayer.getGamesPlayed() >= 3 && mPreferences.getBoolean("wants_rate_app", true)) {
+				MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+				builder.setTitle(R.string.rate_app)
+					.setMessage(R.string.rate_app_message)
+					.setNeutralButton(R.string.never_ask_again, (dialog, which) -> {
+						mPreferences.edit().putBoolean("wants_rate_app", false).apply();
+					})
+					.setNegativeButton(R.string.ask_later, ((dialog, which) -> {
+						dialog.dismiss();
+					}))
+					.setPositiveButton(R.string.rate_it, ((dialog, which) -> {
+					mPreferences.edit().putBoolean("wants_rate_app", false).apply();
+					try {
+						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+					} catch (android.content.ActivityNotFoundException activityNotFoundException) {
+						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+					}
+				})).show();
+			}
 		} else if (requestCode == USERS_ACTIVITY_REQUEST_CODE) {
 			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
 			mBinding.setPlayer(mPlayer);
@@ -215,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 						int difficulty = response.getInt("difficulty");
 						Question question = new Question(id, q, choices, category, difficulty);
 						QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
-					} catch (JSONException exception) {
+					} catch (JSONException ignore) {
 					}
 				}
 			}, error -> {

@@ -155,4 +155,9 @@
 	<string name="edit_fab_text">Edit name</string>
 	<string name="edit_fab_content_desc">Pencil to change user nickname</string>
 	<string name="share_fab_content_desc">Share logo</string>
+    <string name="rate_app">Rate Jojoz Quizz !</string>
+	<string name="rate_app_message">Apparently you are enjoying the app ! Please rate it on the store to support us !</string>
+	<string name="never_ask_again">Never assk again</string>
+    <string name="ask_later">Ask later</string>
+	<string name="rate_it">Rate it !</string>
 </resources>
