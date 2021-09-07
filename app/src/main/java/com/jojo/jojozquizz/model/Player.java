@@ -9,6 +9,8 @@ import androidx.room.PrimaryKey;
 
 import com.jojo.jojozquizz.tools.CategoriesHelper;
 
+import java.util.Objects;
+
 @Entity(tableName = "players")
 public class Player {
 
@@ -173,5 +175,18 @@ public class Player {
 
 	public int getLastGameLength() {
 		return Integer.parseInt(this.lastGame.split("-/-")[1]);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Player player = (Player) o;
+		return id == player.id && score == player.score && bestScore == player.bestScore && gamesPlayed == player.gamesPlayed && totalQuestions == player.totalQuestions && validatedQuestions == player.validatedQuestions && Objects.equals(mCategoriesHelper, player.mCategoriesHelper) && Objects.equals(name, player.name) && Objects.equals(lastGame, player.lastGame) && Objects.equals(categoriesSelected, player.categoriesSelected) && Objects.equals(difficultiesSelected, player.difficultiesSelected) && Objects.equals(bonus, player.bonus);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(mCategoriesHelper, id, name, score, bestScore, gamesPlayed, totalQuestions, validatedQuestions, lastGame, categoriesSelected, difficultiesSelected, bonus);
 	}
 }
