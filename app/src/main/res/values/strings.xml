@@ -171,7 +171,7 @@
 	<string name="select_nothing_checked">You have to choose at least one difficulty and one category</string>
 	<string name="delete_user">Delete this user ?</string>
 	<string name="delete">Delete</string>
-	<string name="delete_user_message">Do you really want to erase this user ?</string>
+	<string name="delete_user_message">Do you really want to delete this user ?</string>
 	<string name="delete_user_error">There is just one user left, you can\'t remove it</string>
 	<string name="user_stats">Stats :\n- Total score : %1$d\n- High score : %2$d\n- Number of games played : %3$d\n- Number of questions answered correctly / number of questions asked : %4$d/%5$d</string>
 

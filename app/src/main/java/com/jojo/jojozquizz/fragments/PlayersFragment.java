@@ -73,6 +73,25 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 		super.onViewCreated(view, savedInstanceState);
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		isMainFabRotate = false;
+
+		Bundle args = getArguments();
+		if (args != null) {
+			if (args.getInt("action") == 1) {
+				Player removedPlayer = PlayersDatabase.getInstance(getContext()).PlayersDAO().getPlayer(args.getInt("userId"));
+				int i = mPlayers.indexOf(removedPlayer);
+				PlayersDatabase.getInstance(getContext()).PlayersDAO().deletePlayerWithId(removedPlayer.getId());
+				mPlayers.remove(i);
+				mAdapter.notifyItemRemoved(i);
+			}
+			args.clear();
+		}
+	}
+
 	private void configureOnClickRecyclerView() {
 		RecyclerItemClickSupport.addTo(mRecyclerView, R.layout.fragment_players)
 			.setOnItemClickListener(new RecyclerItemClickSupport.OnItemClickListener() {
@@ -86,7 +105,8 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 					requireActivity().getSupportFragmentManager().beginTransaction()
 						.setCustomAnimations(R.anim.slide_in, R.anim.slide_out_to_left, R.anim.slide_in_from_left, R.anim.slide_out)
 						.replace(R.id.frameLayoutPlayers, fragment)
-						.addToBackStack(null)
+						.setReorderingAllowed(true)
+						.addToBackStack("first")
 						.commit();
 				}
 			});
@@ -116,16 +136,16 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 				FabAnimation.showOut(mFloatingActionButtonRemove, 1);
 			}
 		} else if (id == R.id.floatingActionButtonChildAdd) {
-			isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
-			showOutEverything();
+			showOutEverything(v);
 			askUsernameDialog();
 		}
 	}
 
-	private void showOutEverything() {
+	private void showOutEverything(View v) {
 		FabAnimation.showOut(mFloatingActionButtonAdd, 3);
 		FabAnimation.showOut(mFloatingActionButtonAddFromServer, 2);
 		FabAnimation.showOut(mFloatingActionButtonRemove, 1);
+		isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
 	}
 
 	private void askUsernameDialog() {
@@ -159,8 +179,8 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 			PlayersDatabase.getInstance(getContext()).PlayersDAO().addPlayer(player);
 			Player newPlayer = PlayersDatabase.getInstance(getContext()).PlayersDAO().getPlayerFromName(player.getName());
 			getContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", newPlayer.getId()).apply();
-			mPlayers.add(player);
-			mAdapter.notifyItemChanged(mPlayers.size() - 1);
+			mPlayers.add(newPlayer);
+			mAdapter.notifyItemInserted(mPlayers.size() - 1);
 		}
 	}
 }

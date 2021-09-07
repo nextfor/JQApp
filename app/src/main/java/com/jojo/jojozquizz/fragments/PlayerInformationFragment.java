@@ -1,8 +1,10 @@
 package com.jojo.jojozquizz.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,7 +40,10 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 		mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_player_information, container, false);
 
 		Bundle args = getArguments();
-		int userId = args.getInt("userId", 0);
+		int userId = 0;
+		if (args != null) {
+			userId = args.getInt("userId", 0);
+		}
 
 		mPlayer = PlayersDatabase.getInstance(getContext()).PlayersDAO().getPlayer(userId);
 
@@ -72,17 +78,31 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 			if (PlayersDatabase.getInstance(getContext()).PlayersDAO().getAllPlayers().size() <= 1) {
 				Toast.makeText(getContext(), getString(R.string.delete_user_error), Toast.LENGTH_SHORT).show();
 			} else {
-				MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+				MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
 				builder.setTitle(R.string.delete_user)
 					.setCancelable(true)
 					.setMessage(R.string.delete_user_message)
-					.setPositiveButton(R.string.delete, ((dialog, which) -> {
-						PlayersDatabase.getInstance(getContext()).PlayersDAO().deletePlayerWithId(mPlayer.getId());
-						requireContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
-						getParentFragmentManager().beginTransaction()
-							.replace(R.id.frameLayoutPlayers, new PlayersFragment())
-							.commit();
-					})).setNegativeButton(R.string.all_cancel, null).show();
+					.setPositiveButton(R.string.delete, (new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							PlayersFragment playersFragment = new PlayersFragment();
+							Bundle args = new Bundle();
+							args.putInt("action", 1);
+							Log.d("TRUC", "onClick: " + mPlayer.getId());
+							args.putInt("userId", mPlayer.getId());
+							playersFragment.setArguments(args);
+							requireContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
+							getParentFragmentManager().popBackStack("first", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+							getParentFragmentManager().beginTransaction()
+								.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out, R.anim.slide_in, R.anim.slide_out_to_left)
+								.replace(R.id.frameLayoutPlayers, playersFragment)
+								.addToBackStack(null)
+								.setReorderingAllowed(true)
+								.commit();
+						}
+					}))
+					.setNegativeButton(R.string.all_cancel, null)
+					.show();
 			}
 		}
 	}
