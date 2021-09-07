@@ -197,8 +197,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 			}, new Response.ErrorListener() {
 				@Override
 				public void onErrorResponse(VolleyError error) {
-					//TODO: Translate
-					Snackbar.make(findViewById(R.id.drawer_layout), "Impossible de récupérer les questions du serveur, réessayez plus tard", Snackbar.LENGTH_LONG).show();
+					Snackbar.make(findViewById(R.id.drawer_layout), R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
 				}
 			}) {
 				@Override
