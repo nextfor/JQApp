@@ -189,12 +189,12 @@
 	<string name="share_fab_content_desc">Share logo</string>
 	<string name="rate_app">Rate Jojoz Quizz !</string>
 	<string name="rate_app_message">Apparently you are enjoying the app ! Please rate it on the store to support us !</string>
-	<string name="never_ask_again">Never assk again</string>
+	<string name="never_ask_again">Never ask again</string>
 	<string name="ask_later">Ask later</string>
 	<string name="rate_it">Rate it !</string>
-	<string name="total_score">Score total :</string>
-	<string name="best_score">Meilleur score :</string>
-	<string name="games_played">Nombre de parties jouées :</string>
-	<string name="answers_ratio">Bonnes réponses / questions posées :</string>
+	<string name="total_score">Total score :</string>
+	<string name="best_score">Best score :</string>
+	<string name="games_played">Games played :</string>
+	<string name="answers_ratio">Good answers / questions asked :</string>
 
 </resources>
