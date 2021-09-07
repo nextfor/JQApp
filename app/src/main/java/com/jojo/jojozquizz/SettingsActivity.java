@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RadioButton;
 
 import androidx.appcompat.app.AlertDialog;
@@ -19,8 +18,6 @@ import androidx.lifecycle.Observer;
 import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
@@ -35,7 +32,6 @@ import com.jojo.jojozquizz.tools.QuestionsDatabase;
 import com.jojo.jojozquizz.tools.SecurityKey;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +43,6 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 	private Context mContext;
 	private SharedPreferences mPreferences;
 
-	private Button mReloadButton, mPrivacyButton, mTermsButton;
 	private RadioButton mFrButton, mEnButton;
 
 	private String API_URL;
@@ -78,14 +73,11 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 		mRequestQueue = new RequestQueue(mCache, mNetwork);
 		mRequestQueue.start();
 
-		mReloadButton = mBinding.settingsReloadQuestions;
 		mFrButton = mBinding.settingsRadioFr;
 		mEnButton = mBinding.settingsRadioEn;
-		mPrivacyButton = mBinding.privacyPolicy;
-		mTermsButton = mBinding.termsOfService;
 
-		String langage = mPreferences.getString("langage", "EN");
-		switch (langage) {
+		String language = mPreferences.getString("language", "EN");
+		switch (language) {
 			case "FR":
 				mFrButton.setChecked(true);
 				break;
@@ -114,24 +106,22 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 					SecurityKey.getInstance().setKey(BCrypt.hashpw(combinedKey, salt));
 				} catch (JSONException ignore) {
 				}
-			}, error -> {
-			Snackbar.make(mBinding.getRoot(), R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
-		});
+			}, error -> Snackbar.make(mBinding.getRoot(), R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show());
 		mRequestQueue.add(serverKeyRequest);
 	}
 
 	@Override
 	protected void onStop() {
-		String selectedLang = mPreferences.getString("langage", "EN");
+		String selectedLang = mPreferences.getString("language", "EN");
 		if (mFrButton.isChecked()) {
 			if (selectedLang.equals("EN")) {
 				QuestionsDatabase.getInstance(mContext).QuestionDAO().deleteTable();
 			}
-			mPreferences.edit().putString("langage", "FR").apply();
+			mPreferences.edit().putString("language", "FR").apply();
 		} else if (mEnButton.isChecked()) {
 			if (selectedLang.equals("FR"))
 				QuestionsDatabase.getInstance(mContext).QuestionDAO().deleteTable();
-			mPreferences.edit().putString("langage", "EN").apply();
+			mPreferences.edit().putString("language", "EN").apply();
 		}
 
 		super.onStop();
@@ -139,27 +129,16 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 
 	private void getLastIdFromServer() {
 		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
-		String lang = mPreferences.getString("langage", "EN");
+		String lang = mPreferences.getString("language", "EN");
 
-		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null, new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					LAST_ID.setValue(response.getInt("questionId"));
-				} catch (JSONException ignore) {
-				}
+		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null, response -> {
+			try {
+				LAST_ID.setValue(response.getInt("questionId"));
+			} catch (JSONException ignore) {
 			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				Log.d(TAG, "onErrorResponse: " + error.getMessage());
-				Snackbar.make(findViewById(R.id.settings_constraint_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						getLastIdFromServer();
-					}
-				}).show();
-			}
+		}, error -> {
+			Log.d(TAG, "onErrorResponse: " + error.getMessage());
+			Snackbar.make(findViewById(R.id.settings_constraint_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show();
 		});
 		mRequestQueue.add(jsonObjectRequest);
 	}
@@ -174,31 +153,23 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 		}
 
 		String apiRoute = getResources().getString(R.string.api_endpoint_getQuestion);
-		String lang = mPreferences.getString("langage", "EN");
+		String lang = mPreferences.getString("language", "EN");
 
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
 			String fullRoute = API_URL + apiRoute + lang + "/" + i;
 
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute, null, new Response.Listener<JSONObject>() {
-				@Override
-				public void onResponse(JSONObject response) {
-					try {
-						int id = response.getInt("questionId");
-						String q = response.getString("question");
-						String choices = response.getString("choices");
-						int category = response.getInt("category");
-						int difficulty = response.getInt("difficulty");
-						Question question = new Question(id, q, choices, category, difficulty);
-						QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
-					} catch (JSONException ignored) {
-					}
+			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute, null, response -> {
+				try {
+					int id = response.getInt("questionId");
+					String q = response.getString("question");
+					String choices = response.getString("choices");
+					int category = response.getInt("category");
+					int difficulty = response.getInt("difficulty");
+					Question question = new Question(id, q, choices, category, difficulty);
+					QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
+				} catch (JSONException ignored) {
 				}
-			}, new Response.ErrorListener() {
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					Snackbar.make(findViewById(R.id.drawer_layout), R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
-				}
-			}) {
+			}, error -> Snackbar.make(findViewById(R.id.drawer_layout), R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show()) {
 				@Override
 				public Map<String, String> getHeaders() {
 					HashMap<String, String> headers = new HashMap<>();
@@ -226,10 +197,10 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 				});
 			builder.show();
 		} else if (id == R.id.privacy_policy) {
-			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/privacy_policy/" + mPreferences.getString("langage", "EN")));
+			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/privacy_policy/" + mPreferences.getString("language", "EN")));
 			startActivity(launchBrowser);
 		} else if (id == R.id.terms_of_service) {
-			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/terms_of_service/" + mPreferences.getString("langage", "EN")));
+			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/terms_of_service/" + mPreferences.getString("language", "EN")));
 			startActivity(launchBrowser);
 		} else if (id == R.id.settingsBackButton) {
 			finish();

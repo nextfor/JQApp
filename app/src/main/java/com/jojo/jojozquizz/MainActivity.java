@@ -3,7 +3,6 @@ package com.jojo.jojozquizz;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -153,13 +152,13 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				lang = "FR";
 				break;
 		}
-		mPreferences.edit().putString("langage", lang).apply();
+		mPreferences.edit().putString("language", lang).apply();
 		askUsernameDialog();
 	}
 
 	private void getLastIdFromServer() {
 		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
-		String lang = mPreferences.getString("langage", "EN");
+		String lang = mPreferences.getString("language", "EN");
 
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null,
 			response -> {
@@ -198,13 +197,13 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 						dialog.dismiss();
 					}))
 					.setPositiveButton(R.string.rate_it, ((dialog, which) -> {
-					mPreferences.edit().putBoolean("wants_rate_app", false).apply();
-					try {
-						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
-					} catch (android.content.ActivityNotFoundException activityNotFoundException) {
-						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
-					}
-				})).show();
+						mPreferences.edit().putBoolean("wants_rate_app", false).apply();
+						try {
+							startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+						} catch (android.content.ActivityNotFoundException activityNotFoundException) {
+							startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+						}
+					})).show();
 			}
 		} else if (requestCode == USERS_ACTIVITY_REQUEST_CODE) {
 			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
@@ -221,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		}
 
 		String apiRoute = getResources().getString(R.string.api_endpoint_getQuestion);
-		String lang = mPreferences.getString("langage", "EN");
+		String lang = mPreferences.getString("language", "EN");
 
 		String fullRoute = API_URL + apiRoute + lang + "/";
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
