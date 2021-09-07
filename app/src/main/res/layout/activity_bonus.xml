@@ -204,7 +204,7 @@
             android:layout_marginBottom="16dp"
             android:contentDescription="TODO"
             android:onClick="@{handler::onButtonClick}"
-            android:src="@drawable/help_outline"
+            android:src="@drawable/ic_help"
             app:layout_constraintBottom_toTopOf="@+id/adViewBonus"
             app:layout_constraintEnd_toEndOf="parent" />
 
