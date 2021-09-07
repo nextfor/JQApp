@@ -136,16 +136,15 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 				FabAnimation.showOut(mFloatingActionButtonRemove, 1);
 			}
 		} else if (id == R.id.floatingActionButtonChildAdd) {
-			showOutEverything(v);
+			showOutEverything();
 			askUsernameDialog();
 		}
 	}
 
-	private void showOutEverything(View v) {
+	private void showOutEverything() {
 		FabAnimation.showOut(mFloatingActionButtonAdd, 3);
 		FabAnimation.showOut(mFloatingActionButtonAddFromServer, 2);
 		FabAnimation.showOut(mFloatingActionButtonRemove, 1);
-		isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
 	}
 
 	private void askUsernameDialog() {
