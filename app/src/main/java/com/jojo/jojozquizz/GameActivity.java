@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +18,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jojo.jojozquizz.databinding.ActivityGameBinding;
@@ -104,21 +106,6 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 		mBinding.setPlayer(mPlayer);
 
 		mTotalQuestions = mNumberOfQuestions;
-
-//		AdRequest adRequest = new AdRequest.Builder().build();
-//		InterstitialAd.load(this, "ca-app-pub-5050054249389989/7659082720", adRequest, new InterstitialAdLoadCallback() {
-//			@Override
-//			public void onAdLoaded(@NonNull com.google.android.gms.ads.interstitial.InterstitialAd interstitialAd) {
-//				super.onAdLoaded(interstitialAd);
-//				mInterstitialAd = interstitialAd;
-//			}
-//
-//			@Override
-//			public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-//				super.onAdFailedToLoad(loadAdError);
-//				mInterstitialAd = null;
-//			}
-//		});
 
 		mEnableTouchEvents = false;
 
@@ -458,11 +445,25 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 			mValidatedQuestions++;
 		} else {
 			mLives--;
+			if (mLives <= 0) {
+				AdRequest adRequest = new AdRequest.Builder().build();
+				InterstitialAd.load(this, "ca-app-pub-5050054249389989/7659082720", adRequest, new InterstitialAdLoadCallback() {
+					@Override
+					public void onAdLoaded(@NonNull com.google.android.gms.ads.interstitial.InterstitialAd interstitialAd) {
+						super.onAdLoaded(interstitialAd);
+						mInterstitialAd = interstitialAd;
+					}
+
+					@Override
+					public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+						super.onAdFailedToLoad(loadAdError);
+						mInterstitialAd = null;
+					}
+				});
+			}
 			mBinding.gameBottomSheetContent.numberOfLivesText.setText(getString(R.string.lives_text, Math.max(mLives, 0)));
 			calculateScore(false);
 		}
-		Log.d(TAG, "checkAnswerValidity: " + rightIndex);
-		Log.d(TAG, "checkAnswerValidity: " + clickedIndex);
 		displayResult(mAllAnswerButton[rightIndex], mAllAnswerButton[clickedIndex]);
 	}
 
@@ -537,6 +538,9 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 	private void stopGame() {
 		mEnableTouchEvents = false;
 		manageSaves();
+		if (mInterstitialAd != null) {
+			mInterstitialAd.show(this);
+		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(getResources().getString(R.string.game_game_over))
 			.setMessage(getResources().getString(R.string.game_end_game, mValidatedQuestions, mTotalQuestions, mScore))
