@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +41,6 @@ import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
-import com.jojo.jojozquizz.tools.SecurityKey;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	boolean isFirstTime;
 	Player mPlayer;
+
+	String mSecurityKey;
 
 	RequestQueue mRequestQueue;
 	Cache mCache;
@@ -109,16 +111,22 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		if (isFirstTime) {
 			firstTime();
 		} else {
+			if (mPreferences.getString("langage", "EN") == null) {
+				String lang;
+				switch (Locale.getDefault().getCountry()) {
+					default:
+						lang = "FR";
+						break;
+				}
+				mPreferences.edit().putString("language", lang).putString("langage", null).apply();
+			}
 			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
 			mBinding.setPlayer(mPlayer);
 		}
 
 		checkForUpdates();
 
-		if (SecurityKey.getInstance().getKey() == null) {
-			getServerKey();
-		}
-		getLastIdFromServer();
+		getServerKey();
 
 		LAST_ID = new MutableLiveData<>();
 		LAST_ID.observe(this, long_number -> {
@@ -136,7 +144,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					String serverKey = response.getString("key");
 					String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
 					String salt = BCrypt.gensalt();
-					SecurityKey.getInstance().setKey(BCrypt.hashpw(combinedKey, salt));
+					mSecurityKey = BCrypt.hashpw(combinedKey, salt);
+					getLastIdFromServer();
 				} catch (JSONException ignore) {
 				}
 			}, error -> {
@@ -172,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			@Override
 			public Map<String, String> getHeaders() {
 				HashMap<String, String> headers = new HashMap<>();
-				String key = SecurityKey.getInstance().getKey();
-				headers.put("app-auth", key);
+				Log.d(TAG, "getHeaders: " + mSecurityKey);
+				headers.put("app-auth", mSecurityKey);
 				return headers;
 			}
 		};
@@ -244,8 +253,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				@Override
 				public Map<String, String> getHeaders() {
 					HashMap<String, String> headers = new HashMap<>();
-					String key = SecurityKey.getInstance().getKey();
-					headers.put("app-auth", key);
+					headers.put("app-auth", mSecurityKey);
 					return headers;
 				}
 			};
