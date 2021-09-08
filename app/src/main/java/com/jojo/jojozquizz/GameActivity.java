@@ -195,9 +195,10 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 					switch (newState) {
 						case BottomSheetBehavior.STATE_HIDDEN:
 							FabAnimation.fadeAndRotateYIn(mFloatingActionButton, 1);
+							mCurrentBottomSheetState = newState;
 							break;
 						case BottomSheetBehavior.STATE_COLLAPSED:
-							FabAnimation.fadeAndRotateYOut(mFloatingActionButton, 1);
+							mCurrentBottomSheetState = newState;
 							break;
 					}
 					mCurrentBottomSheetState = newState;
@@ -223,7 +224,6 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 		mCurrentQuestion = mQuestionBank.getNextQuestion();
 		mCurrentQuestion.setChoiceList(Arrays.asList(mCurrentQuestion.getChoices().split("-/-")));
 		this.displayQuestion();
-
 	}
 
 	@Override
@@ -447,7 +447,8 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 			mLives--;
 			if (mLives <= 0) {
 				AdRequest adRequest = new AdRequest.Builder().build();
-				InterstitialAd.load(this, "ca-app-pub-5050054249389989/7659082720", adRequest, new InterstitialAdLoadCallback() {
+				// "ca-app-pub-5050054249389989/7659082720"
+				InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest, new InterstitialAdLoadCallback() {
 					@Override
 					public void onAdLoaded(@NonNull com.google.android.gms.ads.interstitial.InterstitialAd interstitialAd) {
 						super.onAdLoaded(interstitialAd);
@@ -620,6 +621,7 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 				}
 				break;
 			case R.id.game_fab:  // fab button (to show bottom sheet)
+				FabAnimation.fadeAndRotateYOut(mFloatingActionButton, 1);
 				mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 				break;
 			case R.id.gameBottomSheetTitle:  // Bottom sheet bar
