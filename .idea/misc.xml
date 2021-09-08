@@ -11,7 +11,6 @@
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_links.xml" value="0.3858695652173913" />
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_main.xml" value="0.3858695652173913" />
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_player_information.xml" value="0.3875" />
-        <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_players.xml" value="0.1884498480243161" />
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_select_categories.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_settings.xml" value="0.3858695652173913" />
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_splash_screen.xml" value="0.3858695652173913" />
@@ -25,14 +24,27 @@
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/fragment_thanks.xml" value="0.3858695652173913" />
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/game_bottom_sheet_layout.xml" value="0.3858695652173913" />
         <entry key="..\:/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/users_recycler_layout.xml" value="0.3858695652173913" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable-v23/splash_background.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/bg_background.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/bottom_sheet_top.xml" value="0.3828125" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/help_outline.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/ic_arrow_back.xml" value="0.20462962962962963" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/ic_share.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/jq_logo.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/jq_logo_round.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/rounded_corners_left_pattern.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/rounded_corners_right_pattern.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/rounded_corners_white_border_dark.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/drawable/splash_background.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout-large/activity_main.xml" value="0.6376811594202898" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout-sw600dp/activity_main.xml" value="0.3078125" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout-v26/dialog_name.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_bonus.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_game.xml" value="0.1935185185185185" />
-        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_main.xml" value="0.41041666666666665" />
-        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_players.xml" value="0.49654218533886585" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_links.xml" value="0.33" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_main.xml" value="0.3580645161290323" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_player_information.xml" value="0.3100558659217877" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_players.xml" value="0.25" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_select_categories.xml" value="0.22" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_settings.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/activity_splash_screen.xml" value="0.30357142857142855" />
@@ -41,8 +53,15 @@
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/content_home.xml" value="0.22" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/dialog_name.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/dialog_niu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/fragment_player_information.xml" value="0.33" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/fragment_players.xml" value="0.30726256983240224" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/game_bottom_sheet_layout.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/layout/users_recycler_layout.xml" value="0.1" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/menu/menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/mipmap-anydpi-v26/ic_jq.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/mipmap-anydpi-v26/ic_jq_round.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/mipmap-anydpi-v26/icon_jq.xml" value="0.3769230769230769" />
+        <entry key="..\:/Users/jolal/AndroidStudioProjects/JojozQuizzApp/app/src/main/res/mipmap-anydpi-v26/icon_jq_round.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/jojozquizzapp/app/src/main/res/drawable/ic_baseline_mood_24.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/jojozquizzapp/app/src/main/res/drawable/test.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/jolal/AndroidStudioProjects/jojozquizzapp/app/src/main/res/layout/activity_bonus.xml" value="0.3146067415730337" />
