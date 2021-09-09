@@ -164,4 +164,7 @@
 	<string name="best_score">Meilleur score :</string>
 	<string name="games_played">Nombre de parties jouées :</string>
 	<string name="answers_ratio">Bonnes réponses / questions posées :</string>
+	<string name="score">"Score : "</string>
+	<string name="combo">"Combo : "</string>
+	<string name="player">"Player : "</string>
 </resources>

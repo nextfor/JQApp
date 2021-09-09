@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
 
 	<data>
 
 		<variable
 			name="handler"
 			type="com.jojo.jojozquizz.tools.ClickHandler" />
+
 		<variable
 			name="activity"
 			type="com.jojo.jojozquizz.GameActivity" />
@@ -55,28 +57,63 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:paddingStart="20dp"
+				android:paddingEnd="20sp"
 				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toTopOf="@+id/progressBar" />
+				app:layout_constraintTop_toTopOf="@+id/progressBar"
+				tools:text="5/20" />
 
 			<TextView
 				android:id="@+id/numberOfLivesText"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="20dp"
+				app:layout_constraintEnd_toEndOf="@+id/comboText"
+				app:layout_constraintStart_toStartOf="@+id/scoreText"
+				app:layout_constraintTop_toBottomOf="@+id/progressBar"
+				tools:text="Lives : 5" />
+
+			<TextView
+				android:id="@+id/scoreText"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
+				app:layout_constraintEnd_toStartOf="@+id/comboText"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/numberOfLivesText"
+				tools:text="Score : 0" />
+
+			<TextView
+				android:id="@+id/comboText"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.5"
+				app:layout_constraintStart_toEndOf="@+id/scoreText"
+				app:layout_constraintTop_toTopOf="@+id/scoreText"
+				tools:text="Combo : 0" />
+
+			<TextView
+				android:id="@+id/playerText"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="20dp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+				app:layout_constraintTop_toBottomOf="@+id/scoreText"
+				tools:text="Joueur : Jojo" />
 
 			<com.google.android.material.button.MaterialButton
 				android:id="@+id/leaveGameButton"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
 				android:layout_marginTop="20dp"
+				android:layout_height="wrap_content"
 				android:onClick="@{handler::onButtonClick}"
 				android:text="@string/leave_game"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
-				app:layout_constraintTop_toBottomOf="@+id/numberOfLivesText" />
+				app:layout_constraintTop_toBottomOf="@+id/playerText" />
+
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</LinearLayout>

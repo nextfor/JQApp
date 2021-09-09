@@ -196,5 +196,8 @@
 	<string name="best_score">Best score :</string>
 	<string name="games_played">Games played :</string>
 	<string name="answers_ratio">Good answers / questions asked :</string>
+	<string name="score">"Score : "</string>
+	<string name="combo">"Combo : "</string>
+	<string name="player">"Player : "</string>
 
 </resources>

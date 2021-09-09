@@ -219,6 +219,10 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 		mNumberOfBonus2Left.setText(String.valueOf(mBonus2.getNumber()));
 		mNumberOfBonus3Left.setText(String.valueOf(mBonus3.getNumber()));
 
+		mBinding.gameBottomSheetContent.scoreText.setText(getString(R.string.score) + mScore);
+		mBinding.gameBottomSheetContent.comboText.setText(getString(R.string.combo) + mCombo);
+		mBinding.gameBottomSheetContent.playerText.setText(getString(R.string.player) + mPlayer.getName());
+
 		setStyleDefault();
 
 		mCurrentQuestion = mQuestionBank.getNextQuestion();
@@ -268,6 +272,8 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 
 		mScore += scoreToAdd;
 
+		mBinding.gameBottomSheetContent.scoreText.setText(getString(R.string.score) + mScore);
+		mBinding.gameBottomSheetContent.comboText.setText(getString(R.string.combo) + mCombo);
 	}
 
 	private void displayQuestion() {
