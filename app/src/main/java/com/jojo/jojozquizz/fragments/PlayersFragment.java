@@ -32,8 +32,6 @@ import java.util.regex.Pattern;
 
 public class PlayersFragment extends Fragment implements ClickHandler, NameDialog.NameDialogListener {
 
-	private static final String TAG = "PlayersFragment";
-
 	FloatingActionButton mFloatingActionButton, mFloatingActionButtonRemove, mFloatingActionButtonAdd, mFloatingActionButtonAddFromServer;
 	RecyclerView mRecyclerView;
 	PlayersAdapter mAdapter;
@@ -94,21 +92,18 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 
 	private void configureOnClickRecyclerView() {
 		RecyclerItemClickSupport.addTo(mRecyclerView, R.layout.fragment_players)
-			.setOnItemClickListener(new RecyclerItemClickSupport.OnItemClickListener() {
-				@Override
-				public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-					Player player = mAdapter.getUser(position);
-					PlayerInformationFragment fragment = new PlayerInformationFragment();
-					Bundle args = new Bundle();
-					args.putInt("userId", player.getId());
-					fragment.setArguments(args);
-					requireActivity().getSupportFragmentManager().beginTransaction()
-						.setCustomAnimations(R.anim.slide_in, R.anim.slide_out_to_left, R.anim.slide_in_from_left, R.anim.slide_out)
-						.replace(R.id.frameLayoutPlayers, fragment)
-						.setReorderingAllowed(true)
-						.addToBackStack("first")
-						.commit();
-				}
+			.setOnItemClickListener((recyclerView, position, v) -> {
+				Player player = mAdapter.getUser(position);
+				PlayerInformationFragment fragment = new PlayerInformationFragment();
+				Bundle args = new Bundle();
+				args.putInt("userId", player.getId());
+				fragment.setArguments(args);
+				requireActivity().getSupportFragmentManager().beginTransaction()
+					.setCustomAnimations(R.anim.slide_in, R.anim.slide_out_to_left, R.anim.slide_in_from_left, R.anim.slide_out)
+					.replace(R.id.frameLayoutPlayers, fragment)
+					.setReorderingAllowed(true)
+					.addToBackStack("first")
+					.commit();
 			});
 	}
 
@@ -123,7 +118,7 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 		int id = v.getId();
 
 		if (id == R.id.returnButtonPlayersFragment) {
-			getActivity().finish();
+			requireActivity().finish();
 		} else if (id == R.id.floatingActionButtonUsers) {
 			isMainFabRotate = FabAnimation.rotateFab(v, !isMainFabRotate);
 			if (isMainFabRotate) {
@@ -177,7 +172,7 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 			Player player = new Player(name, getContext());
 			PlayersDatabase.getInstance(getContext()).PlayersDAO().addPlayer(player);
 			Player newPlayer = PlayersDatabase.getInstance(getContext()).PlayersDAO().getPlayerFromName(player.getName());
-			getContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", newPlayer.getId()).apply();
+			requireActivity().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", newPlayer.getId()).apply();
 			mPlayers.add(newPlayer);
 			mAdapter.notifyItemInserted(mPlayers.size() - 1);
 		}

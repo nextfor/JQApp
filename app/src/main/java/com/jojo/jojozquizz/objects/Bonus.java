@@ -8,9 +8,6 @@ public class Bonus {
 
 	private boolean alreadyUse;
 
-	public Bonus() {
-	}
-
 	public Bonus(int number, String type) {
 		this.number = number;
 		this.name = type;

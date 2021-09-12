@@ -37,7 +37,7 @@ public class NameDialog extends AppCompatDialogFragment {
 	@Override
 	public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		LayoutInflater inflater = getActivity().getLayoutInflater();
+		LayoutInflater inflater = requireActivity().getLayoutInflater();
 		View view = inflater.inflate(R.layout.dialog_name, null);
 
 		mNewName = view.findViewById(R.id.dialog_name_input);

@@ -18,9 +18,6 @@ import java.util.List;
 public class PlayersAdapter extends RecyclerView.Adapter<PlayersAdapter.UsersViewHolder> {
 
 	private Context context;
-	private int[] mIds;
-	private String[] mName;
-	private long[] mScore;
 
 	private List<Player> mPlayers;
 
@@ -53,7 +50,7 @@ public class PlayersAdapter extends RecyclerView.Adapter<PlayersAdapter.UsersVie
 
 	public class UsersViewHolder extends RecyclerView.ViewHolder {
 
-		TextView textId, textName, textScore;
+		TextView textName, textScore;
 		ConstraintLayout mConstraintLayout;
 
 		public UsersViewHolder(@NonNull View v) {

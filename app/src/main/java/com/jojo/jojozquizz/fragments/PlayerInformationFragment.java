@@ -1,7 +1,6 @@
 package com.jojo.jojozquizz.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -82,24 +81,21 @@ public class PlayerInformationFragment extends Fragment implements ClickHandler,
 				builder.setTitle(R.string.delete_user)
 					.setCancelable(true)
 					.setMessage(R.string.delete_user_message)
-					.setPositiveButton(R.string.delete, (new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							PlayersFragment playersFragment = new PlayersFragment();
-							Bundle args = new Bundle();
-							args.putInt("action", 1);
-							Log.d("TRUC", "onClick: " + mPlayer.getId());
-							args.putInt("userId", mPlayer.getId());
-							playersFragment.setArguments(args);
-							requireContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
-							getParentFragmentManager().popBackStack("first", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-							getParentFragmentManager().beginTransaction()
-								.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out, R.anim.slide_in, R.anim.slide_out_to_left)
-								.replace(R.id.frameLayoutPlayers, playersFragment)
-								.addToBackStack(null)
-								.setReorderingAllowed(true)
-								.commit();
-						}
+					.setPositiveButton(R.string.delete, ((dialog, which) -> {
+						PlayersFragment playersFragment = new PlayersFragment();
+						Bundle args = new Bundle();
+						args.putInt("action", 1);
+						Log.d("TRUC", "onClick: " + mPlayer.getId());
+						args.putInt("userId", mPlayer.getId());
+						playersFragment.setArguments(args);
+						requireContext().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", PlayersDatabase.getInstance(getContext()).PlayersDAO().getFirstPlayer().getId()).apply();
+						getParentFragmentManager().popBackStack("first", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+						getParentFragmentManager().beginTransaction()
+							.setCustomAnimations(R.anim.slide_in_from_left, R.anim.slide_out, R.anim.slide_in, R.anim.slide_out_to_left)
+							.replace(R.id.frameLayoutPlayers, playersFragment)
+							.addToBackStack(null)
+							.setReorderingAllowed(true)
+							.commit();
 					}))
 					.setNegativeButton(R.string.all_cancel, null)
 					.show();

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 
@@ -37,8 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity implements ClickHandler, Observer<Integer> {
-
-	private static final String TAG = "SettingsActivity";
 
 	private Context mContext;
 	private SharedPreferences mPreferences;
@@ -87,7 +84,6 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 		}
 
 		LAST_ID = new MutableLiveData<>();
-		Log.d(TAG, "onCreate: " + SecurityKey.getInstance().getKey());
 		if (SecurityKey.getInstance().getKey() == null) {
 			getServerKey();
 		}
@@ -136,10 +132,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 				LAST_ID.setValue(response.getInt("questionId"));
 			} catch (JSONException ignore) {
 			}
-		}, error -> {
-			Log.d(TAG, "onErrorResponse: " + error.getMessage());
-			Snackbar.make(findViewById(R.id.settings_constraint_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show();
-		});
+		}, error -> Snackbar.make(findViewById(R.id.settings_constraint_layout), getString(R.string.impossible_to_load_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show());
 		mRequestQueue.add(jsonObjectRequest);
 	}
 

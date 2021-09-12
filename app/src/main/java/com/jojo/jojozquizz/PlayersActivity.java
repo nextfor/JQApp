@@ -11,8 +11,6 @@ import com.jojo.jojozquizz.fragments.PlayersFragment;
 
 public class PlayersActivity extends AppCompatActivity {
 
-	private static final String TAG = "PlayersActivity";
-
 	ActivityPlayersBinding mBinding;
 
 	PlayersFragment mPlayersFragment;

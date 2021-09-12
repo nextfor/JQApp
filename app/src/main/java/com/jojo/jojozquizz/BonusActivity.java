@@ -1,6 +1,5 @@
 package com.jojo.jojozquizz;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,8 +32,6 @@ import java.util.Arrays;
 
 public class BonusActivity extends AppCompatActivity implements ClickHandler {
 
-	private static final String TAG = "BonusActivity";
-
 	RewardedAd mBonus1RewardedAd, mBonus2RewardedAd, mBonus3RewardedAd;
 	AdView mAdView;
 	ProgressBar mProgressBar1, mProgressBar2, mProgressBar3;
@@ -43,8 +40,6 @@ public class BonusActivity extends AppCompatActivity implements ClickHandler {
 	ArrayList<ImageButton> mButtonAddBonusArray;
 
 	SharedPreferences mPreferences;
-
-	Context mContext = this;
 
 	AdRequest mAdRequest;
 
@@ -156,65 +151,59 @@ public class BonusActivity extends AppCompatActivity implements ClickHandler {
 	public void onButtonClick(View v) {
 		int buttonTag = v.getId();
 
-		switch (buttonTag) {
-			case R.id.button_add_bonus_1:
-				mBonus1RewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-					@Override
-					public void onAdDismissedFullScreenContent() {
-						super.onAdDismissedFullScreenContent();
-						mBonus1RewardedAd = null;
-						mBinding.buttonAddBonus1.setVisibility(View.INVISIBLE);
-					}
-				});
-				mBonus1RewardedAd.show(this, (@NonNull RewardItem rewardItem) -> {
-					int bonuses = mPlayerBonuses.get(0);
-					mPlayerBonuses.set(0, bonuses + 1);
-					mBinding.textNumberBonus1.setText(String.valueOf(mPlayerBonuses.get(0)));
-				});
-				break;
-			case R.id.button_add_bonus_2:
-				mBonus2RewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-					@Override
-					public void onAdDismissedFullScreenContent() {
-						super.onAdDismissedFullScreenContent();
-						mBonus2RewardedAd = null;
-						mBinding.buttonAddBonus2.setVisibility(View.INVISIBLE);
-					}
-				});
-				mBonus2RewardedAd.show(this, (@NonNull RewardItem rewardItem) -> {
-					int bonuses = mPlayerBonuses.get(1);
-					mPlayerBonuses.set(1, bonuses + 1);
-					mBinding.textNumberBonus2.setText(String.valueOf(mPlayerBonuses.get(1)));
-				});
-				break;
-			case R.id.button_add_bonus_3:
-				mBonus3RewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-					@Override
-					public void onAdDismissedFullScreenContent() {
-						super.onAdDismissedFullScreenContent();
-						mBonus3RewardedAd = null;
-						mBinding.buttonAddBonus3.setVisibility(View.INVISIBLE);
-					}
-				});
-				mBonus3RewardedAd.show(this, (@NonNull RewardItem rewardItem) -> {
-					int bonuses = mPlayerBonuses.get(2);
-					mPlayerBonuses.set(2, bonuses + 1);
-					mBinding.textNumberBonus3.setText(String.valueOf(mPlayerBonuses.get(2)));
-				});
-				break;
-			case R.id.floatingActionButtonBonus:
-				ViewGroup viewGroup = findViewById(android.R.id.content);
-				View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_bonus, viewGroup, false);
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setView(dialogView);
-				builder.setPositiveButton("Ok", (dialog, which) -> {
-				});
-				final AlertDialog alertDialog = builder.create();
-				alertDialog.show();
-				break;
-			case R.id.activity_bonus_button_come_back:
-				quitActivity();
-				break;
+		if (buttonTag == R.id.button_add_bonus_1) {
+			mBonus1RewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+				@Override
+				public void onAdDismissedFullScreenContent() {
+					super.onAdDismissedFullScreenContent();
+					mBonus1RewardedAd = null;
+					mBinding.buttonAddBonus1.setVisibility(View.INVISIBLE);
+				}
+			});
+			mBonus1RewardedAd.show(this, (@NonNull RewardItem rewardItem) -> {
+				int bonuses = mPlayerBonuses.get(0);
+				mPlayerBonuses.set(0, bonuses + 1);
+				mBinding.textNumberBonus1.setText(String.valueOf(mPlayerBonuses.get(0)));
+			});
+		} else if (buttonTag == R.id.button_add_bonus_2) {
+			mBonus2RewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+				@Override
+				public void onAdDismissedFullScreenContent() {
+					super.onAdDismissedFullScreenContent();
+					mBonus2RewardedAd = null;
+					mBinding.buttonAddBonus2.setVisibility(View.INVISIBLE);
+				}
+			});
+			mBonus2RewardedAd.show(this, (@NonNull RewardItem rewardItem) -> {
+				int bonuses = mPlayerBonuses.get(1);
+				mPlayerBonuses.set(1, bonuses + 1);
+				mBinding.textNumberBonus2.setText(String.valueOf(mPlayerBonuses.get(1)));
+			});
+		} else if (buttonTag == R.id.button_add_bonus_3) {
+			mBonus3RewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+				@Override
+				public void onAdDismissedFullScreenContent() {
+					super.onAdDismissedFullScreenContent();
+					mBonus3RewardedAd = null;
+					mBinding.buttonAddBonus3.setVisibility(View.INVISIBLE);
+				}
+			});
+			mBonus3RewardedAd.show(this, (@NonNull RewardItem rewardItem) -> {
+				int bonuses = mPlayerBonuses.get(2);
+				mPlayerBonuses.set(2, bonuses + 1);
+				mBinding.textNumberBonus3.setText(String.valueOf(mPlayerBonuses.get(2)));
+			});
+		} else if (buttonTag == R.id.floatingActionButtonBonus) {
+			ViewGroup viewGroup = findViewById(android.R.id.content);
+			View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_bonus, viewGroup, false);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setView(dialogView);
+			builder.setPositiveButton("Ok", (dialog, which) -> {
+			});
+			final AlertDialog alertDialog = builder.create();
+			alertDialog.show();
+		} else if (buttonTag == R.id.activity_bonus_button_come_back) {
+			quitActivity();
 		}
 	}
 

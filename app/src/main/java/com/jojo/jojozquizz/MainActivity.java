@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
@@ -43,7 +41,6 @@ import com.jojo.jojozquizz.tools.PlayersDatabase;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -52,8 +49,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler {
-
-	private static final String TAG = "MainActivity";
 
 	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
 	static final int USERS_ACTIVITY_REQUEST_CODE = 40;
@@ -148,9 +143,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					getLastIdFromServer();
 				} catch (JSONException ignore) {
 				}
-			}, error -> {
-			Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
-		});
+			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show());
 		mRequestQueue.add(serverKeyRequest);
 	}
 
@@ -175,13 +168,10 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					LAST_ID.setValue(response.getLong("questionId"));
 				} catch (JSONException ignore) {
 				}
-			}, error -> {
-			Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show();
-		}) {
+			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show()) {
 			@Override
 			public Map<String, String> getHeaders() {
 				HashMap<String, String> headers = new HashMap<>();
-				Log.d(TAG, "getHeaders: " + mSecurityKey);
 				headers.put("app-auth", mSecurityKey);
 				return headers;
 			}
@@ -199,12 +189,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
 				builder.setTitle(R.string.rate_app)
 					.setMessage(R.string.rate_app_message)
-					.setNeutralButton(R.string.never_ask_again, (dialog, which) -> {
-						mPreferences.edit().putBoolean("wants_rate_app", false).apply();
-					})
-					.setNegativeButton(R.string.ask_later, ((dialog, which) -> {
-						dialog.dismiss();
-					}))
+					.setNeutralButton(R.string.never_ask_again, (dialog, which) -> mPreferences.edit().putBoolean("wants_rate_app", false).apply())
+					.setNegativeButton(R.string.ask_later, ((dialog, which) -> dialog.dismiss()))
 					.setPositiveButton(R.string.rate_it, ((dialog, which) -> {
 						mPreferences.edit().putBoolean("wants_rate_app", false).apply();
 						try {
@@ -233,23 +219,18 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 		String fullRoute = API_URL + apiRoute + lang + "/";
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute + i, null, new Response.Listener<JSONObject>() {
-				@Override
-				public void onResponse(JSONObject response) {
-					try {
-						int id = response.getInt("questionId");
-						String q = response.getString("question");
-						String choices = response.getString("choices");
-						int category = response.getInt("category");
-						int difficulty = response.getInt("difficulty");
-						Question question = new Question(id, q, choices, category, difficulty);
-						QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
-					} catch (JSONException ignore) {
-					}
+			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute + i, null, response -> {
+				try {
+					int id = response.getInt("questionId");
+					String q = response.getString("question");
+					String choices = response.getString("choices");
+					int category = response.getInt("category");
+					int difficulty = response.getInt("difficulty");
+					Question question = new Question(id, q, choices, category, difficulty);
+					QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
+				} catch (JSONException ignore) {
 				}
-			}, error -> {
-				Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
-			}) {
+			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show()) {
 				@Override
 				public Map<String, String> getHeaders() {
 					HashMap<String, String> headers = new HashMap<>();

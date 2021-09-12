@@ -44,9 +44,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class GameActivity extends AppCompatActivity implements ClickHandler {
-
-	private static final String TAG = "GameActivity";
-
 	QuestionBank mQuestionBank;
 	Question mCurrentQuestion;
 	TextView mQuestionTextView, mNumberOfQuestionsAnsweredText, mNumberOfBonus1Left, mNumberOfBonus2Left, mNumberOfBonus3Left;
@@ -564,79 +561,68 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 	public void onButtonClick(View v) {
 		int id = v.getId();
 
-		switch (id) {
-			case R.id.activity_game_answer1_btn:
-			case R.id.activity_game_answer2_btn:
-			case R.id.activity_game_answer3_btn:
-			case R.id.activity_game_answer4_btn:
-				mEnableTouchEvents = false;
-				mQuestionsAnswered++;
-				if (--mNumberOfQuestions == 0) {
-					suspense();
-					new Handler().postDelayed(() -> {
-						checkAnswerValidity(id);
-						new Handler().postDelayed(() -> {
-							mEnableTouchEvents = true;
-							stopGame();
-						}, 1500);
-					}, 4000);
-				} else {
+		if (id == R.id.activity_game_answer1_btn || id == R.id.activity_game_answer2_btn || id == R.id.activity_game_answer3_btn || id == R.id.activity_game_answer4_btn) {
+			mEnableTouchEvents = false;
+			mQuestionsAnswered++;
+			if (--mNumberOfQuestions == 0) {
+				suspense();
+				new Handler().postDelayed(() -> {
 					checkAnswerValidity(id);
-
 					new Handler().postDelayed(() -> {
-						mCurrentQuestion = mQuestionBank.getNextQuestion();
-						mCurrentQuestion.setChoiceList(Arrays.asList(mCurrentQuestion.getChoices().split("-/-")));
-						displayQuestion();
-						setStyleDefault();
-						mNumberOfQuestionsAnsweredText.setText(getString(R.string.slash, mQuestionsAnswered + 1, mTotalQuestions));
-						mProgressBar.setProgress(mQuestionsAnswered);
 						mEnableTouchEvents = true;
+						stopGame();
 					}, 1500);
+				}, 4000);
+			} else {
+				checkAnswerValidity(id);
+
+				new Handler().postDelayed(() -> {
+					mCurrentQuestion = mQuestionBank.getNextQuestion();
+					mCurrentQuestion.setChoiceList(Arrays.asList(mCurrentQuestion.getChoices().split("-/-")));
+					displayQuestion();
+					setStyleDefault();
+					mNumberOfQuestionsAnsweredText.setText(getString(R.string.slash, mQuestionsAnswered + 1, mTotalQuestions));
+					mProgressBar.setProgress(mQuestionsAnswered);
+					mEnableTouchEvents = true;
+				}, 1500);
+			}
+		} else if (id == R.id.button_use_bonus_1) {
+			if (mBonus1.isAlreadyUse()) toastBonusAlreadyUsed();
+			else if (--mNumberOfQuestions == 0) {
+				Toast.makeText(this, getResources().getString(R.string.game_cant_use_bonus_last_question), Toast.LENGTH_SHORT).show();
+			} else {
+				mBonus1.setAlreadyUse(true);
+				bonusSkipQuestion();
+				mUseBonus1.setVisibility(View.INVISIBLE);
+				mNumberOfBonus1Left.setVisibility(View.INVISIBLE);
+			}
+		} else if (id == R.id.button_use_bonus_2) {
+			if (mBonus2.isAlreadyUse()) toastBonusAlreadyUsed();
+			else {
+				mBonus2.setAlreadyUse(true);
+				bonusClearAnswers();
+				mUseBonus2.setVisibility(View.INVISIBLE);
+				mNumberOfBonus2Left.setVisibility(View.INVISIBLE);
+			}
+		} else if (id == R.id.button_use_bonus_3) {
+			if (mBonus3.isAlreadyUse()) toastBonusAlreadyUsed();
+			else {
+				boolean bonusUsed = bonusEasier();
+				if (bonusUsed) {
+					mBonus3.setAlreadyUse(true);
+					mUseBonus3.setVisibility(View.INVISIBLE);
+					mNumberOfBonus3Left.setVisibility(View.INVISIBLE);
 				}
-				break;
-			case R.id.button_use_bonus_1:
-				if (mBonus1.isAlreadyUse()) toastBonusAlreadyUsed();
-				else if (--mNumberOfQuestions == 0) {
-					Toast.makeText(this, getResources().getString(R.string.game_cant_use_bonus_last_question), Toast.LENGTH_SHORT).show();
-				} else {
-					mBonus1.setAlreadyUse(true);
-					bonusSkipQuestion();
-					mUseBonus1.setVisibility(View.INVISIBLE);
-					mNumberOfBonus1Left.setVisibility(View.INVISIBLE);
-				}
-				break;
-			case R.id.button_use_bonus_2:
-				if (mBonus2.isAlreadyUse()) toastBonusAlreadyUsed();
-				else {
-					mBonus2.setAlreadyUse(true);
-					bonusClearAnswers();
-					mUseBonus2.setVisibility(View.INVISIBLE);
-					mNumberOfBonus2Left.setVisibility(View.INVISIBLE);
-				}
-				break;
-			case R.id.button_use_bonus_3:
-				if (mBonus3.isAlreadyUse()) toastBonusAlreadyUsed();
-				else {
-					boolean bonusUsed = bonusEasier();
-					if (bonusUsed) {
-						mBonus3.setAlreadyUse(true);
-						mUseBonus3.setVisibility(View.INVISIBLE);
-						mNumberOfBonus3Left.setVisibility(View.INVISIBLE);
-					}
-				}
-				break;
-			case R.id.game_fab:  // fab button (to show bottom sheet)
-				FabAnimation.fadeAndRotateYOut(mFloatingActionButton, 1);
-				mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-				break;
-			case R.id.gameBottomSheetTitle:  // Bottom sheet bar
-				if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
-					mBottomSheetBehavior.setState(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED ? BottomSheetBehavior.STATE_COLLAPSED : BottomSheetBehavior.STATE_EXPANDED);
-				}
-				break;
-			case R.id.leaveGameButton:  // Bottom sheet button quit
-				stopGame();
-				break;
+			}
+		} else if (id == R.id.game_fab) {  // fab button (to show bottom sheet)
+			FabAnimation.fadeAndRotateYOut(mFloatingActionButton, 1);
+			mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+		} else if (id == R.id.gameBottomSheetTitle) {  // Bottom sheet bar
+			if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+				mBottomSheetBehavior.setState(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED ? BottomSheetBehavior.STATE_COLLAPSED : BottomSheetBehavior.STATE_EXPANDED);
+			}
+		} else if (id == R.id.leaveGameButton) {  // Bottom sheet button quit
+			stopGame();
 		}
 	}
 
@@ -644,10 +630,8 @@ public class GameActivity extends AppCompatActivity implements ClickHandler {
 	public boolean onLongButtonClick(View v) {
 		int id = v.getId();
 
-		switch (id) {
-			case R.id.gameBottomSheetTitle:
-				mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-				break;
+		if (id == R.id.gameBottomSheetTitle) {
+			mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 		}
 		return false;
 	}
