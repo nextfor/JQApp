@@ -45,6 +45,7 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	MutableLiveData<Long> LAST_ID;
 
 	ActivityMainBinding mBinding;
+
+	static final int[] ALL_SPLASH_TEXTS = {R.string.splash_text1};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +132,15 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				addQuestions(long_number);
 			}
 		});
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		Random r = new Random();
+
+		mBinding.activityMainTextTitle.setText(ALL_SPLASH_TEXTS[r.nextInt(ALL_SPLASH_TEXTS.length)]);
 	}
 
 	private void getServerKey() {

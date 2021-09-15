@@ -199,5 +199,6 @@
 	<string name="score">"Score : "</string>
 	<string name="combo">"Combo : "</string>
 	<string name="player">"Player : "</string>
+	<string name="splash_text1">Did you know JQ release data was on June the 7th ?</string>
 
 </resources>
