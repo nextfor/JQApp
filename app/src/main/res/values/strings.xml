@@ -43,8 +43,6 @@
 	<string name="content_description_plus">Button +</string>
 
 	<string name="thanks_text">Thanks to the people listed below\n\n<br /><br />Questions writers :\n<br />- leversplat\n<br />- Julie\n<br />- Piayral\n<br />\n<br />Design masters :\n<br />Nokolas (Logo, and some others things)\n<br />\n<br />Beta testers :\n<br />- leversplat\n<br />- Alexouu\n<br />- ODDIN Cyril\n<br />- Nokolas\n<br />- lo\n<br />- SLAMA Sami\n<br />\n<br />Leversplat and Wolzinix for its immense involvement\n<br />And a very big thank you to Alexouu, for his advice and support</string>
-	<string name="niu_text">All the features planned for the next versions:<br />- New game mode<br />- New predefined games<br />- Sounds and music (normally ^^)<br /><br />And of course more questions and categories</string>
-	<string name="niu_title" translatable="false">Next Important Update</string>
 	<string name="link_instagram" translatable="false">Instagram</string>
 	<string name="link_reddit" translatable="false">Reddit</string>
 	<string name="link_youtube" translatable="false">YouTube</string>
@@ -199,6 +197,14 @@
 	<string name="score">"Score : "</string>
 	<string name="combo">"Combo : "</string>
 	<string name="player">"Player : "</string>
-	<string name="splash_text1">Did you know JQ release data was on June the 7th ?</string>
 
+	<string-array name="splash_texts">
+		<item>Did you know JQ has been release on June the 7th ?</item>
+		<item>Home hosted server !</item>
+		<item>The dev of the application took a year and a half !</item>
+		<item>Is there any one here ?</item>
+		<item>Don't lose your passwords !</item>
+		<item>Hello there !</item>
+		<item>Avez-vous trouvé les easter eggs ?</item>
+	</string-array>
 </resources>

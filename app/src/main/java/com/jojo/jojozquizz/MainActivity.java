@@ -77,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	ActivityMainBinding mBinding;
 
-	static final int[] ALL_SPLASH_TEXTS = {R.string.splash_text1};
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -137,9 +135,10 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	protected void onStart() {
 		super.onStart();
 
+		String[] texts = getResources().getStringArray(R.array.splash_texts);
 		Random r = new Random();
 
-		mBinding.activityMainTextTitle.setText(ALL_SPLASH_TEXTS[r.nextInt(ALL_SPLASH_TEXTS.length)]);
+		mBinding.activityMainTextTitle.setText(texts[r.nextInt(texts.length)]);
 	}
 
 	private void getServerKey() {

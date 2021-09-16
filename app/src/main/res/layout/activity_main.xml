@@ -45,7 +45,6 @@
 				android:id="@+id/activity_main_text_title"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Le saviez-vous : l'application est sortie le 7 juin 2021 !"
 				android:textSize="14sp"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"

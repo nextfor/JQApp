@@ -34,7 +34,7 @@
 	<string name="difficulty">Difficulté</string>
 	<string name="cats">Catégories</string>
 	<string name="suspense">Suspense . . .</string>
-	<string name="whats_your_name">Entre ton nouveau nom</string>
+	<string name="whats_your_name">Entrez votre nouveau nom</string>
 	<string name="motto">Un maximum de questions pour un maximum de connaissances</string>
 	<string name="content_description_logo">Logo de l\'application</string>
 	<string name="share_icon">Icône partage</string>
@@ -59,8 +59,6 @@
 	<string name="back_arrow">Flèche retour</string>
 	<string name="new_user_name_dialog_title">Quel est ton nom ?</string>
 	<string name="game_game_over">Partie terminée</string>
-
-	<string name="niu_text">Toutes les fonctionnalités prévues pour les prochaines versions :\n- Nouveau mode de jeu\n- Nouveaux jeux prédéfinis\n- Des sons et musiques (normalement^^)\n\n\tEt bien sûr plus de questions et de catégories</string>
 
 	<string name="bonus_of">Bonus du joueur\n%1$s</string>
 	<string name="bonus1_description">Le premier bonus permet de sauter la question sur laquelle vous êtes (bien pratique si vous êtes coincé !)</string>
@@ -126,7 +124,7 @@
 	<string name="game_not_enough_bonus">Vous n\'avez pas assez de ce bonus !</string>
 	<string name="game_bonus_already_use_case">Déjà utilisé dans cette partie !</string>
 	<string name="game_bonus_3_lower_difficulty_case">La difficulté est la plus basse possible vous ne pouvez pas avoir une question plus facile</string>
-	<string name="game_end_game">Tu as bien répondu à %1$d questions sur %2$d\nScore : %3$d</string>
+	<string name="game_end_game">Vous avez bien répondu à %1$d questions sur %2$d\nScore : %3$d</string>
 	<string name="game_cant_use_bonus_last_question">Vous ne pouvez pas utiliser le bonus lors de la dernière question</string>
 	<string name="impossible_to_load_questions">Impossible d\'aller récuperer les questions depuis le serveur</string>
 	<string name="all_retry">Réessayer</string>
@@ -167,5 +165,14 @@
 	<string name="score">"Score : "</string>
 	<string name="combo">"Combo : "</string>
 	<string name="player">"Player : "</string>
-	<string name="splash_text1">Did you know JQ release data was on June the 7th ?</string>
+
+	<string-array name="splash_texts">
+		<item>Saviez-vous que JQ est sorti le 7 Juin 2021 ?</item>
+		<item>Serveur hébergé maison !</item>
+		<item>Le dev de l\'application a duré près d\'un an et demi !</item>
+		<item>Il y a quelqu'un ?</item>
+		<item>Ne perdez pas vos mots de passe !</item>
+		<item>Hello there !</item>
+		<item>Did you find the easter eggs ?</item>
+	</string-array>
 </resources>
