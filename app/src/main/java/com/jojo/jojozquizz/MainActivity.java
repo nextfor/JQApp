@@ -31,7 +31,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.databinding.ActivityMainBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
-import com.jojo.jojozquizz.dialogs.NiuDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
 import com.jojo.jojozquizz.tools.BCrypt;
@@ -265,9 +264,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		int itemId = item.getItemId();
 		switch (itemId) {
-			case R.id.menu_niu:
-				new NiuDialog().showDialog(this);
-				return true;
 			case R.id.menu_links:
 				startActivity(new Intent(mContext, LinksActivity.class));
 				return true;

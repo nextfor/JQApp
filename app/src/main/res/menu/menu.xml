@@ -8,11 +8,6 @@
 		android:icon="@drawable/ic_link"
 		app:showAsAction="ifRoom" />
 	<item
-		android:id="@+id/menu_niu"
-		android:contentDescription="@string/niu"
-		android:title="@string/niu"
-		app:showAsAction="never" />
-	<item
 		android:id="@+id/menu_settings"
 		android:contentDescription="@string/settings"
 		android:title="@string/settings"
