@@ -5,6 +5,7 @@ import android.content.Context;
 import com.jojo.jojozquizz.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CategoriesHelper {
@@ -34,18 +35,20 @@ public class CategoriesHelper {
 
 	public List<String> getProcessedCategories(String processedCategories) {
 
-		String[] array = processedCategories.split("");
+		ArrayList<String> list = new ArrayList<>();
+		Collections.addAll(list, processedCategories.split(""));
+
+		list.remove(0);
 
 		List<String> valuesToReturn = new ArrayList<>();
 
 		int i = 0;
 
-		for (String character : array) {
+		for (String character : list) {
 			if (character.equals("1"))
 				valuesToReturn.add(categories[i]);
 			i++;
 		}
-
 		return valuesToReturn;
 	}
 
@@ -65,13 +68,16 @@ public class CategoriesHelper {
 
 	public List<String> getProcessedDifficulties(String processedDifficulties) {
 
-		String[] array = processedDifficulties.split("");
+		ArrayList<String> list = new ArrayList<>();
+		Collections.addAll(list, processedDifficulties.split(""));
+
+		list.remove(0);
 
 		List<String> valuesToReturn = new ArrayList<>();
 
 		int i = 0;
 
-		for (String character : array) {
+		for (String character : list) {
 			if (character.equals("1"))
 				valuesToReturn.add(difficulties[i]);
 			i++;
