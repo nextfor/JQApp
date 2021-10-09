@@ -12,7 +12,7 @@
 	<string name="ad_id_bonus2" translatable="false">ca-app-pub-5050054249389989/9211204402</string>
 	<string name="ad_id_bonus3" translatable="false">ca-app-pub-5050054249389989/6686582029</string>
 
-	<string name="api_domain" translatable="false">https://nextfor.studio/</string>
+	<string name="api_domain" translatable="false">https://api.nextfor.fr/</string>
 	<string name="api_endpoint_getLastId" translatable="false">jojozquizz/questions/lastId/</string>
 	<string name="api_endpoint_getQuestion" translatable="false">jojozquizz/questions/question/</string>
 	<string name="api_endpoint_getCurrentVersion" translatable="false">jojozquizz/version/currentVersion/</string>
