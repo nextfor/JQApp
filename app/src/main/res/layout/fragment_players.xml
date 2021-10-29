@@ -63,7 +63,6 @@
 				android:layout_height="wrap_content"
 				android:layout_margin="8dp"
 				android:contentDescription="@string/remove_player"
-				android:enabled="false"
 				android:onClick="@{handler::onButtonClick}"
 				android:onLongClick="@{handler::onLongButtonClick}"
 				android:src="@drawable/ic_person_remove"

@@ -41,6 +41,8 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 
 	List<Player> mPlayers;
 
+	private int mSelectionMode = 0; // 0 -> Open info - 1 -> Delete
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 		FabAnimation.init(mFloatingActionButtonAddFromServer);
 
 		mPlayers = PlayersDatabase.getInstance(getContext()).PlayersDAO().getAllPlayers();
+
+		mFloatingActionButtonRemove.setEnabled(mPlayers.size() > 1);
 
 		updateUI();
 		this.configureOnClickRecyclerView();
@@ -94,16 +98,21 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 		RecyclerItemClickSupport.addTo(mRecyclerView, R.layout.fragment_players)
 			.setOnItemClickListener((recyclerView, position, v) -> {
 				Player player = mAdapter.getUser(position);
-				PlayerInformationFragment fragment = new PlayerInformationFragment();
-				Bundle args = new Bundle();
-				args.putInt("userId", player.getId());
-				fragment.setArguments(args);
-				requireActivity().getSupportFragmentManager().beginTransaction()
-					.setCustomAnimations(R.anim.slide_in, R.anim.slide_out_to_left, R.anim.slide_in_from_left, R.anim.slide_out)
-					.replace(R.id.frameLayoutPlayers, fragment)
-					.setReorderingAllowed(true)
-					.addToBackStack("first")
-					.commit();
+				if (mSelectionMode == 0) {
+					PlayerInformationFragment fragment = new PlayerInformationFragment();
+					Bundle args = new Bundle();
+					args.putInt("userId", player.getId());
+					fragment.setArguments(args);
+					requireActivity().getSupportFragmentManager().beginTransaction()
+						.setCustomAnimations(R.anim.slide_in, R.anim.slide_out_to_left, R.anim.slide_in_from_left, R.anim.slide_out)
+						.replace(R.id.frameLayoutPlayers, fragment)
+						.setReorderingAllowed(true)
+						.addToBackStack("first")
+						.commit();
+				} else if (mSelectionMode == 1) {
+					Toast.makeText(getContext(), "Vous voulez supprimer " + player.getName(), Toast.LENGTH_SHORT).show();
+
+				}
 			});
 	}
 
@@ -126,13 +135,20 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 				FabAnimation.showIn(mFloatingActionButtonAddFromServer, 2);
 				FabAnimation.showIn(mFloatingActionButtonRemove, 3);
 			} else {
-				FabAnimation.showOut(mFloatingActionButtonAdd, 3);
-				FabAnimation.showOut(mFloatingActionButtonAddFromServer, 2);
-				FabAnimation.showOut(mFloatingActionButtonRemove, 1);
+				if (mSelectionMode == 1) {
+					mSelectionMode = 0;
+				} else {
+					FabAnimation.showOut(mFloatingActionButtonAdd, 3);
+					FabAnimation.showOut(mFloatingActionButtonAddFromServer, 2);
+					FabAnimation.showOut(mFloatingActionButtonRemove, 1);
+				}
 			}
 		} else if (id == R.id.floatingActionButtonChildAdd) {
 			showOutEverything();
 			askUsernameDialog();
+		} else if (id == R.id.floatingActionButtonChildRemove) {
+			mSelectionMode = 1;
+			showOutEverything();
 		}
 	}
 
@@ -175,6 +191,7 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 			requireActivity().getSharedPreferences("com.jojo.jojozquizz", Context.MODE_PRIVATE).edit().putInt("currentUserId", newPlayer.getId()).apply();
 			mPlayers.add(newPlayer);
 			mAdapter.notifyItemInserted(mPlayers.size() - 1);
+			mFloatingActionButtonRemove.setEnabled(mPlayers.size() > 1);
 		}
 	}
 }
