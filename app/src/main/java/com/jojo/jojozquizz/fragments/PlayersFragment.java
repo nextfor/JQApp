@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.R;
@@ -84,13 +85,20 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 		Bundle args = getArguments();
 		if (args != null) {
 			if (args.getInt("action") == 1) {
-				Player removedPlayer = PlayersDatabase.getInstance(getContext()).PlayersDAO().getPlayer(args.getInt("userId"));
-				int i = mPlayers.indexOf(removedPlayer);
-				PlayersDatabase.getInstance(getContext()).PlayersDAO().deletePlayerWithId(removedPlayer.getId());
-				mPlayers.remove(i);
-				mAdapter.notifyItemRemoved(i);
+				deleteUser(args.getInt("userId"));
 			}
 			args.clear();
+		}
+	}
+
+	void deleteUser(int id) {
+		Player removedPlayer = PlayersDatabase.getInstance(getContext()).PlayersDAO().getPlayer(id);
+		int i = mPlayers.indexOf(removedPlayer);
+		PlayersDatabase.getInstance(getContext()).PlayersDAO().deletePlayerWithId(removedPlayer.getId());
+		mPlayers.remove(i);
+		mAdapter.notifyItemRemoved(i);
+		if (mAdapter.getItemCount() <= 1 && mSelectionMode == 1) {
+			mSelectionMode = 0;
 		}
 	}
 
@@ -111,7 +119,15 @@ public class PlayersFragment extends Fragment implements ClickHandler, NameDialo
 						.commit();
 				} else if (mSelectionMode == 1) {
 					Toast.makeText(getContext(), "Vous voulez supprimer " + player.getName(), Toast.LENGTH_SHORT).show();
-
+					MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
+					builder.setTitle(R.string.delete_user)
+						.setCancelable(true)
+						.setMessage(R.string.delete_user_message)
+						.setPositiveButton(R.string.delete, ((dialog, which) -> {
+							deleteUser(mAdapter.getUser(position).getId());
+						}))
+						.setNegativeButton(R.string.all_cancel, null)
+						.show();
 				}
 			});
 	}
