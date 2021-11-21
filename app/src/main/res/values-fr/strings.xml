@@ -106,6 +106,35 @@
 		<item>Sport</item>
 	</string-array>
 
+	<string name="category_aeronautics">Aéronautique</string>
+	<string name="category_other">Autre</string>
+	<string name="category_animals">Animaux</string>
+	<string name="category_animemanga">Animés - mangas</string>
+	<string name="category_automotive">Automobile</string>
+	<string name="category_comics">BDs</string>
+	<string name="category_celebrities">Célébrités</string>
+	<string name="category_cinema">Cinéma</string>
+	<string name="category_quotes">Citations</string>
+	<string name="category_cooking">Cuisine</string>
+	<string name="category_economy">Economie</string>
+	<string name="category_english">Français</string>
+	<string name="category_geography">Géographie</string>
+	<string name="category_history">Histoire</string>
+	<string name="category_computerscience">Informatique</string>
+	<string name="category_networksdata">Réseaux et données</string>
+	<string name="category_vieogames">Jeux-vidéos</string>
+	<string name="category_foreignlangages">Langues étrangères</string>
+	<string name="category_literature">Littérature</string>
+	<string name="category_maths">Mathématiques</string>
+	<string name="category_music">Musique</string>
+	<string name="category_nature">Nature</string>
+	<string name="category_photo">Photographie</string>
+	<string name="category_religion">Religion</string>
+	<string name="category_mythology">Mythologie</string>
+	<string name="category_health">Santé</string>
+	<string name="category_science">Science</string>
+	<string name="category_sport">Sport</string>
+
 	<string-array name="difficulties">
 		<item>Facile</item>
 		<item>Moyen</item>
@@ -153,11 +182,7 @@
 	<string name="edit_fab_text">Editer le nom</string>
 	<string name="edit_fab_content_desc">Crayon pour changer le nom</string>
 	<string name="share_fab_content_desc">Logo de partage</string>
-	<string name="rate_app">Notez Jojoz Quizz !</string>
-	<string name="rate_app_message">Apparement vous aimez bien l\'appli ! N\'hésitez pas à la noter sur Play Store pour nous supporter !</string>
-	<string name="never_ask_again">Ne jamais redemander</string>
-	<string name="ask_later">Redemander plus tard</string>
-	<string name="rate_it">Noter !</string>
+
 	<string name="total_score">Score total :</string>
 	<string name="best_score">Meilleur score :</string>
 	<string name="games_played">Nombre de parties jouées :</string>
@@ -165,6 +190,13 @@
 	<string name="score">"Score : "</string>
 	<string name="combo">"Combo : "</string>
 	<string name="player">"Player : "</string>
+
+	<!-- Appears in dialogs -->
+	<string name="dialog_content_rate_it">Noter !</string>
+	<string name="dialog_content_rate_app">Notez Jojoz Quizz !</string>
+	<string name="dialog_content_rate_app_message">Apparement vous aimez bien l\'appli ! N\'hésitez pas à la noter sur Play Store pour nous supporter !</string>
+	<string name="dialog_content_never_ask_again">Ne jamais redemander</string>
+	<string name="dialog_content_ask_later">Redemander plus tard</string>
 
 	<string-array name="splash_texts">
 		<item>Saviez-vous que JQ est sorti le 7 Juin 2021 ?</item>

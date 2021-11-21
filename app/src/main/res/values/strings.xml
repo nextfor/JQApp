@@ -149,6 +149,35 @@
 		<item>Science</item>
 		<item>Sport</item>
 	</string-array>
+	<string name="category_aeronautics">Aeronautics</string>
+	<string name="category_other">Other</string>
+	<string name="category_animals">Animals</string>
+	<string name="category_animemanga">Anime - manga</string>
+	<string name="category_automotive">Automotive</string>
+	<string name="category_comics">Comics</string>
+	<string name="category_celebrities">Celebrities</string>
+	<string name="category_cinema">Cinema</string>
+	<string name="category_quotes">Quotes</string>
+	<string name="category_cooking">Cooking</string>
+	<string name="category_economy">Economy</string>
+	<string name="category_english">English</string>
+	<string name="category_geography">Geography</string>
+	<string name="category_history">History</string>
+	<string name="category_computerscience">Computer science</string>
+	<string name="category_networksdata">Networks and data</string>
+	<string name="category_vieogames">Videogames</string>
+	<string name="category_foreignlangages">Foreign langages</string>
+	<string name="category_literature">Literature</string>
+	<string name="category_maths">Mathematics</string>
+	<string name="category_music">Music</string>
+	<string name="category_nature">Nature</string>
+	<string name="category_photo">Photography</string>
+	<string name="category_religion">Religion</string>
+	<string name="category_mythology">Mythology</string>
+	<string name="category_health">Health</string>
+	<string name="category_science">Science</string>
+	<string name="category_sport">Sport</string>
+
 	<string-array name="difficulties">
 		<item>Easy</item>
 		<item>Medium</item>
@@ -185,11 +214,7 @@
 	<string name="edit_fab_text">Edit name</string>
 	<string name="edit_fab_content_desc">Pencil to change user nickname</string>
 	<string name="share_fab_content_desc">Share logo</string>
-	<string name="rate_app">Rate Jojoz Quizz !</string>
-	<string name="rate_app_message">Apparently you are enjoying the app ! Please rate it on the store to support us !</string>
-	<string name="never_ask_again">Never ask again</string>
-	<string name="ask_later">Ask later</string>
-	<string name="rate_it">Rate it !</string>
+
 	<string name="total_score">Total score :</string>
 	<string name="best_score">Best score :</string>
 	<string name="games_played">Games played :</string>
@@ -197,6 +222,13 @@
 	<string name="score">"Score : "</string>
 	<string name="combo">"Combo : "</string>
 	<string name="player">"Player : "</string>
+
+	<!-- Appears in dialogs -->
+	<string name="dialog_content_rate_it">Rate it !</string>
+	<string name="dialog_content_rate_app">Rate Jojoz Quizz !</string>
+	<string name="dialog_content_rate_app_message">Apparently you are enjoying the app ! Please rate it on the store to support us !</string>
+	<string name="dialog_content_never_ask_again">Never ask again</string>
+	<string name="dialog_content_ask_later">Ask later</string>
 
 	<string-array name="splash_texts">
 		<item>Did you know JQ has been release on June the 7th ?</item>
