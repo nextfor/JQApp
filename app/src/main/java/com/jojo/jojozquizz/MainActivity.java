@@ -1,6 +1,5 @@
 package com.jojo.jojozquizz;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -27,9 +26,9 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.databinding.ActivityMainBinding;
+import com.jojo.jojozquizz.dialogs.IndeterminateLoadingDialog;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
@@ -38,6 +37,9 @@ import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
+import com.jojo.jojozquizz.ui.game.GameActivity;
+import com.jojo.jojozquizz.ui.main.LikeDialog;
+import com.jojo.jojozquizz.ui.players.PlayersActivity;
 
 import org.json.JSONException;
 
@@ -100,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		mRequestQueue.start();
 
 		mNumberOfQuestionsInput = mBinding.activityMainNumberQuestionsInput;
+
+		IndeterminateLoadingDialog loadingDialog = new IndeterminateLoadingDialog(this, false);
 
 		isFirstTime = PlayersDatabase.getInstance(this).PlayersDAO().getAllPlayers().isEmpty();
 
@@ -196,19 +200,26 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		if (requestCode == GAME_ACTIVITY_REQUEST_CODE) {
 			mBinding.setPlayer(mPlayer);
 			if (mPlayer.getGamesPlayed() >= 3 && mPreferences.getBoolean("wants_rate_app", true)) {
-				MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-				builder.setTitle(R.string.rate_app)
-					.setMessage(R.string.rate_app_message)
-					.setNeutralButton(R.string.never_ask_again, (dialog, which) -> mPreferences.edit().putBoolean("wants_rate_app", false).apply())
-					.setNegativeButton(R.string.ask_later, ((dialog, which) -> dialog.dismiss()))
-					.setPositiveButton(R.string.rate_it, ((dialog, which) -> {
-						mPreferences.edit().putBoolean("wants_rate_app", false).apply();
-						try {
-							startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
-						} catch (android.content.ActivityNotFoundException activityNotFoundException) {
-							startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+				LikeDialog likeDialog = new LikeDialog(this);
+				likeDialog.addListener(new LikeDialog.LikeDialogListeners() {
+					@Override
+					public void onSubmit(int result) {
+						switch (result) {
+							case -1:
+								mPreferences.edit().putBoolean(getString(R.string.preference_rate_app), false).apply();
+								break;
+							case 1:
+								mPreferences.edit().putBoolean(getString(R.string.preference_rate_app), false).apply();
+								try {
+									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+								} catch (android.content.ActivityNotFoundException activityNotFoundException) {
+									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+								}
+								break;
 						}
-					})).show();
+					}
+				});
+				likeDialog.popin();
 			}
 		} else if (requestCode == USERS_ACTIVITY_REQUEST_CODE) {
 			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
@@ -258,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@SuppressLint("NonConstantResourceId")
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 		int itemId = item.getItemId();

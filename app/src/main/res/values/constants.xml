@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="preference_rate_app" translatable="false">wants_rate_app</string>
+</resources>
