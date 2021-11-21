@@ -1,4 +1,4 @@
-package com.jojo.jojozquizz;
+package com.jojo.jojozquizz.ui.game;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +24,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jojo.jojozquizz.R;
 import com.jojo.jojozquizz.databinding.ActivityGameBinding;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;

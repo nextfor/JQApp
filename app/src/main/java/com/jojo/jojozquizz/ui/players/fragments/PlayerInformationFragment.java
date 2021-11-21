@@ -1,4 +1,4 @@
-package com.jojo.jojozquizz.fragments;
+package com.jojo.jojozquizz.ui.players.fragments;
 
 import android.content.Context;
 import android.content.Intent;

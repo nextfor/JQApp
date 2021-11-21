@@ -1,4 +1,4 @@
-package com.jojo.jojozquizz.fragments;
+package com.jojo.jojozquizz.ui.players.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -22,10 +22,10 @@ import com.jojo.jojozquizz.databinding.FragmentPlayersBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.tools.ClickHandler;
-import com.jojo.jojozquizz.tools.PlayersAdapter;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 import com.jojo.jojozquizz.tools.RecyclerItemClickSupport;
 import com.jojo.jojozquizz.ui.FabAnimation;
+import com.jojo.jojozquizz.ui.players.adapters.PlayersAdapter;
 
 import java.util.List;
 import java.util.regex.Matcher;
