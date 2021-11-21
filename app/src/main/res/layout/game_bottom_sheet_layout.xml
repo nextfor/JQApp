@@ -11,7 +11,7 @@
 
 		<variable
 			name="activity"
-			type="com.jojo.jojozquizz.GameActivity" />
+			type="com.jojo.jojozquizz.ui.game.GameActivity" />
 	</data>
 
 	<LinearLayout

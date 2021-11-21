@@ -18,7 +18,7 @@
 			android:screenOrientation="portrait" />
 		<activity
 			android:theme="@style/Theme.JojozQuizz"
-			android:name=".PlayersActivity"
+			android:name=".ui.players.PlayersActivity"
 			android:screenOrientation="portrait" />
 		<activity
 			android:theme="@style/Theme.JojozQuizz"
@@ -34,7 +34,7 @@
 		</activity>
 		<activity
 			android:theme="@style/Theme.JojozQuizz"
-			android:name=".GameActivity"
+			android:name=".ui.game.GameActivity"
 			android:screenOrientation="portrait" />
 		<activity
 			android:theme="@style/Theme.JojozQuizz"
