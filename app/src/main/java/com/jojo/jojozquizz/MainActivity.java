@@ -129,9 +129,9 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 		getServerKey();
 
-		Call<String> test = com.jojo.jojozquizz.utils.API.
+		// Call<String> test = com.jojo.jojozquizz.utils.API.;
 
-			LAST_ID = new MutableLiveData<>();
+		LAST_ID = new MutableLiveData<>();
 		LAST_ID.observe(this, long_number -> {
 			if (QuestionsDatabase.getInstance(mContext).QuestionDAO().getAllQuestions().isEmpty() || long_number > QuestionsDatabase.getInstance(mContext).QuestionDAO().getLastQuestion().getId()) {
 				addQuestions(long_number);
