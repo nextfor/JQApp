@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+
+		<variable
+			name="handler"
+			type="com.jojo.jojozquizz.tools.ClickHandler" />
+
+		<variable
+			name="category"
+			type="com.jojo.jojozquizz.model.Category" />
+	</data>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		tools:context=".ui.categories.CategoryDetailsFragment">
+
+		<ImageButton
+			android:id="@+id/ib_back"
+			style="@style/ReturnButton"
+			android:contentDescription="@string/back_arrow"
+			android:onClick="@{handler::onButtonClick}"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:srcCompat="@drawable/ic_arrow_back" />
+
+		<TextView
+			android:id="@+id/tv_title"
+			style="@style/ActivityTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@{category.name}"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+			android:id="@+id/textView4"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="32dp"
+			android:text="@{category.description}"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/tv_title"
+			app:layout_constraintWidth_percent="0.80"
+			tools:text="Lorem ipsum jsp c quoi le reste" />
+
+		<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@{category.icon}"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/textView4" />
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

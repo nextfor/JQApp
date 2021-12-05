@@ -239,4 +239,6 @@
 		<item>Hello there !</item>
 		<item>Did you find the easter eggs ?</item>
 	</string-array>
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

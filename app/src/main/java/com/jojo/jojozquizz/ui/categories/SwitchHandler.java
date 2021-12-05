@@ -1,4 +1,4 @@
-package com.jojo.jojozquizz.tools;
+package com.jojo.jojozquizz.ui.categories;
 
 import android.widget.CompoundButton;
 

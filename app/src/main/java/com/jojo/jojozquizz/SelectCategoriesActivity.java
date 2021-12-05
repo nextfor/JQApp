@@ -16,11 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.jojo.jojozquizz.databinding.ActivitySelectCategoriesBinding;
 import com.jojo.jojozquizz.model.Player;
-import com.jojo.jojozquizz.tools.CategoriesAdapter;
-import com.jojo.jojozquizz.tools.CategoriesHelper;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
-import com.jojo.jojozquizz.tools.SwitchHandler;
+import com.jojo.jojozquizz.ui.categories.CategoriesHelper;
+import com.jojo.jojozquizz.ui.categories.SelectCategoriesFragment;
+import com.jojo.jojozquizz.ui.categories.SwitchHandler;
+import com.jojo.jojozquizz.ui.categories.adapters.CategoriesAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,19 +61,24 @@ public class SelectCategoriesActivity extends AppCompatActivity implements Categ
 		int userId = mPreferences.getInt("currentUserId", 0);
 		mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(userId);
 
+		getSupportFragmentManager().beginTransaction()
+			.setReorderingAllowed(true)
+			.add(mBinding.fragmentContainerViewCategories.getId(), SelectCategoriesFragment.class, null)
+			.commit();
+
 		mCategoriesHelper = new CategoriesHelper(this);
 
 		mOldCategoriesSelected = mCategoriesHelper.getProcessedCategories(mPlayer.getCategoriesSelected());
 		mNewCategoriesSelected = mOldCategoriesSelected;
 
-		mSelectAllSwitch = mBinding.switchSelectAll;
-		mCheckboxEasy = mBinding.activitySelectCategoriesCheckboxFacile;
-		mCheckboxMedium = mBinding.activitySelectCategoriesCheckboxMoyen;
-		mCheckboxHard = mBinding.activitySelectCategoriesCheckboxDifficile;
+//		mSelectAllSwitch = mBinding.switchSelectAll;
+//		mCheckboxEasy = mBinding.activitySelectCategoriesCheckboxFacile;
+//		mCheckboxMedium = mBinding.activitySelectCategoriesCheckboxMoyen;
+//		mCheckboxHard = mBinding.activitySelectCategoriesCheckboxDifficile;
 		mCheckBoxes = new MaterialCheckBox[]{mCheckboxEasy, mCheckboxMedium, mCheckboxHard};
 
 		mCategoriesAdapter = new CategoriesAdapter(this, mCategoriesHelper.getCategories(), mOldCategoriesSelected);
-		mRecyclerView = mBinding.recyclerCategories;
+//		mRecyclerView = mBinding.recyclerCategories;
 		mRecyclerView.setAdapter(mCategoriesAdapter);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -132,8 +138,6 @@ public class SelectCategoriesActivity extends AppCompatActivity implements Categ
 
 		if (id == R.id.categoriesBackButton) {
 			finish();
-		} else if (id == R.id.activity_select_categories_button_ok) {
-			quitActivity();
 		}
 	}
 

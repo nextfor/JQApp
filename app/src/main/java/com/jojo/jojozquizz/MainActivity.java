@@ -50,6 +50,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import retrofit2.Call;
+
 public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler {
 
 	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
@@ -127,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 		getServerKey();
 
-		LAST_ID = new MutableLiveData<>();
+		Call<String> test = com.jojo.jojozquizz.utils.API.
+
+			LAST_ID = new MutableLiveData<>();
 		LAST_ID.observe(this, long_number -> {
 			if (QuestionsDatabase.getInstance(mContext).QuestionDAO().getAllQuestions().isEmpty() || long_number > QuestionsDatabase.getInstance(mContext).QuestionDAO().getLastQuestion().getId()) {
 				addQuestions(long_number);

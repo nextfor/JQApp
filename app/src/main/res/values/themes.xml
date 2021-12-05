@@ -43,4 +43,17 @@
 	<style name="SecondaryFAB" parent="Widget.MaterialComponents.FloatingActionButton">
 		<item name="android:backgroundTint">@color/background_light</item>
 	</style>
+
+	<style name="DialogTitleLayout">
+		<item name="android:background">@color/brand_blue</item>
+		<item name="android:paddingTop">16dp</item>
+		<item name="android:paddingBottom">16dp</item>
+		<item name="android:paddingStart">24dp</item>
+		<item name="android:paddingEnd">24dp</item>
+	</style>
+
+	<style name="DialogTitle">
+		<item name="android:color">@color/brand_red</item>
+		<item name="android:textSize">14sp</item>
+	</style>
 </resources>

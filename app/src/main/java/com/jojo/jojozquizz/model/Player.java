@@ -7,7 +7,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.jojo.jojozquizz.tools.CategoriesHelper;
+import com.jojo.jojozquizz.ui.categories.CategoriesHelper;
 
 import java.util.Objects;
 

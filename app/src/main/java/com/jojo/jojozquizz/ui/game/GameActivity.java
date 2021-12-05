@@ -30,12 +30,12 @@ import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
 import com.jojo.jojozquizz.model.QuestionBank;
 import com.jojo.jojozquizz.objects.Bonus;
-import com.jojo.jojozquizz.tools.CategoriesHelper;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.PlayersDAO;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
 import com.jojo.jojozquizz.ui.FabAnimation;
+import com.jojo.jojozquizz.ui.categories.CategoriesHelper;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
