@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +33,8 @@ import com.jojo.jojozquizz.dialogs.IndeterminateLoadingDialog;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
+import com.jojo.jojozquizz.model.reponse.ServerKeyResponse;
+import com.jojo.jojozquizz.model.reponse.VersionResponse;
 import com.jojo.jojozquizz.tools.BCrypt;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
@@ -40,6 +43,7 @@ import com.jojo.jojozquizz.tools.QuestionsDatabase;
 import com.jojo.jojozquizz.ui.game.GameActivity;
 import com.jojo.jojozquizz.ui.main.LikeDialog;
 import com.jojo.jojozquizz.ui.players.PlayersActivity;
+import com.jojo.jojozquizz.utils.Client;
 
 import org.json.JSONException;
 
@@ -51,6 +55,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler {
 
@@ -105,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 		mNumberOfQuestionsInput = mBinding.activityMainNumberQuestionsInput;
 
-		IndeterminateLoadingDialog loadingDialog = new IndeterminateLoadingDialog(this, false);
-
 		isFirstTime = PlayersDatabase.getInstance(this).PlayersDAO().getAllPlayers().isEmpty();
 
 		if (isFirstTime) {
@@ -129,7 +133,18 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 		getServerKey();
 
-		// Call<String> test = com.jojo.jojozquizz.utils.API.;
+		Call<VersionResponse> call = Client.getClient(mContext).getApi().getCurrentVersion();
+		call.enqueue(new Callback<VersionResponse>() {
+			@Override
+			public void onResponse(Call<VersionResponse> call, Response<VersionResponse> response) {
+				Log.d("LOGMOICA", "onResponse: "+ response.body().getUpdatedAt());
+			}
+
+			@Override
+			public void onFailure(Call<VersionResponse> call, Throwable t) {
+
+			}
+		});
 
 		LAST_ID = new MutableLiveData<>();
 		LAST_ID.observe(this, long_number -> {
@@ -150,19 +165,22 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	}
 
 	private void getServerKey() {
-		String serverKeyRoute = getResources().getString(R.string.api_endpoint_getServerKey);
-		JsonObjectRequest serverKeyRequest = new JsonObjectRequest(Request.Method.GET, API_URL + serverKeyRoute, null,
-			response -> {
-				try {
-					String serverKey = response.getString("key");
-					String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
-					String salt = BCrypt.gensalt();
-					mSecurityKey = BCrypt.hashpw(combinedKey, salt);
-					getLastIdFromServer();
-				} catch (JSONException ignore) {
-				}
-			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show());
-		mRequestQueue.add(serverKeyRequest);
+		Call<ServerKeyResponse> key = Client.getClient(mContext).getApi().getServerKey();
+		key.enqueue(new Callback<ServerKeyResponse>() {
+			@Override
+			public void onResponse(Call<ServerKeyResponse> call, Response<ServerKeyResponse> response) {
+				String serverKey = response.body().getToken();
+				String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
+				String salt = BCrypt.gensalt();
+				mSecurityKey = BCrypt.hashpw(combinedKey, salt);
+				getLastIdFromServer();
+			}
+
+			@Override
+			public void onFailure(Call<ServerKeyResponse> call, Throwable t) {
+				Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
+			}
+		});
 	}
 
 	private void firstTime() {
