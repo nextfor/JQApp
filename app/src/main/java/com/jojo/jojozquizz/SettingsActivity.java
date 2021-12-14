@@ -28,7 +28,6 @@ import com.jojo.jojozquizz.tools.BCrypt;
 import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
-import com.jojo.jojozquizz.tools.SecurityKey;
 
 import org.json.JSONException;
 
@@ -84,9 +83,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 		}
 
 		LAST_ID = new MutableLiveData<>();
-		if (SecurityKey.getInstance().getKey() == null) {
-			getServerKey();
-		}
+		getServerKey();
 		getLastIdFromServer();
 		LAST_ID.observe(this, this);
 	}
@@ -99,7 +96,6 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 					String serverKey = response.getString("key");
 					String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
 					String salt = BCrypt.gensalt();
-					SecurityKey.getInstance().setKey(BCrypt.hashpw(combinedKey, salt));
 				} catch (JSONException ignore) {
 				}
 			}, error -> Snackbar.make(mBinding.getRoot(), R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show());
@@ -166,8 +162,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 				@Override
 				public Map<String, String> getHeaders() {
 					HashMap<String, String> headers = new HashMap<>();
-					String key = SecurityKey.getInstance().getKey();
-					headers.put("app-auth", key);
+					headers.put("app-auth", "");
 					return headers;
 				}
 			};

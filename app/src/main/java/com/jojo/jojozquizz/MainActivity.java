@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,21 +17,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.MutableLiveData;
 
-import com.android.volley.Cache;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.databinding.ActivityMainBinding;
-import com.jojo.jojozquizz.dialogs.IndeterminateLoadingDialog;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
+import com.jojo.jojozquizz.model.reponse.LastIdResponse;
+import com.jojo.jojozquizz.model.reponse.QuestionResponse;
 import com.jojo.jojozquizz.model.reponse.ServerKeyResponse;
 import com.jojo.jojozquizz.model.reponse.VersionResponse;
 import com.jojo.jojozquizz.tools.BCrypt;
@@ -45,11 +37,7 @@ import com.jojo.jojozquizz.ui.main.LikeDialog;
 import com.jojo.jojozquizz.ui.players.PlayersActivity;
 import com.jojo.jojozquizz.utils.Client;
 
-import org.json.JSONException;
-
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -62,8 +50,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
 	static final int USERS_ACTIVITY_REQUEST_CODE = 40;
-
-	String API_URL;
 
 	final Context mContext = this;
 	View mContextView;
@@ -78,12 +64,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	Player mPlayer;
 
 	String mSecurityKey;
-
-	RequestQueue mRequestQueue;
-	Cache mCache;
-	BasicNetwork mNetwork;
-
-	MutableLiveData<Long> LAST_ID;
 
 	ActivityMainBinding mBinding;
 
@@ -102,12 +82,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		setSupportActionBar(mToolbar);
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
-		API_URL = getResources().getString(R.string.api_domain);
-
-		mCache = new DiskBasedCache(getCacheDir(), 1024 * 1024);
-		mNetwork = new BasicNetwork(new HurlStack());
-		mRequestQueue = new RequestQueue(mCache, mNetwork);
-		mRequestQueue.start();
 
 		mNumberOfQuestionsInput = mBinding.activityMainNumberQuestionsInput;
 
@@ -132,26 +106,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		checkForUpdates();
 
 		getServerKey();
-
-		Call<VersionResponse> call = Client.getClient(mContext).getApi().getCurrentVersion();
-		call.enqueue(new Callback<VersionResponse>() {
-			@Override
-			public void onResponse(Call<VersionResponse> call, Response<VersionResponse> response) {
-				Log.d("LOGMOICA", "onResponse: "+ response.body().getUpdatedAt());
-			}
-
-			@Override
-			public void onFailure(Call<VersionResponse> call, Throwable t) {
-
-			}
-		});
-
-		LAST_ID = new MutableLiveData<>();
-		LAST_ID.observe(this, long_number -> {
-			if (QuestionsDatabase.getInstance(mContext).QuestionDAO().getAllQuestions().isEmpty() || long_number > QuestionsDatabase.getInstance(mContext).QuestionDAO().getLastQuestion().getId()) {
-				addQuestions(long_number);
-			}
-		});
 	}
 
 	@Override
@@ -195,24 +149,20 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	}
 
 	private void getLastIdFromServer() {
-		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
 		String lang = mPreferences.getString("language", "EN");
 
-		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null,
-			response -> {
-				try {
-					LAST_ID.setValue(response.getLong("questionId"));
-				} catch (JSONException ignore) {
-				}
-			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v -> getLastIdFromServer()).show()) {
+		Call<LastIdResponse> call = Client.getClient(mContext).getApi().getLastId(lang);
+		call.enqueue(new Callback<LastIdResponse>() {
 			@Override
-			public Map<String, String> getHeaders() {
-				HashMap<String, String> headers = new HashMap<>();
-				headers.put("app-auth", mSecurityKey);
-				return headers;
+			public void onResponse(Call<LastIdResponse> call, Response<LastIdResponse> response) {
+				addQuestions(response.body().getId());
 			}
-		};
-		mRequestQueue.add(jsonObjectRequest);
+
+			@Override
+			public void onFailure(Call<LastIdResponse> call, Throwable t) {
+
+			}
+		});
 	}
 
 	@Override
@@ -223,22 +173,19 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			mBinding.setPlayer(mPlayer);
 			if (mPlayer.getGamesPlayed() >= 3 && mPreferences.getBoolean("wants_rate_app", true)) {
 				LikeDialog likeDialog = new LikeDialog(this);
-				likeDialog.addListener(new LikeDialog.LikeDialogListeners() {
-					@Override
-					public void onSubmit(int result) {
-						switch (result) {
-							case -1:
-								mPreferences.edit().putBoolean(getString(R.string.preference_rate_app), false).apply();
-								break;
-							case 1:
-								mPreferences.edit().putBoolean(getString(R.string.preference_rate_app), false).apply();
-								try {
-									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
-								} catch (android.content.ActivityNotFoundException activityNotFoundException) {
-									startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
-								}
-								break;
-						}
+				likeDialog.addListener(result -> {
+					switch (result) {
+						case -1:
+							mPreferences.edit().putBoolean(getString(R.string.preference_rate_app), false).apply();
+							break;
+						case 1:
+							mPreferences.edit().putBoolean(getString(R.string.preference_rate_app), false).apply();
+							try {
+								startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+							} catch (android.content.ActivityNotFoundException activityNotFoundException) {
+								startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+							}
+							break;
 					}
 				});
 				likeDialog.popin();
@@ -257,31 +204,25 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			lastIdInDatabase = QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion().getId() + 1;
 		}
 
-		String apiRoute = getResources().getString(R.string.api_endpoint_getQuestion);
-		String lang = mPreferences.getString("language", "EN");
-
-		String fullRoute = API_URL + apiRoute + lang + "/";
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, fullRoute + i, null, response -> {
-				try {
-					int id = response.getInt("questionId");
-					String q = response.getString("question");
-					String choices = response.getString("choices");
-					int category = response.getInt("category");
-					int difficulty = response.getInt("difficulty");
-					Question question = new Question(id, q, choices, category, difficulty);
-					QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
-				} catch (JSONException ignore) {
-				}
-			}, error -> Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show()) {
+
+			Call<QuestionResponse> call = Client.getClient(mContext).getApi().getQuestion(i);
+			call.enqueue(new Callback<QuestionResponse>() {
 				@Override
-				public Map<String, String> getHeaders() {
-					HashMap<String, String> headers = new HashMap<>();
-					headers.put("app-auth", mSecurityKey);
-					return headers;
+				public void onResponse(Call<QuestionResponse> call, Response<QuestionResponse> response) {
+					if (response.code() == 200) {
+						Question question = new Question(response.body());
+						QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
+					} else {
+						Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
+					}
 				}
-			};
-			mRequestQueue.add(jsonObjectRequest);
+
+				@Override
+				public void onFailure(Call<QuestionResponse> call, Throwable t) {
+					Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
+				}
+			});
 		}
 	}
 
@@ -323,11 +264,11 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	private void checkForUpdates() {
 		int currentCode = BuildConfig.VERSION_CODE;
 
-		String url = getResources().getString(R.string.api_endpoint_getCurrentVersion);
-
-		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + url, null, response -> {
-			try {
-				if (response.getInt("version") > currentCode) {
+		Call<VersionResponse> call = Client.getClient(mContext).getApi().getCurrentVersion();
+		call.enqueue(new Callback<VersionResponse>() {
+			@Override
+			public void onResponse(Call<VersionResponse> call, Response<VersionResponse> response) {
+				if (response.body().getVersion() > currentCode) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
 					builder.setTitle(R.string.update_available);
@@ -343,10 +284,12 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					AlertDialog dialog = builder.create();
 					dialog.show();
 				}
-			} catch (JSONException ignored) {
 			}
-		}, null);
-		mRequestQueue.add(jsonObjectRequest);
+
+			@Override
+			public void onFailure(Call<VersionResponse> call, Throwable t) {
+			}
+		});
 	}
 
 	@Override

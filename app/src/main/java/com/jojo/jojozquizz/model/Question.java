@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.jojo.jojozquizz.model.reponse.QuestionResponse;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -69,6 +71,14 @@ public class Question implements Serializable {
 		this.mAnswerIndex = 0;
 		this.mCategory = mCategorie;
 		this.mDifficulty = mDifficulty;
+	}
+
+	public Question(QuestionResponse response) {
+		this.id = response.getQuestionId();
+		this.mQuestion = response.getQuestion();
+		this.mChoices = response.getChoices();
+		this.mCategory = response.getCategory();
+		this.mDifficulty = response.getDifficulty();
 	}
 
 	public long getId() {
