@@ -90,16 +90,16 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		if (isFirstTime) {
 			firstTime();
 		} else {
-			if (mPreferences.getString("langage", "EN") == null) {
+			if (mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN") == null) {
 				String lang;
 				switch (Locale.getDefault().getCountry()) {
 					default:
 						lang = "FR";
 						break;
 				}
-				mPreferences.edit().putString("language", lang).putString("langage", null).apply();
+				mPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), lang).putString(getString(R.string.PREF_LANGUAGE), null).apply();
 			}
-			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
+			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
 			mBinding.setPlayer(mPlayer);
 		}
 
@@ -144,12 +144,12 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				lang = "FR";
 				break;
 		}
-		mPreferences.edit().putString("language", lang).apply();
+		mPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), lang).apply();
 		askUsernameDialog();
 	}
 
 	private void getLastIdFromServer() {
-		String lang = mPreferences.getString("language", "EN");
+		String lang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
 
 		Call<LastIdResponse> call = Client.getClient(mContext).getApi().getLastId(lang);
 		call.enqueue(new Callback<LastIdResponse>() {
@@ -167,19 +167,19 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
+		mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == GAME_ACTIVITY_REQUEST_CODE) {
 			mBinding.setPlayer(mPlayer);
-			if (mPlayer.getGamesPlayed() >= 3 && mPreferences.getBoolean("wants_rate_app", true)) {
+			if (mPlayer.getGamesPlayed() >= 3 && mPreferences.getBoolean(getString(R.string.PREF_LANGUAGE), true)) {
 				LikeDialog likeDialog = new LikeDialog(this);
 				likeDialog.addListener(result -> {
 					switch (result) {
 						case -1:
-							mPreferences.edit().putBoolean(getString(R.string.preference_rate_app), false).apply();
+							mPreferences.edit().putBoolean(getString(R.string.PREF_WANTS_RATE_APP), false).apply();
 							break;
 						case 1:
-							mPreferences.edit().putBoolean(getString(R.string.preference_rate_app), false).apply();
+							mPreferences.edit().putBoolean(getString(R.string.PREF_WANTS_RATE_APP), false).apply();
 							try {
 								startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
 							} catch (android.content.ActivityNotFoundException activityNotFoundException) {
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				likeDialog.popin();
 			}
 		} else if (requestCode == USERS_ACTIVITY_REQUEST_CODE) {
-			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
+			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
 			mBinding.setPlayer(mPlayer);
 		}
 	}
@@ -302,8 +302,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		} else {
 			Player player = new Player(name, this);
 			PlayersDatabase.getInstance(this).PlayersDAO().addPlayer(player);
-			mPreferences.edit().putInt("currentUserId", PlayersDatabase.getInstance(this).PlayersDAO().getIdFromName(name)).apply();
-			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt("currentUserId", 1));
+			mPreferences.edit().putInt(getString(R.string.PREF_CURRENT_USER_ID), PlayersDatabase.getInstance(this).PlayersDAO().getIdFromName(name)).apply();
+			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
 
 			isFirstTime = false;
 			mBinding.setPlayer(player);

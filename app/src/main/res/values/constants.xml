@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="preference_rate_app" translatable="false">wants_rate_app</string>
+	<string name="PREF_WANTS_RATE_APP" translatable="false">wants_rate_app</string>
+	<string name="PREF_CURRENT_USER_ID" translatable="false">currentUserId</string>
+	<string name="PREF_LANGUAGE" translatable="false">langage</string>
 </resources>
