@@ -7,6 +7,10 @@
 	<string name="text_number_questions">Number of questions</string>
 	<string name="multiple_choices">Multiple choices</string>
 
+	<string name="PREF_WANTS_RATE_APP" translatable="false">wants_rate_app</string>
+	<string name="PREF_CURRENT_USER_ID" translatable="false">currentUserId</string>
+	<string name="PREF_LANGUAGE" translatable="false">langage</string>
+
 	<string name="application_key" translatable="false" tools:ignore="Typos">f4u6HBG1W3bd87u0468j</string>
 	<string name="ad_id_bonus1" translatable="false">ca-app-pub-5050054249389989/9324639067</string>
 	<string name="ad_id_bonus2" translatable="false">ca-app-pub-5050054249389989/9211204402</string>
@@ -239,7 +243,9 @@
 		<item>Don\'t lose your passwords !</item>
 		<item>Hello there !</item>
 		<item>Did you find the easter eggs ?</item>
+		<item>Incredible !</item>
+		<item>Oh ! Mukatte kuro no ka ?</item>
+		<item>Hakuna matata</item>
+		<item>Flblblblblblblblblb</item>
 	</string-array>
-	<!-- TODO: Remove or change this placeholder text -->
-	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
