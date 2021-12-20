@@ -72,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 		mFrButton = mBinding.settingsRadioFr;
 		mEnButton = mBinding.settingsRadioEn;
 
-		String language = mPreferences.getString("language", "EN");
+		String language = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
 		switch (language) {
 			case "FR":
 				mFrButton.setChecked(true);
@@ -104,16 +104,16 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 
 	@Override
 	protected void onStop() {
-		String selectedLang = mPreferences.getString("language", "EN");
+		String selectedLang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
 		if (mFrButton.isChecked()) {
 			if (selectedLang.equals("EN")) {
 				QuestionsDatabase.getInstance(mContext).QuestionDAO().deleteTable();
 			}
-			mPreferences.edit().putString("language", "FR").apply();
+			mPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), "FR").apply();
 		} else if (mEnButton.isChecked()) {
 			if (selectedLang.equals("FR"))
 				QuestionsDatabase.getInstance(mContext).QuestionDAO().deleteTable();
-			mPreferences.edit().putString("language", "EN").apply();
+			mPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), "EN").apply();
 		}
 
 		super.onStop();
@@ -121,7 +121,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 
 	private void getLastIdFromServer() {
 		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
-		String lang = mPreferences.getString("language", "EN");
+		String lang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
 
 		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, API_URL + lastIdRoute + lang, null, response -> {
 			try {
@@ -142,7 +142,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 		}
 
 		String apiRoute = getResources().getString(R.string.api_endpoint_getQuestion);
-		String lang = mPreferences.getString("language", "EN");
+		String lang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
 
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
 			String fullRoute = API_URL + apiRoute + lang + "/" + i;
@@ -185,10 +185,10 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 				});
 			builder.show();
 		} else if (id == R.id.privacy_policy) {
-			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/privacy_policy/" + mPreferences.getString("language", "EN")));
+			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/privacy_policy/" + mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN")));
 			startActivity(launchBrowser);
 		} else if (id == R.id.terms_of_service) {
-			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/terms_of_service/" + mPreferences.getString("language", "EN")));
+			Intent launchBrowser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://nextfor.studio/html/jojozquizz/terms_of_service/" + mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN")));
 			startActivity(launchBrowser);
 		} else if (id == R.id.settingsBackButton) {
 			finish();

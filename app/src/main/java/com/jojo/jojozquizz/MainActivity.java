@@ -36,6 +36,7 @@ import com.jojo.jojozquizz.ui.game.GameActivity;
 import com.jojo.jojozquizz.ui.main.LikeDialog;
 import com.jojo.jojozquizz.ui.players.PlayersActivity;
 import com.jojo.jojozquizz.utils.Client;
+import com.jojo.jojozquizz.utils.QuestionsRequestsHelper;
 
 import java.util.Locale;
 import java.util.Random;
@@ -46,7 +47,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler {
+public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler, QuestionsRequestsHelper.ResponseListener {
 
 	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
 	static final int USERS_ACTIVITY_REQUEST_CODE = 40;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	boolean isFirstTime;
 	Player mPlayer;
+	String lang;
 
 	String mSecurityKey;
 
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		setSupportActionBar(mToolbar);
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
+		lang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
 
 		mNumberOfQuestionsInput = mBinding.activityMainNumberQuestionsInput;
 
@@ -127,7 +130,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
 				String salt = BCrypt.gensalt();
 				mSecurityKey = BCrypt.hashpw(combinedKey, salt);
-				getLastIdFromServer();
+				Client.getClient(mContext).addInterceptor(mSecurityKey);
+				getLastId();
 			}
 
 			@Override
@@ -135,6 +139,10 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
 			}
 		});
+	}
+
+	private void getLastId() {
+		QuestionsRequestsHelper.getLastId(mContext, lang, this);
 	}
 
 	private void firstTime() {
@@ -146,23 +154,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		}
 		mPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), lang).apply();
 		askUsernameDialog();
-	}
-
-	private void getLastIdFromServer() {
-		String lang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
-
-		Call<LastIdResponse> call = Client.getClient(mContext).getApi().getLastId(lang);
-		call.enqueue(new Callback<LastIdResponse>() {
-			@Override
-			public void onResponse(Call<LastIdResponse> call, Response<LastIdResponse> response) {
-				addQuestions(response.body().getId());
-			}
-
-			@Override
-			public void onFailure(Call<LastIdResponse> call, Throwable t) {
-
-			}
-		});
 	}
 
 	@Override
@@ -322,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				} else if (mNumberOfQuestionsAsk > 75) {
 					Toast.makeText(mContext, R.string.error_start1, Toast.LENGTH_LONG).show();
 				} else if (QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion() == null) {
-					Snackbar.make(mContextView, getString(R.string.no_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v1 -> getLastIdFromServer()).show();
+					Snackbar.make(mContextView, getString(R.string.no_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v1 -> getLastId()).show();
 				} else {
 					startActivityForResult(new Intent(mContext, GameActivity.class).putExtra("userId", mPlayer.getId()).putExtra("numberOfQuestions", mNumberOfQuestionsAsk), GAME_ACTIVITY_REQUEST_CODE);
 				}
@@ -339,5 +330,25 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	@Override
 	public boolean onLongButtonClick(View v) {
 		return false;
+	}
+
+	@Override
+	public void onIdResponse(Call<LastIdResponse> call, Response<LastIdResponse> response) {
+		addQuestions(response.body().getId());
+	}
+
+	@Override
+	public void onIdFailure(Call<LastIdResponse> call, Throwable t) {
+
+	}
+
+	@Override
+	public void onQuestionResponse(Call<QuestionResponse> call, Response<QuestionResponse> response) {
+
+	}
+
+	@Override
+	public void onQuestionFailure(Call<QuestionResponse> call, Throwable t) {
+
 	}
 }
