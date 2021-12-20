@@ -10,7 +10,7 @@ public class IndeterminateLoadingDialog {
 	public IndeterminateLoadingDialog(Activity activity, boolean isCancelable) {
 		final Dialog dialog = new Dialog(activity);
 		dialog.setCancelable(isCancelable);
-		dialog.setContentView(R.layout.dialog_loading);
+		dialog.setContentView(R.layout.dialog_loading_indeterminate);
 
 		dialog.show();
 	}
