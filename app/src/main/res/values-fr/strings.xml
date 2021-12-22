@@ -197,6 +197,7 @@
 	<string name="dialog_content_rate_app_message">Apparement vous aimez bien l\'appli ! N\'hésitez pas à la noter sur Play Store pour nous supporter !</string>
 	<string name="dialog_content_never_ask_again">Ne jamais redemander</string>
 	<string name="dialog_content_ask_later">Redemander plus tard</string>
+	<string name="toast_default_error">Une erreur inconnue est apparue, merci de réessayer</string>
 
 	<string-array name="splash_texts">
 		<item>Saviez-vous que JQ est sorti le 7 Juin 2021 ?</item>
@@ -207,7 +208,7 @@
 		<item>Hello there !</item>
 		<item>Did you find the easter eggs ?</item>
 		<item>Incroyable !</item>
-		<item>Je ne crois pas qu'il y ait de bonne ou de mauvais application</item>
+		<item>Je ne crois pas qu\'il y ait de bonne ou de mauvaise application</item>
 		<item>Hakuna matata</item>
 		<item>Flblblblblblblblblb</item>
 	</string-array>

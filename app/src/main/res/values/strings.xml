@@ -234,6 +234,7 @@
 	<string name="dialog_content_rate_app_message">Apparently you are enjoying the app ! Please rate it on the store to support us !</string>
 	<string name="dialog_content_never_ask_again">Never ask again</string>
 	<string name="dialog_content_ask_later">Ask later</string>
+	<string name="toast_default_error">There\'s an unknown issue, please try again</string>
 
 	<string-array name="splash_texts">
 		<item>Did you know JQ has been release on June the 7th ?</item>
