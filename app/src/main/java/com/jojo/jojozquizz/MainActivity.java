@@ -36,6 +36,7 @@ import com.jojo.jojozquizz.ui.game.GameActivity;
 import com.jojo.jojozquizz.ui.main.LikeDialog;
 import com.jojo.jojozquizz.ui.players.PlayersActivity;
 import com.jojo.jojozquizz.utils.Client;
+import com.jojo.jojozquizz.utils.ErrorShower;
 import com.jojo.jojozquizz.utils.QuestionsRequestsHelper;
 
 import java.util.Locale;
@@ -51,6 +52,12 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
 	static final int USERS_ACTIVITY_REQUEST_CODE = 40;
+
+	static final int PROCESS_GEN_TOKEN = 0;
+	static final int PROCESS_FETCH_LASTID = 1;
+	static final int PROCESS_FETCH_CONTENT = 2;
+	static final int PROCESS_FETCH_EVENTS = 3;
+	int currentProcess = -1;
 
 	final Context mContext = this;
 	View mContextView;
@@ -122,21 +129,26 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	}
 
 	private void getServerKey() {
+		currentProcess = PROCESS_GEN_TOKEN;
 		Call<ServerKeyResponse> key = Client.getClient(mContext).getApi().getServerKey();
 		key.enqueue(new Callback<ServerKeyResponse>() {
 			@Override
 			public void onResponse(Call<ServerKeyResponse> call, Response<ServerKeyResponse> response) {
-				String serverKey = response.body().getToken();
-				String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
-				String salt = BCrypt.gensalt();
-				mSecurityKey = BCrypt.hashpw(combinedKey, salt);
-				Client.getClient(mContext).addInterceptor(mSecurityKey);
-				getLastId();
+				if (response.code() == 200) {
+					String serverKey = response.body().getKey();
+					String combinedKey = CombineKeys.combineKeys(getResources().getString(R.string.application_key), serverKey);
+					String salt = BCrypt.gensalt();
+					mSecurityKey = BCrypt.hashpw(combinedKey, salt);
+					Client.getClient(mContext).addInterceptor(mSecurityKey);
+					getLastId();
+				} else {
+					ErrorShower.showError(mContext, null, ErrorShower.TYPE_SNACKBAR, null, null);
+				}
 			}
 
 			@Override
 			public void onFailure(Call<ServerKeyResponse> call, Throwable t) {
-				Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
+				ErrorShower.showError(mContext, null, ErrorShower.TYPE_SNACKBAR, null, null);
 			}
 		});
 	}
@@ -194,26 +206,10 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		} else {
 			lastIdInDatabase = QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion().getId() + 1;
 		}
+		currentProcess = PROCESS_FETCH_CONTENT;
 
 		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
-
-			Call<QuestionResponse> call = Client.getClient(mContext).getApi().getQuestion(i);
-			call.enqueue(new Callback<QuestionResponse>() {
-				@Override
-				public void onResponse(Call<QuestionResponse> call, Response<QuestionResponse> response) {
-					if (response.code() == 200) {
-						Question question = new Question(response.body());
-						QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
-					} else {
-						Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
-					}
-				}
-
-				@Override
-				public void onFailure(Call<QuestionResponse> call, Throwable t) {
-					Snackbar.make(mContextView, R.string.impossible_to_load_questions, Snackbar.LENGTH_LONG).show();
-				}
-			});
+			QuestionsRequestsHelper.getQuestion(mContext, lang, i, this);
 		}
 	}
 
@@ -327,6 +323,18 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		}
 	}
 
+	private void retryProcess() {
+		switch (currentProcess) {
+			case PROCESS_GEN_TOKEN:
+				getServerKey();
+			case PROCESS_FETCH_LASTID:
+				getServerKey();
+				getLastId();
+			case PROCESS_FETCH_CONTENT:
+				getLastId();
+		}
+	}
+
 	@Override
 	public boolean onLongButtonClick(View v) {
 		return false;
@@ -334,21 +342,30 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	@Override
 	public void onIdResponse(Call<LastIdResponse> call, Response<LastIdResponse> response) {
-		addQuestions(response.body().getId());
+		if (response.code() == 200) {
+			addQuestions(response.body().getId());
+		} else {
+			ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, getString(R.string.impossible_to_load_questions), null);
+		}
 	}
 
 	@Override
 	public void onIdFailure(Call<LastIdResponse> call, Throwable t) {
-
+		ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, getString(R.string.impossible_to_load_questions) + " 1", null);
 	}
 
 	@Override
 	public void onQuestionResponse(Call<QuestionResponse> call, Response<QuestionResponse> response) {
-
+		if (response.code() == 200) {
+			Question question = new Question(response.body());
+			QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
+		} else {
+			ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR_ACTION, getString(R.string.impossible_to_load_questions) + " 2", v -> retryProcess());
+		}
 	}
 
 	@Override
 	public void onQuestionFailure(Call<QuestionResponse> call, Throwable t) {
-
+		ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, getString(R.string.impossible_to_load_questions), null);
 	}
 }

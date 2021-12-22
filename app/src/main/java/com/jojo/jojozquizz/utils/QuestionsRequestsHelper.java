@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.jojo.jojozquizz.model.reponse.LastIdResponse;
 import com.jojo.jojozquizz.model.reponse.QuestionResponse;
+import com.jojo.jojozquizz.model.requests.QuestionRequest;
+
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,8 +29,10 @@ public class QuestionsRequestsHelper {
 		});
 	}
 
-	public static void getQuestion(Context context, String lang, int id, ResponseListener listener) {
-		Call<QuestionResponse> call = Client.getClient(context).getApi().getQuestion(id);
+	public static void getQuestion(Context context, String lang, long id, ResponseListener listener) {
+		HashMap<String, String> test = new HashMap<>();
+		test.put("language", lang);
+		Call<QuestionResponse> call = Client.getClient(context).getApi().getQuestion(id, test);
 		call.enqueue(new Callback<QuestionResponse>() {
 			@Override
 			public void onResponse(Call<QuestionResponse> call, Response<QuestionResponse> response) {
