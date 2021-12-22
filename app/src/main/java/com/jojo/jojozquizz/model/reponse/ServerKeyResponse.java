@@ -2,17 +2,27 @@ package com.jojo.jojozquizz.model.reponse;
 
 public class ServerKeyResponse {
 
-	String token;
+	String key;
+	long timestamp;
 
-	public ServerKeyResponse(String token) {
-		this.token = token;
+	public ServerKeyResponse(String key, long timestamp) {
+		this.key = key;
+		this.timestamp = timestamp;
 	}
 
-	public String getToken() {
-		return token;
+	public String getKey() {
+		return key;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 }
