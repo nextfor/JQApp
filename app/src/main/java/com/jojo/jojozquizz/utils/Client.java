@@ -2,12 +2,15 @@ package com.jojo.jojozquizz.utils;
 
 import android.content.Context;
 
+import com.jojo.jojozquizz.BuildConfig;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -36,13 +39,18 @@ public class Client {
 
 	public void addInterceptor(String key) {
 		OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 		httpClient.addInterceptor(new Interceptor() {
 			@Override
 			public Response intercept(Chain chain) throws IOException {
-				Request request = chain.request().newBuilder().addHeader("auth-key", key).build();
+				Request request = chain.request().newBuilder().addHeader("app-auth", key).build();
 				return chain.proceed(request);
 			}
 		});
+		if (BuildConfig.BUILD_TYPE == "debug") {
+			httpClient.addInterceptor(interceptor);
+		}
 		Retrofit retrofit = new Retrofit.Builder()
 			.addConverterFactory(GsonConverterFactory.create())
 			.baseUrl("https://api.nextfor.fr/")
