@@ -2,17 +2,17 @@ package com.jojo.jojozquizz.model.reponse;
 
 public class LastIdResponse {
 
-	long id;
+	long questionId;
 
-	public LastIdResponse(long id) {
-		this.id = id;
+	public LastIdResponse(long questionId) {
+		this.questionId = questionId;
 	}
 
-	public long getId() {
-		return id;
+	public long getQuestionId() {
+		return questionId;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setSuestionId(long questionId) {
+		this.questionId = questionId;
 	}
 }
