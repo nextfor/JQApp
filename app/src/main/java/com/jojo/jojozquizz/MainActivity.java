@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.jojo.jojozquizz.databinding.ActivityMainBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
+import com.jojo.jojozquizz.model.reponse.EventResponse;
 import com.jojo.jojozquizz.model.reponse.LastIdResponse;
 import com.jojo.jojozquizz.model.reponse.QuestionResponse;
 import com.jojo.jojozquizz.model.reponse.ServerKeyResponse;
@@ -39,6 +41,7 @@ import com.jojo.jojozquizz.utils.Client;
 import com.jojo.jojozquizz.utils.ErrorShower;
 import com.jojo.jojozquizz.utils.QuestionsRequestsHelper;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -141,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					mSecurityKey = BCrypt.hashpw(combinedKey, salt);
 					Client.getClient(mContext).addInterceptor(mSecurityKey);
 					getLastId();
+					getEvents();
 				} else {
 					ErrorShower.showError(mContext, null, ErrorShower.TYPE_SNACKBAR, null, null);
 				}
@@ -149,6 +153,20 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			@Override
 			public void onFailure(Call<ServerKeyResponse> call, Throwable t) {
 				ErrorShower.showError(mContext, null, ErrorShower.TYPE_SNACKBAR, null, null);
+			}
+		});
+	}
+
+	private void getEvents() {
+		Call<List<EventResponse>> call = Client.getClient(mContext).getApi().getEvents();
+		call.enqueue(new Callback<List<EventResponse>>() {
+			@Override
+			public void onResponse(Call<List<EventResponse>> call, Response<List<EventResponse>> response) {
+				Log.d("TAG", "onResponse: ");
+			}
+
+			@Override
+			public void onFailure(Call<List<EventResponse>> call, Throwable t) {
 			}
 		});
 	}
@@ -208,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		}
 		currentProcess = PROCESS_FETCH_CONTENT;
 
-		for (long i = lastIdInDatabase; i < lastId + 1; i++) {
+		for (long i = lastIdInDatabase; i < lastId; i++) {
 			QuestionsRequestsHelper.getQuestion(mContext, lang, i, this);
 		}
 	}
@@ -329,7 +347,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				getServerKey();
 			case PROCESS_FETCH_LASTID:
 				getServerKey();
-				getLastId();
 			case PROCESS_FETCH_CONTENT:
 				getLastId();
 		}
@@ -343,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	@Override
 	public void onIdResponse(Call<LastIdResponse> call, Response<LastIdResponse> response) {
 		if (response.code() == 200) {
-			addQuestions(response.body().getId());
+			addQuestions(response.body().getQuestionId());
 		} else {
 			ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, getString(R.string.impossible_to_load_questions), null);
 		}
