@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
 import com.jojo.jojozquizz.model.reponse.QuestionResponse;
 
 import java.io.Serializable;
@@ -17,68 +18,70 @@ public class Question implements Serializable {
 	@ColumnInfo(name = "id")
 	private long id;
 
+	@SerializedName(value = "question")
 	@ColumnInfo(name = "question")
-	private String mQuestion;
+	private String question;
 
 	@Ignore
-	private List<String> mChoiceList;
+	private List<String> choiceList;
 
+	@SerializedName("choices")
 	@ColumnInfo(name = "choices")
-	private String mChoices;
+	private String choices;
 
-	@ColumnInfo(name = "answer_index")
-	private int mAnswerIndex;
+	@Ignore
+	private int answerIndex;
 
 	@ColumnInfo(name = "categorie")
-	private int mCategory;
+	private int category;
 
 	@Ignore
-	private String mStringCategory;
+	private String stringCategory;
 
 	@Ignore
-	private String mStringDifficulty;
+	private String stringDifficulty;
 
 	@Ignore
-	private String mTrueAnswer;
+	private String trueAnswer;
 
 	@ColumnInfo(name = "difficulty")
-	private int mDifficulty;
+	private int difficulty;
 
 	public Question() {
 	}
 
-	public Question(int id, String mQuestion, String mChoices, int mCategorie, int mDifficulty) {
+	public Question(int id, String question, String choices, int category, int difficulty) {
 		this.id = id;
-		this.mQuestion = mQuestion;
-		this.mChoices = mChoices;
-		this.mAnswerIndex = 0;
-		this.mCategory = mCategorie;
-		this.mDifficulty = mDifficulty;
+		this.question = question;
+		this.choices = choices;
+		this.answerIndex = 0;
+		this.category = category;
+		this.difficulty = difficulty;
 	}
 
-	public Question(int id, String mQuestion, List<String> mChoiceList, int mCategorie, int mDifficulty) {
+	public Question(int id, String question, List<String> choiceList, int category, int difficulty) {
 		this.id = id;
-		this.mQuestion = mQuestion;
-		this.mChoices = mChoiceList.get(0) + "-/-" + mChoiceList.get(1) + "-/-" + mChoiceList.get(2) + "-/-" + mChoiceList.get(3);
-		this.mAnswerIndex = 0;
-		this.mCategory = mCategorie;
-		this.mDifficulty = mDifficulty;
+		this.question = question;
+		this.choices = choiceList.get(0) + "-/-" + choiceList.get(1) + "-/-" + choiceList.get(2) + "-/-" + choiceList.get(3);
+		this.answerIndex = 0;
+		this.category = category;
+		this.difficulty = difficulty;
 	}
 
-	public Question(String mQuestion, List<String> mChoiceList, int mCategorie, int mDifficulty) {
-		this.mQuestion = mQuestion;
-		this.mChoices = mChoiceList.get(0) + "-/-" + mChoiceList.get(1) + "-/-" + mChoiceList.get(2) + "-/-" + mChoiceList.get(3);
-		this.mAnswerIndex = 0;
-		this.mCategory = mCategorie;
-		this.mDifficulty = mDifficulty;
+	public Question(String question, List<String> choiceList, int category, int difficulty) {
+		this.question = question;
+		this.choices = choiceList.get(0) + "-/-" + choiceList.get(1) + "-/-" + choiceList.get(2) + "-/-" + choiceList.get(3);
+		this.answerIndex = 0;
+		this.category = category;
+		this.difficulty = difficulty;
 	}
 
 	public Question(QuestionResponse response) {
 		this.id = response.getQuestionId();
-		this.mQuestion = response.getQuestion();
-		this.mChoices = response.getChoices();
-		this.mCategory = response.getCategory();
-		this.mDifficulty = response.getDifficulty();
+		this.question = response.getQuestion();
+		this.choices = response.getChoices();
+		this.category = response.getCategory();
+		this.difficulty = response.getDifficulty();
 	}
 
 	public long getId() {
@@ -90,74 +93,74 @@ public class Question implements Serializable {
 	}
 
 	public String getQuestion() {
-		return mQuestion;
+		return question;
 	}
 
 	public void setQuestion(String question) {
-		mQuestion = question;
+		this.question = question;
 	}
 
 	public List<String> getChoiceList() {
-		return mChoiceList;
+		return choiceList;
 	}
 
 	public void setChoiceList(List<String> choiceList) {
-		mChoiceList = choiceList;
+		this.choiceList = choiceList;
 	}
 
 	public String getChoices() {
-		return mChoices;
+		return choices;
 	}
 
 	public void setChoices(String choices) {
-		mChoices = choices;
-	}
-
-	public void setAnswerIndex(int mAnswerIndex) {
-		this.mAnswerIndex = mAnswerIndex;
+		this.choices = choices;
 	}
 
 	public int getAnswerIndex() {
-		return mAnswerIndex;
+		return answerIndex;
+	}
+
+	public void setAnswerIndex(int answerIndex) {
+		this.answerIndex = answerIndex;
 	}
 
 	public int getCategory() {
-		return mCategory;
+		return category;
 	}
 
 	public void setCategory(int category) {
-		mCategory = category;
-	}
-
-	public void setStringCategory(String category) {
-		mStringCategory = category;
+		this.category = category;
 	}
 
 	public String getStringCategory() {
-		return mStringCategory;
+		return stringCategory;
 	}
 
-	public void setStringDifficulty(String stringDifficulty) {
-		mStringDifficulty = stringDifficulty;
+	public void setStringCategory(String stringCategory) {
+		this.stringCategory = stringCategory;
 	}
 
 	public String getStringDifficulty() {
-		return mStringDifficulty;
+		return stringDifficulty;
+	}
+
+	public void setStringDifficulty(String stringDifficulty) {
+		this.stringDifficulty = stringDifficulty;
 	}
 
 	public String getTrueAnswer() {
-		return mTrueAnswer;
+		return trueAnswer;
 	}
 
 	public void setTrueAnswer(String trueAnswer) {
-		mTrueAnswer = trueAnswer;
+		this.trueAnswer = trueAnswer;
 	}
 
 	public int getDifficulty() {
-		return mDifficulty;
+		return difficulty;
 	}
 
 	public void setDifficulty(int difficulty) {
-		mDifficulty = difficulty;
+		this.difficulty = difficulty;
 	}
 }
