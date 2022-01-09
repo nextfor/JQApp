@@ -58,7 +58,7 @@ public class SelectCategoriesActivity extends AppCompatActivity implements Categ
 		mBinding.setSwitchHandler(this);
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
-		int userId = mPreferences.getInt("currentUserId", 0);
+		int userId = mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 0);
 		mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(userId);
 
 		getSupportFragmentManager().beginTransaction()
