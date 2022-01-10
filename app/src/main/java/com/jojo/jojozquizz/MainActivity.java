@@ -39,7 +39,9 @@ import com.jojo.jojozquizz.ui.main.LikeDialog;
 import com.jojo.jojozquizz.ui.players.PlayersActivity;
 import com.jojo.jojozquizz.utils.Client;
 import com.jojo.jojozquizz.utils.ErrorShower;
+import com.jojo.jojozquizz.utils.NetUtils;
 import com.jojo.jojozquizz.utils.QuestionsRequestsHelper;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Locale;
@@ -116,9 +118,11 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 			mBinding.setPlayer(mPlayer);
 		}
 
-		checkForUpdates();
 
-		getServerKey();
+		if (NetUtils.isConnected(mContext)) {
+			checkForUpdates();
+			getServerKey();
+		}
 	}
 
 	@Override
@@ -162,7 +166,12 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		call.enqueue(new Callback<List<EventResponse>>() {
 			@Override
 			public void onResponse(Call<List<EventResponse>> call, Response<List<EventResponse>> response) {
-				Log.d("TAG", "onResponse: ");
+				if (response.code() == 200 && response.body() != null) {
+					if(!response.body().get(0).getImage().isEmpty()) {
+						mBinding.ivEvent.setVisibility(View.VISIBLE);
+						Picasso.get().load(response.body().get(0).getImage()).into(mBinding.ivEvent);
+					}
+				}
 			}
 
 			@Override
@@ -373,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	@Override
 	public void onQuestionResponse(Call<QuestionResponse> call, Response<QuestionResponse> response) {
-		if (response.code() == 200) {
+		if (response.code() == 200 && response.body() != null) {
 			Question question = new Question(response.body());
 			QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
 		} else {

@@ -7,7 +7,10 @@ public class NetUtils {
 
 	public static int getNetworkType(Context context) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		return connectivityManager.getActiveNetworkInfo().getType();
+		if (connectivityManager.getActiveNetworkInfo() != null)
+			return connectivityManager.getActiveNetworkInfo().getType();
+		else
+			return -10;
 	}
 
 	public static boolean isConnected(Context context) {

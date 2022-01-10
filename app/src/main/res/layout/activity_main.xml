@@ -158,16 +158,17 @@
 				android:padding="15dp"
 				android:text="@string/string_start"
 				android:textSize="18sp"
-				app:layout_constraintBottom_toTopOf="@+id/imageView"
+				app:layout_constraintBottom_toTopOf="@+id/iv_event"
 				app:layout_constraintEnd_toStartOf="@+id/guideline13"
 				app:layout_constraintStart_toStartOf="@+id/guideline12"
 				app:layout_constraintTop_toBottomOf="@+id/activity_main_select_categories_button"
 				app:layout_constraintVertical_bias="0.05" />
 
 			<ImageView
-				android:id="@+id/imageView"
+				android:id="@+id/iv_event"
+				android:visibility="gone"
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
+				android:layout_height="100dp"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
