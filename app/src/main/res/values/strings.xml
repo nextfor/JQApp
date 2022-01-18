@@ -17,11 +17,7 @@
 	<string name="ad_id_bonus3" translatable="false">ca-app-pub-5050054249389989/6686582029</string>
 
 	<string name="api_domain" translatable="false">https://api.nextfor.fr/</string>
-	<string name="beta_api_domain" translatable="false">https://beta.api.nextfor.fr/</string>
-	<string name="api_endpoint_getLastId" translatable="false">jojozquizz/questions/lastId/</string>
-	<string name="api_endpoint_getQuestion" translatable="false">jojozquizz/questions/question/</string>
-	<string name="api_endpoint_getCurrentVersion" translatable="false">jojozquizz/version/currentVersion/</string>
-	<string name="api_endpoint_getServerKey" translatable="false">auth/serverKey</string>
+	<string name="beta_api_domain" translatable="false">https://api.nextfor.fr/</string>
 
 	<string name="error_start1">You requested too many questions (max. 75)</string>
 
@@ -249,4 +245,6 @@
 		<item>Hakuna matata</item>
 		<item>Flblblblblblblblblb</item>
 	</string-array>
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
