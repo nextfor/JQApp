@@ -1,26 +1,34 @@
 package com.jojo.jojozquizz;
 
+import android.animation.Animator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.databinding.ActivityMainBinding;
+import com.jojo.jojozquizz.databinding.FragmentMainBinding;
 import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
@@ -43,6 +51,8 @@ import com.jojo.jojozquizz.utils.NetUtils;
 import com.jojo.jojozquizz.utils.QuestionsRequestsHelper;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -53,7 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements NameDialog.NameDialogListener, ClickHandler, QuestionsRequestsHelper.ResponseListener {
+public class MainActivity extends AppCompatActivity implements QuestionsRequestsHelper.ResponseListener {
 
 	static final int GAME_ACTIVITY_REQUEST_CODE = 30;
 	static final int USERS_ACTIVITY_REQUEST_CODE = 40;
@@ -67,17 +77,15 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	final Context mContext = this;
 	View mContextView;
 
-	EditText mNumberOfQuestionsInput;
-
-	Toolbar mToolbar;
-
 	SharedPreferences mPreferences;
 
 	boolean isFirstTime;
-	Player mPlayer;
+	Player player;
 	String lang;
 
 	String mSecurityKey;
+
+	private long lastId;
 
 	ActivityMainBinding mBinding;
 
@@ -87,23 +95,19 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		setTheme(R.style.Theme_JojozQuizz);
 		setContentView(R.layout.activity_main);
 
+		setSupportActionBar(new Toolbar(this));
+
 		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-		mBinding.setHandler(this);
-
-		mContextView = mBinding.mainCoordinatorLayout;
-
-		mToolbar = mBinding.toolbar;
-		setSupportActionBar(mToolbar);
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
-		lang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
-
-		mNumberOfQuestionsInput = mBinding.activityMainNumberQuestionsInput;
+		com.jojo.jojozquizz.utils.MainActivity.getInstance().setPreferences(mPreferences);
 
 		isFirstTime = PlayersDatabase.getInstance(this).PlayersDAO().getAllPlayers().isEmpty();
 
+		HashMap<String, String> args = com.jojo.jojozquizz.utils.MainActivity.getInstance().getArgs();
+		args.put("isFirstTime", String.valueOf(isFirstTime));
+		com.jojo.jojozquizz.utils.MainActivity.getInstance().setArgs(args);
 		if (isFirstTime) {
-			firstTime();
 		} else {
 			if (mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN") == null) {
 				String lang;
@@ -114,25 +118,25 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				}
 				mPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), lang).putString(getString(R.string.PREF_LANGUAGE), null).apply();
 			}
-			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
-			mBinding.setPlayer(mPlayer);
+			player = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
+			com.jojo.jojozquizz.utils.MainActivity.getInstance().setPlayer(player);
 		}
 
-
 		if (NetUtils.isConnected(mContext)) {
+			mBinding.llFetchStatus.setVisibility(View.VISIBLE);
+			mBinding.tvFetchStatus.setText("Initialisation . . .");
 			checkForUpdates();
 			getServerKey();
 		}
+
+		initView();
 	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		String[] texts = getResources().getStringArray(R.array.splash_texts);
-		Random r = new Random();
-
-		mBinding.activityMainTextTitle.setText(texts[r.nextInt(texts.length)]);
+	private void initView() {
+		MainFragment fragment = new MainFragment();
+		getSupportFragmentManager().beginTransaction()
+			.add(R.id.frame_layout_main, fragment)
+			.commitAllowingStateLoss();
 	}
 
 	private void getServerKey() {
@@ -148,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 					mSecurityKey = BCrypt.hashpw(combinedKey, salt);
 					Client.getClient(mContext).addInterceptor(mSecurityKey);
 					getLastId();
-					getEvents();
 				} else {
 					ErrorShower.showError(mContext, null, ErrorShower.TYPE_SNACKBAR, null, null);
 				}
@@ -161,47 +164,17 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		});
 	}
 
-	private void getEvents() {
-		Call<List<EventResponse>> call = Client.getClient(mContext).getApi().getEvents();
-		call.enqueue(new Callback<List<EventResponse>>() {
-			@Override
-			public void onResponse(Call<List<EventResponse>> call, Response<List<EventResponse>> response) {
-				if (response.code() == 200 && response.body() != null) {
-					if(!response.body().get(0).getImage().isEmpty()) {
-						mBinding.ivEvent.setVisibility(View.VISIBLE);
-						Picasso.get().load(response.body().get(0).getImage()).into(mBinding.ivEvent);
-					}
-				}
-			}
-
-			@Override
-			public void onFailure(Call<List<EventResponse>> call, Throwable t) {
-			}
-		});
-	}
-
 	private void getLastId() {
 		QuestionsRequestsHelper.getLastId(mContext, lang, this);
 	}
 
-	private void firstTime() {
-		String lang;
-		switch (Locale.getDefault().getCountry()) {
-			default:
-				lang = "FR";
-				break;
-		}
-		mPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), lang).apply();
-		askUsernameDialog();
-	}
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-		mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
+		player = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == GAME_ACTIVITY_REQUEST_CODE) {
-			mBinding.setPlayer(mPlayer);
-			if (mPlayer.getGamesPlayed() >= 3 && mPreferences.getBoolean(getString(R.string.PREF_LANGUAGE), true)) {
+			mBinding.setPlayer(player);
+			if (player.getGamesPlayed() >= 3 && mPreferences.getBoolean(getString(R.string.PREF_LANGUAGE), true)) {
 				LikeDialog likeDialog = new LikeDialog(this);
 				likeDialog.addListener(result -> {
 					switch (result) {
@@ -221,8 +194,8 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 				likeDialog.popin();
 			}
 		} else if (requestCode == USERS_ACTIVITY_REQUEST_CODE) {
-			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
-			mBinding.setPlayer(mPlayer);
+			player = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
+			mBinding.setPlayer(player);
 		}
 	}
 
@@ -235,8 +208,14 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		}
 		currentProcess = PROCESS_FETCH_CONTENT;
 
-		for (long i = lastIdInDatabase; i < lastId; i++) {
-			QuestionsRequestsHelper.getQuestion(mContext, lang, i, this);
+		if (lastId != lastIdInDatabase) {
+			mBinding.tvFetchStatus.setText("Récupération des dernières questions depuis le serveur");
+			this.lastId = lastId;
+			for (long i = lastIdInDatabase; i < lastId; i++) {
+				QuestionsRequestsHelper.getQuestion(mContext, lang, i, this);
+			}
+		} else {
+			dismissStatusBar();
 		}
 	}
 
@@ -265,14 +244,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	public void onBackPressed() {
 		super.onBackPressed();
 		finish();
-	}
-
-	private void askUsernameDialog() {
-		NameDialog nameDialog = new NameDialog();
-		nameDialog.setIsNewUser(true);
-		nameDialog.setIsCancelable(false);
-		nameDialog.setListener(this);
-		nameDialog.show(getSupportFragmentManager(), "name dialog");
 	}
 
 	private void checkForUpdates() {
@@ -306,48 +277,15 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		});
 	}
 
-	@Override
-	public void applyText(String name) {
-		Pattern pattern = Pattern.compile(NameDialog.REGEX);
-		Matcher matcher = pattern.matcher(name);
-		if (!matcher.find()) {
-			Snackbar.make(mBinding.getRoot(), R.string.invalid_name, Snackbar.LENGTH_SHORT).show();
-			askUsernameDialog();
-		} else {
-			Player player = new Player(name, this);
-			PlayersDatabase.getInstance(this).PlayersDAO().addPlayer(player);
-			mPreferences.edit().putInt(getString(R.string.PREF_CURRENT_USER_ID), PlayersDatabase.getInstance(this).PlayersDAO().getIdFromName(name)).apply();
-			mPlayer = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
-
-			isFirstTime = false;
-			mBinding.setPlayer(player);
-		}
-	}
-
-	@Override
-	public void onButtonClick(View v) {
-		int id = v.getId();
-
-		if (id == R.id.activity_main_start_button) {
-			if (!mNumberOfQuestionsInput.getText().toString().isEmpty()) {
-				int mNumberOfQuestionsAsk = Integer.parseInt(mNumberOfQuestionsInput.getText().toString());
-				if (mNumberOfQuestionsAsk <= 0) {
-					Toast.makeText(mContext, R.string.error_start0, Toast.LENGTH_LONG).show();
-				} else if (mNumberOfQuestionsAsk > 75) {
-					Toast.makeText(mContext, R.string.error_start1, Toast.LENGTH_LONG).show();
-				} else if (QuestionsDatabase.getInstance(this).QuestionDAO().getLastQuestion() == null) {
-					Snackbar.make(mContextView, getString(R.string.no_questions), Snackbar.LENGTH_LONG).setAction(getString(R.string.all_retry), v1 -> getLastId()).show();
-				} else {
-					startActivityForResult(new Intent(mContext, GameActivity.class).putExtra("userId", mPlayer.getId()).putExtra("numberOfQuestions", mNumberOfQuestionsAsk), GAME_ACTIVITY_REQUEST_CODE);
-				}
+	private void dismissStatusBar() {
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				Animation anim = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_top);
+				mBinding.llFetchStatus.setAnimation(anim);
+				mBinding.llFetchStatus.setVisibility(View.GONE);
 			}
-		} else if (id == R.id.button_users || id == R.id.text_display_name) {
-			startActivityForResult(new Intent(mContext, PlayersActivity.class), USERS_ACTIVITY_REQUEST_CODE);
-		} else if (id == R.id.activity_main_select_categories_button) {
-			startActivity(new Intent(mContext, SelectCategoriesActivity.class));
-		} else if (id == R.id.activity_main_bonus_button) {
-			startActivity(new Intent(mContext, BonusActivity.class));
-		}
+		}, 3000);
 	}
 
 	private void retryProcess() {
@@ -362,11 +300,6 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 	}
 
 	@Override
-	public boolean onLongButtonClick(View v) {
-		return false;
-	}
-
-	@Override
 	public void onIdResponse(Call<LastIdResponse> call, Response<LastIdResponse> response) {
 		if (response.code() == 200) {
 			addQuestions(response.body().getQuestionId());
@@ -377,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 
 	@Override
 	public void onIdFailure(Call<LastIdResponse> call, Throwable t) {
-		ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, getString(R.string.impossible_to_load_questions) + " 1", null);
+		ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, getString(R.string.impossible_to_load_questions), null);
 	}
 
 	@Override
@@ -385,13 +318,23 @@ public class MainActivity extends AppCompatActivity implements NameDialog.NameDi
 		if (response.code() == 200 && response.body() != null) {
 			Question question = new Question(response.body());
 			QuestionsDatabase.getInstance(mContext).QuestionDAO().addQuestion(question);
+
+			if (this.lastId == question.getId()) {
+				mBinding.llFetchStatus.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.fetch_success_status));
+				mBinding.tvFetchStatus.setText("Récupération terminée");
+				dismissStatusBar();
+			}
 		} else {
-			ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR_ACTION, getString(R.string.impossible_to_load_questions) + " 2", v -> retryProcess());
+			ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR_ACTION, getString(R.string.impossible_to_load_questions), v -> retryProcess());
 		}
 	}
 
 	@Override
 	public void onQuestionFailure(Call<QuestionResponse> call, Throwable t) {
 		ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, getString(R.string.impossible_to_load_questions), null);
+
+		mBinding.llFetchStatus.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.fetch_failed_status));
+		mBinding.tvFetchStatus.setText("Récupération échouée");
+		dismissStatusBar();
 	}
 }

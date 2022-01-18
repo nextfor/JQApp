@@ -25,4 +25,8 @@
 	<color name="colorLightPrimaryInDark">#B6888C</color>
 	<color name="colorPrimaryTextInDark">#6C6C6C</color>
 	<color name="secondaryTextInDark">#A5A5A5</color>
+
+	<color name="fetching_status">#8E8E8E</color>
+	<color name="fetch_failed_status">#A30000</color>
+	<color name="fetch_success_status">#00B500</color>
 </resources>
