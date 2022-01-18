@@ -70,26 +70,6 @@ public class SelectCategoriesActivity extends AppCompatActivity implements Categ
 
 		mOldCategoriesSelected = mCategoriesHelper.getProcessedCategories(mPlayer.getCategoriesSelected());
 		mNewCategoriesSelected = mOldCategoriesSelected;
-
-//		mSelectAllSwitch = mBinding.switchSelectAll;
-//		mCheckboxEasy = mBinding.activitySelectCategoriesCheckboxFacile;
-//		mCheckboxMedium = mBinding.activitySelectCategoriesCheckboxMoyen;
-//		mCheckboxHard = mBinding.activitySelectCategoriesCheckboxDifficile;
-		mCheckBoxes = new MaterialCheckBox[]{mCheckboxEasy, mCheckboxMedium, mCheckboxHard};
-
-		mCategoriesAdapter = new CategoriesAdapter(this, mCategoriesHelper.getCategories(), mOldCategoriesSelected);
-//		mRecyclerView = mBinding.recyclerCategories;
-		mRecyclerView.setAdapter(mCategoriesAdapter);
-		mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-		mDifficultiesSelected = mCategoriesHelper.getProcessedDifficulties(mPlayer.getDifficultiesSelected());
-
-		int i = 0;
-		for (CheckBox checkBox : mCheckBoxes) {
-			checkBox.setText(mCategoriesHelper.getDifficulties()[i]);
-			checkBox.setChecked(mDifficultiesSelected.contains(checkBox.getText().toString()));
-			i++;
-		}
 	}
 
 	@Override
