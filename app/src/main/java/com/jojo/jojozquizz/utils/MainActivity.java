@@ -56,7 +56,11 @@ public class MainActivity {
 	}
 
 	public HashMap<String, String> getArgs() {
-		return args;
+		if (args == null || args.isEmpty()) {
+			return new HashMap<>();
+		} else {
+			return args;
+		}
 	}
 
 	public void setArgs(HashMap<String, String> args) {
