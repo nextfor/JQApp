@@ -1,5 +1,6 @@
 package com.jojo.jojozquizz;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +42,8 @@ public class MainFragment extends Fragment implements ClickHandler, NameDialog.N
 	View view;
 	FragmentMainBinding binding;
 
+	SharedPreferences sharedPreferences;
+
 	EditText mNumberOfQuestionsInput;
 
 	public MainFragment() {
@@ -51,8 +54,25 @@ public class MainFragment extends Fragment implements ClickHandler, NameDialog.N
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (MainActivity.getInstance().getArgs().containsKey("isFirstTime") && MainActivity.getInstance().getArgs().get("isFirstTime").equals(String.valueOf(true))) {
+		boolean isFirstTime = getArguments().getBoolean("isFirstTime");
+
+		sharedPreferences = MainActivity.getInstance().getPreferences();
+
+		if (isFirstTime) {
 			firstTime();
+		} else {
+			if (sharedPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN") == null) {
+				String lang;
+				switch (Locale.getDefault().getCountry()) {
+					default:
+						lang = "FR";
+						break;
+				}
+				sharedPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), lang).putString(getString(R.string.PREF_LANGUAGE), null).apply();
+
+				player = PlayersDatabase.getInstance(MainActivity.getInstance().getContext()).PlayersDAO().getPlayer(sharedPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
+				com.jojo.jojozquizz.utils.MainActivity.getInstance().setPlayer(player);
+			}
 		}
 	}
 

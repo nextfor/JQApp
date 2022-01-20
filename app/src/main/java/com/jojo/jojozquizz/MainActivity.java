@@ -1,63 +1,43 @@
 package com.jojo.jojozquizz;
 
-import android.animation.Animator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.jojo.jojozquizz.databinding.ActivityMainBinding;
-import com.jojo.jojozquizz.databinding.FragmentMainBinding;
-import com.jojo.jojozquizz.dialogs.NameDialog;
 import com.jojo.jojozquizz.model.Player;
 import com.jojo.jojozquizz.model.Question;
-import com.jojo.jojozquizz.model.reponse.EventResponse;
 import com.jojo.jojozquizz.model.reponse.LastIdResponse;
 import com.jojo.jojozquizz.model.reponse.QuestionResponse;
 import com.jojo.jojozquizz.model.reponse.ServerKeyResponse;
 import com.jojo.jojozquizz.model.reponse.VersionResponse;
 import com.jojo.jojozquizz.tools.BCrypt;
-import com.jojo.jojozquizz.tools.ClickHandler;
 import com.jojo.jojozquizz.tools.CombineKeys;
 import com.jojo.jojozquizz.tools.PlayersDatabase;
 import com.jojo.jojozquizz.tools.QuestionsDatabase;
-import com.jojo.jojozquizz.ui.game.GameActivity;
 import com.jojo.jojozquizz.ui.main.LikeDialog;
-import com.jojo.jojozquizz.ui.players.PlayersActivity;
 import com.jojo.jojozquizz.utils.Client;
 import com.jojo.jojozquizz.utils.ErrorShower;
 import com.jojo.jojozquizz.utils.NetUtils;
 import com.jojo.jojozquizz.utils.QuestionsRequestsHelper;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements QuestionsRequests
 
 	SharedPreferences mPreferences;
 
-	boolean isFirstTime;
 	Player player;
 	String lang;
 
@@ -95,32 +74,12 @@ public class MainActivity extends AppCompatActivity implements QuestionsRequests
 		setTheme(R.style.Theme_JojozQuizz);
 		setContentView(R.layout.activity_main);
 
-		setSupportActionBar(new Toolbar(this));
-
 		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
+
+		com.jojo.jojozquizz.utils.MainActivity.getInstance().setContext(mContext);
 		com.jojo.jojozquizz.utils.MainActivity.getInstance().setPreferences(mPreferences);
-
-		isFirstTime = PlayersDatabase.getInstance(this).PlayersDAO().getAllPlayers().isEmpty();
-
-		HashMap<String, String> args = com.jojo.jojozquizz.utils.MainActivity.getInstance().getArgs();
-		args.put("isFirstTime", String.valueOf(isFirstTime));
-		com.jojo.jojozquizz.utils.MainActivity.getInstance().setArgs(args);
-		if (isFirstTime) {
-		} else {
-			if (mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN") == null) {
-				String lang;
-				switch (Locale.getDefault().getCountry()) {
-					default:
-						lang = "FR";
-						break;
-				}
-				mPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), lang).putString(getString(R.string.PREF_LANGUAGE), null).apply();
-			}
-			player = PlayersDatabase.getInstance(this).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
-			com.jojo.jojozquizz.utils.MainActivity.getInstance().setPlayer(player);
-		}
 
 		if (NetUtils.isConnected(mContext)) {
 			mBinding.llFetchStatus.setVisibility(View.VISIBLE);
@@ -134,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements QuestionsRequests
 
 	private void initView() {
 		MainFragment fragment = new MainFragment();
+		Bundle bundle = new Bundle();
+		bundle.putBoolean("isFirstTime", PlayersDatabase.getInstance(this).PlayersDAO().getAllPlayers().isEmpty());
+		fragment.setArguments(bundle);
 		getSupportFragmentManager().beginTransaction()
 			.add(R.id.frame_layout_main, fragment)
 			.commitAllowingStateLoss();

@@ -89,10 +89,7 @@ public class SettingsActivity extends AppCompatActivity implements ClickHandler,
 	}
 
 	private void getLastIdFromServer() {
-		String lastIdRoute = getResources().getString(R.string.api_endpoint_getLastId);
 		String lang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
-
-
 	}
 
 	private void addQuestions(long lastId) {
