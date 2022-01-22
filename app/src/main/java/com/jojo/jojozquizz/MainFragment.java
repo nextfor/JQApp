@@ -44,6 +44,8 @@ public class MainFragment extends Fragment implements ClickHandler, NameDialog.N
 
 	SharedPreferences sharedPreferences;
 
+	Player player;
+
 	EditText mNumberOfQuestionsInput;
 
 	public MainFragment() {
@@ -70,8 +72,12 @@ public class MainFragment extends Fragment implements ClickHandler, NameDialog.N
 				}
 				sharedPreferences.edit().putString(getString(R.string.PREF_LANGUAGE), lang).putString(getString(R.string.PREF_LANGUAGE), null).apply();
 
-				player = PlayersDatabase.getInstance(MainActivity.getInstance().getContext()).PlayersDAO().getPlayer(sharedPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
-				com.jojo.jojozquizz.utils.MainActivity.getInstance().setPlayer(player);
+				if (MainActivity.getInstance().getPlayer() != null) {
+					player = MainActivity.getInstance().requirePlayer();
+				} else {
+					player = PlayersDatabase.getInstance(MainActivity.getInstance().getContext()).PlayersDAO().getPlayer(sharedPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1));
+					com.jojo.jojozquizz.utils.MainActivity.getInstance().setPlayer(player);
+				}
 			}
 		}
 	}
@@ -94,7 +100,6 @@ public class MainFragment extends Fragment implements ClickHandler, NameDialog.N
 		nameDialog.setListener(this);
 		nameDialog.show(requireActivity().getSupportFragmentManager(), "name dialog");
 	}
-
 
 	@Nullable
 	@Override

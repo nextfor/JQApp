@@ -75,15 +75,23 @@ public class MainActivity extends AppCompatActivity implements QuestionsRequests
 		setContentView(R.layout.activity_main);
 
 		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+		mContextView = mBinding.getRoot();
 
 		mPreferences = this.getSharedPreferences("com.jojo.jojozquizz", MODE_PRIVATE);
 
 		com.jojo.jojozquizz.utils.MainActivity.getInstance().setContext(mContext);
 		com.jojo.jojozquizz.utils.MainActivity.getInstance().setPreferences(mPreferences);
 
+		lang = mPreferences.getString(getString(R.string.PREF_LANGUAGE), "EN");
+
+		if (!PlayersDatabase.getInstance(mContext).PlayersDAO().getAllPlayers().isEmpty()) {
+			com.jojo.jojozquizz.utils.MainActivity.getInstance().setPlayer(PlayersDatabase.getInstance(mContext).PlayersDAO().getPlayer(mPreferences.getInt(getString(R.string.PREF_CURRENT_USER_ID), 1)));
+		}
+
 		if (NetUtils.isConnected(mContext)) {
 			mBinding.llFetchStatus.setVisibility(View.VISIBLE);
 			mBinding.tvFetchStatus.setText("Initialisation . . .");
+			dismissStatusBar();
 			checkForUpdates();
 			getServerKey();
 		}
@@ -115,13 +123,13 @@ public class MainActivity extends AppCompatActivity implements QuestionsRequests
 					Client.getClient(mContext).addInterceptor(mSecurityKey);
 					getLastId();
 				} else {
-					ErrorShower.showError(mContext, null, ErrorShower.TYPE_SNACKBAR, null, null);
+					ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, null, null);
 				}
 			}
 
 			@Override
 			public void onFailure(Call<ServerKeyResponse> call, Throwable t) {
-				ErrorShower.showError(mContext, null, ErrorShower.TYPE_SNACKBAR, null, null);
+				ErrorShower.showError(mContext, mContextView, ErrorShower.TYPE_SNACKBAR, null, null);
 			}
 		});
 	}
@@ -177,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements QuestionsRequests
 				QuestionsRequestsHelper.getQuestion(mContext, lang, i, this);
 			}
 		} else {
+			mBinding.tvFetchStatus.setText("Aucune nouvelle question");
 			dismissStatusBar();
 		}
 	}
